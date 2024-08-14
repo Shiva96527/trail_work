@@ -97,6 +97,7 @@ const ServiceTypeDetailsModal = (
     watch('DIATrafficProfiling');
     watch('DIAIP');
     watch(getFileName[panelName]);
+    const disableFormCondition = (disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ';
 
     const handleCustomSubmit = async (isUpdate) => {
         handleSubmit((data) => {
@@ -132,7 +133,7 @@ const ServiceTypeDetailsModal = (
     }
 
     const handleDeleteFile = () => {
-        if ((disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ') return;
+        if (disableFormCondition) return;
         setValue(getFileName[panelName], '');
         setValue('fileDeleted', true);
     }
@@ -145,62 +146,62 @@ const ServiceTypeDetailsModal = (
                     <Card className="card_outer_padding">
                         <CardBody>
                             <form>
-                                <fieldset disabled={(disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ'}>
-                                    <Row>
+                                <Row>
+                                    <Col md={3}>
+                                        <FormInput
+                                            label='Line Item ID'
+                                            name='LineItemId'
+                                            type="text"
+                                            control={control}
+                                            errors={errors}
+                                            disabled
+                                            placeholder="**Auto-Generated**"
+                                        />
+                                    </Col>
+                                    <Col md={3}>
+                                        {(!attachments[getFileName[panelName]] || getValues('fileDeleted')) ? <FormInputFile
+                                            label="Data File Upload"
+                                            name={getFileName[panelName]}
+                                            type="file"
+                                            control={control}
+                                            errors={errors}
+                                            onChange={(e) => {
+                                                if (e.target.files[0]) {
+                                                    setHasNewFile(true);
+                                                } else {
+                                                    setHasNewFile(false);
+                                                }
+                                            }}
+                                        />
+                                            :
+                                            <><span className="link-style" onClick={() => viewFile(getValues(getFileName[panelName]))}>{getValues(getFileName[panelName])?.FileName}</span>
+                                                {!disableFormCondition && <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} />}</>}
+                                    </Col>
+                                    {ismpnService && <>
                                         <Col md={3}>
                                             <FormInput
-                                                label='Line Item ID'
-                                                name='LineItemId'
+                                                label="MPN ID"
+                                                name="MPNID"
                                                 type="text"
                                                 control={control}
                                                 errors={errors}
                                                 disabled
-                                                placeholder="**Auto-Generated**"
                                             />
                                         </Col>
                                         <Col md={3}>
-                                            {(!attachments[getFileName[panelName]] || getValues('fileDeleted')) ? <FormInputFile
-                                                label="Data File Upload"
-                                                name={getFileName[panelName]}
-                                                type="file"
+                                            <FormInput
+                                                label="MPN Link Type"
+                                                name="MPNType"
+                                                type="text"
                                                 control={control}
                                                 errors={errors}
-                                                onChange={(e) => {
-                                                    if (e.target.files[0]) {
-                                                        setHasNewFile(true);
-                                                    } else {
-                                                        setHasNewFile(false);
-                                                    }
-                                                }}
+                                                disabled
                                             />
-                                                :
-                                                <><span className="link-style" onClick={() => viewFile(getValues(getFileName[panelName]))}>{getValues(getFileName[panelName])?.FileName}</span>
-                                                    <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} /></>}
                                         </Col>
-                                        {ismpnService && <>
-                                            <Col md={3}>
-                                                <FormInput
-                                                    label="MPN ID"
-                                                    name="MPNID"
-                                                    type="text"
-                                                    control={control}
-                                                    errors={errors}
-                                                    disabled
-                                                />
-                                            </Col>
-                                            <Col md={3}>
-                                                <FormInput
-                                                    label="MPN Link Type"
-                                                    name="MPNType"
-                                                    type="text"
-                                                    control={control}
-                                                    errors={errors}
-                                                    disabled
-                                                />
-                                            </Col>
-                                        </>}
-                                    </Row>
-                                    <hr />
+                                    </>}
+                                </Row>
+                                <hr />
+                                <fieldset disabled={disableFormCondition}>
                                     <Row>
                                         <Col md={3}>
                                             <FormInput

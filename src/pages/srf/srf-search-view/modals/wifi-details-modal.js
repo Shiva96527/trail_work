@@ -50,6 +50,7 @@ const WifiDetailsModal = (
     });
 
     watch('WifiFileUpload');
+    const disableFormCondition = (disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ';
 
     const handleCustomSubmit = (isUpdate) => {
         handleSubmit((data) => {
@@ -76,7 +77,7 @@ const WifiDetailsModal = (
     }
 
     const handleDeleteFile = () => {
-        if ((disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ') return;
+        if (disableFormCondition) return;
         setValue('WifiFileUpload', '');
         setValue('fileDeleted', true);
     }
@@ -89,39 +90,39 @@ const WifiDetailsModal = (
                     <Card className="card_outer_padding">
                         <CardBody>
                             <form>
-                                <fieldset disabled={(disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ'}>
-                                    <Row>
-                                        <Col md={4}>
-                                            <FormInput
-                                                label='Line Item ID'
-                                                name='LineItemId'
-                                                type="text"
-                                                control={control}
-                                                errors={errors}
-                                                disabled
-                                            />
-                                        </Col>
-                                        <Col md={4}>
-                                            {(!attachments['WifiFileUpload'] || getValues('fileDeleted')) ? <FormInputFile
-                                                label="Data File Upload"
-                                                name="WifiFileUpload"
-                                                type="file"
-                                                control={control}
-                                                errors={errors}
-                                                onChange={(e) => {
-                                                    if (e.target.files[0]) {
-                                                        setHasNewFile(true);
-                                                    } else {
-                                                        setHasNewFile(false);
-                                                    }
-                                                }}
-                                            />
-                                                :
-                                                <><span className="link-style" onClick={() => viewFile(getValues('WifiFileUpload'))}>{getValues('WifiFileUpload')?.FileName}</span>
-                                                    <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} /></>}
-                                        </Col>
-                                    </Row>
-                                    <hr />
+                                <Row>
+                                    <Col md={4}>
+                                        <FormInput
+                                            label='Line Item ID'
+                                            name='LineItemId'
+                                            type="text"
+                                            control={control}
+                                            errors={errors}
+                                            disabled
+                                        />
+                                    </Col>
+                                    <Col md={4}>
+                                        {(!attachments['WifiFileUpload'] || getValues('fileDeleted')) ? <FormInputFile
+                                            label="Data File Upload"
+                                            name="WifiFileUpload"
+                                            type="file"
+                                            control={control}
+                                            errors={errors}
+                                            onChange={(e) => {
+                                                if (e.target.files[0]) {
+                                                    setHasNewFile(true);
+                                                } else {
+                                                    setHasNewFile(false);
+                                                }
+                                            }}
+                                        />
+                                            :
+                                            <><span className="link-style" onClick={() => viewFile(getValues('WifiFileUpload'))}>{getValues('WifiFileUpload')?.FileName}</span>
+                                                {disableFormCondition && <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} />}</>}
+                                    </Col>
+                                </Row>
+                                <hr />
+                                <fieldset disabled={disableFormCondition}>
                                     <Row>
                                         <Col md={3}>
                                             <FormInput
