@@ -21,19 +21,24 @@ const read_file = (file) => {
 }
 
 export const populateGrid = (workbook, columns) => {
-    // our data is in the first sheet
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     var rowData = [];
-    // start at the 2nd row - the first row are the headers
     var rowIndex = 2;
-    // iterate over the worksheet pulling out the columns we're expecting
-    while (worksheet['A' + rowIndex]) {
+
+    while (true) {
+        let isRowEmpty = true;
         var row = {};
-        //eslint-disable-next-line
         Object.keys(columns).forEach(function (column) {
-            row[columns[column]] = worksheet[column + rowIndex]?.w;
+            const cellValue = worksheet[column + rowIndex]?.w;
+            row[columns[column]] = cellValue || '';
+            if (cellValue) {
+                isRowEmpty = false;
+            }
         });
+        if (isRowEmpty) {
+            break;
+        }
         rowData.push(row);
         rowIndex++;
     }

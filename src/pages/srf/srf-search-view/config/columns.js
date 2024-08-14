@@ -4,7 +4,7 @@ import { faEye } from "@fortawesome/free-solid-svg-icons"
 import { EditableCellRenderer } from "../../srf-hld/financial-modal/config/columns"
 import Swal from "sweetalert2"
 import FileUploadRenderer from "../../../../components/file-upload-renderer"
-
+import XLSX from 'xlsx';
 export const workflow_columns = [
     { headerName: 'Status Code', field: 'WFStatusCode' },
     { headerName: 'Status Name', field: 'StatusName' },
@@ -474,9 +474,9 @@ export const mobile_site_address_columns = (hidden) => {
         { headerName: 'Status', field: 'MobileGCPStatus' },
         { headerName: 'GCP Latitude', field: 'GCPLatitude', hide: !hidden },
         { headerName: 'GCP Longitude', field: 'GCPLongitude', hide: !hidden },
-        { headerName: 'Indoor Cell', field: 'GCPIndoorcell', hide: !hidden },
+        // { headerName: 'Indoor Cell', field: 'GCPIndoorcell', hide: !hidden },
         { headerName: 'Indoor RSRP', field: 'GCPIndoorRSRP', hide: !hidden },
-        { headerName: 'Blended Cell', field: 'GCPBlendedCell', hide: !hidden },
+        // { headerName: 'Blended Cell', field: 'GCPBlendedCell', hide: !hidden },
         { headerName: 'Blended RSRP', field: 'GCPBlendedRSRP', hide: !hidden },
         // { headerName: 'Indoor Coverage', field: 'GCPIndoorCoverage', hide: !hidden},               
         {
@@ -501,26 +501,46 @@ export const columnsToFetch = {
     B: 'Latitude',
     C: 'Longitude'
 };
+const normalizeTable = (table) => {
+    // Create a new table to store the modified structure
+    const modifiedTable = document.createElement('table');
 
+    let firstRowSkipped = false;
+
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        // Skip the first row
+        if (!firstRowSkipped) {
+            firstRowSkipped = true;
+            continue;
+        }
+
+        const newRow = modifiedTable.insertRow(-1);
+
+        for (let j = 0, cell; cell = row.cells[j]; j++) {
+            const colspan = cell.colSpan;
+
+            // Insert empty cells for colspan and copy content for non-colspan cells
+            if (colspan > 1) {
+                for (let k = 0; k < colspan; k++) {
+                    newRow.insertCell(-1); // Insert empty cell
+                }
+            } else {
+                const newCell = newRow.insertCell(-1);
+                newCell.innerHTML = cell.innerHTML;
+            }
+        }
+    }
+
+    return modifiedTable;
+}
 
 export const exportToExcel = (tableId, fileName) => {
     const table = document.getElementById(tableId);
-    if (!table) {
-        console.error(`Table with ID ${tableId} not found.`);
-        return;
-    }
-    const clonedTable = table.cloneNode(true);
-    const excelDoc = document.implementation.createHTMLDocument();
-    excelDoc.body.appendChild(clonedTable);
-    const blob = new Blob([excelDoc.documentElement.outerHTML], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
-    });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const normalizedTable = normalizeTable(table);
+    const worksheet = XLSX.utils.table_to_sheet(normalizedTable);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, fileName || 'ExportedData.xlsx');
 }
 
 
