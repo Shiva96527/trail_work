@@ -263,7 +263,7 @@ const InboxSearchView = () => {
                 setWorkflowList(resultData?.srfActionWorkFlowHistory);
                 setNeptuneList(resultData?.srfCPQLogHistory);
                 getSrfMailLogs(resultData?.IntegrationID);
-                if (resultData?.srfActionWorkFlowResponse?.StatusName.includes('HLD') ||resultData?.srfActionWorkFlowResponse?.StatusName.includes('Cost Updated') || resultData?.srfActionWorkFlowResponse?.StatusName.includes('Closed')) {
+                if (resultData?.srfActionWorkFlowResponse?.StatusName.includes('HLD') || resultData?.srfActionWorkFlowResponse?.StatusName.includes('Cost Updated') || resultData?.srfActionWorkFlowResponse?.StatusName.includes('Closed')) {
                     setIsHld(true);
                 }
                 getCustomerUploadedData("CustomerUploadedData");
@@ -829,12 +829,15 @@ const InboxSearchView = () => {
             srfMobileExcelDataRequest: rowData
         }
         try {
-            const { data: { statusCode } } = await uploadMobileGCPHTTP(payload);
+            const { data: { statusCode, statusMessage } } = await uploadMobileGCPHTTP(payload);
             if (statusCode === 200) {
                 toast.success("System will process the GCP integration in the scheduler . Upon sync , system will send the notification for further action.");
                 setMobileGcpData(rowData);
                 setShowGcpColumns(false);
                 getCustomerUploadedData();
+            }
+            else {
+                toast.info(statusMessage);
             }
         } catch (e) {
             toast.error('Something went wrong');
@@ -1311,23 +1314,24 @@ const InboxSearchView = () => {
                                         </Row><br />
                                         <Row>
                                             <Col md={2}>
-                                                <Label>Upload Site Address with Lat&Long(Excel)</Label>
-
+                                                <Label>Upload Site Address with Lat&Long(Excel)</Label>                                                
                                             </Col>
                                             <Col md={4} style={{ display: 'flex' }}>
                                                 <Input id="siteAddressFileUpload" accept=".xlsx, .xls" disabled={srfDetails?.StatusName !== 'Draft' || !srfDetails?.StatusName || mobileTemplate} type="file" onChange={validateColumnNames} />
                                                 {mobileTemplate && <FontAwesomeIcon icon={faRemove} style={{ paddingLeft: '10px', paddingTop: '15px', cursor: 'pointer' }} color="red" onClick={clearMobileFile} />}
-                                                {/* <span className={fileUploadMessage.type === 'success' ? 'file-upload-message-success' : 'file-upload-message-error'}>{fileUploadMessage.message}</span> */}
+                                               
+                                                 {/* <span className={fileUploadMessage.type === 'success' ? 'file-upload-message-success' : 'file-upload-message-error'}>{fileUploadMessage.message}</span> */}
                                             </Col>
-                                            {
-                                                gcpSyncFlag === true &&
-                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>System will process the GCP integration in the scheduler. Upon sync, system will send the notification for further action.</span>
+                                            <span style={{ color: "red", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note:  Please make sure the uploaded Latitude & Longitude does not contains any special characters like  (!@#$%^&*()"<>?/\[],)  and no wordings/letters. The Latitude and Longitude has to be floating decimal values'}</span>
+                                            {                                                
+                                                // gcpSyncFlag === true &&
+                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>System will process the GCP integration in the scheduler. Upon sync, system will send the email notification for further action.</span>
                                             }
                                             <span className="required">{gcpColumnsError}</span>
                                         </Row><br />
                                         {gcpData?.length > 0 ? <Row>
                                             <div className="pull-right">
-                                                <Button color="primary" onClick={() => exportToExcel('gcp-table', 'download.xls')}>Export</Button>
+                                                <Button color="primary" onClick={() => exportToExcel('gcp-table', 'download.xlsx')}>Export</Button>
                                             </div>
                                             <table border={1} id="gcp-table">
                                                 <tbody>

@@ -79,6 +79,7 @@ export const MultiSelectCellRenderer = ({ value, api, colDef, data }) => {
                         border: 'none',
                         cursor: 'pointer',
                     }}
+                    disabled={colDef?.disabled ? true : false}
                 >
                     <FontAwesomeIcon icon={faTimesCircle} color="gray" />
                 </button>

@@ -88,7 +88,8 @@ const SRFHLD = () => {
     }, [localState])
 
     useEffect(() => {
-        if ((location.pathname.includes('group') || !srfDetails?.isActionBtnEnableFlag) || StatusName === 'Closed') {
+        if ((location.pathname.includes('group') || !srfDetails?.isActionBtnEnableFlag)
+            || StatusName === 'Closed') {
             setHideActions(true);
         }
         else {
@@ -222,11 +223,12 @@ const SRFHLD = () => {
 
     const handleFinancialModal = (data) => {
         const { IntegrationID, SRFNumber, ServiceInfoID, SiteInfoID,
-            SiteSeq, SRFWorkFlowStatus } = data;
+            SiteSeq } = data;
         setSelectedCost({
             IntegrationID,
             SRFNumber, ServiceInfoID, SiteInfoID, SiteSeq,
-            SRFWorkFlowStatus, GroupName: localState?.GroupName
+            SRFWorkFlowStatus:srfDetails?.StatusName, //Main status
+             GroupName: localState?.GroupName
         });
         setShowFinancialModal(true);
     }
@@ -501,7 +503,7 @@ const SRFHLD = () => {
                                                         topActionButtons={(!hideActions || (location.pathname.includes('outbox') && srfDetails?.StatusName !== 'HLD')) && <Button color="primary" onClick={handleAddReview}>Add Group</Button>}
                                                         refId={'srf-review-cost'}
                                                         data={hldReviewCostList}
-                                                        dataprops={review_cost_columns_hld(handleReviewCostRowClick, handleReviewerAction, (!hideActions || location.pathname.includes('outbox')) && srfDetails?.StatusName !== 'HLD')}
+                                                        dataprops={review_cost_columns_hld(handleReviewCostRowClick, handleReviewerAction, (!hideActions || location.pathname.includes('outbox')))} // && srfDetails?.StatusName !== 'HLD' this condition is not needed for hld case
                                                         paginated={false}
                                                         itemsPerPage={10}
                                                         searchable={false}

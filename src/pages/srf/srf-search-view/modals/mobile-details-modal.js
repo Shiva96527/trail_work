@@ -28,6 +28,7 @@ const MobileDetailsModal = (
     const { srfDropdownOptions } = useSelector(state => state?.globalSlice);
     const { upload, viewFile, deleteFile } = useFileUpload();
     const [hasNewFile, setHasNewFile] = useState(false);
+    const disableFormCondition = (disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ';
 
     const defaultValues = {
         LineItemId: selectedMobileDetails?.LineItemId || '',
@@ -77,7 +78,7 @@ const MobileDetailsModal = (
     }
 
     const handleDeleteFile = () => {
-        if ((disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ') return;
+        if (disableFormCondition) return;
         setValue('MobileFileUpload', '');
         setValue('fileDeleted', true);
     }
@@ -90,38 +91,38 @@ const MobileDetailsModal = (
                     <Card className="card_outer_padding">
                         <CardBody>
                             <form>
-                                <fieldset disabled={(disableForm || !isManualCreatorRole || !isActionBtnEnableFlag || !isEnableAddUpdateBtnFlag) || isChannel === 'CPQ'}>
-                                    <Row>
-                                        <Col md={4}>
-                                            <FormInput
-                                                label="Line Item ID"
-                                                name="LineItemId"
-                                                control={control}
-                                                errors={errors}
-                                                disabled
-                                            />
-                                        </Col>
-                                        <Col md={4}>
-                                            {(!attachments?.['MobileFileUpload'] || getValues('fileDeleted')) ? <FormInputFile
-                                                label="Data File Upload"
-                                                name="MobileFileUpload"
-                                                type="file"
-                                                control={control}
-                                                errors={errors}
-                                                onChange={(e) => {
-                                                    if (e.target.files[0]) {
-                                                        setHasNewFile(true);
-                                                    } else {
-                                                        setHasNewFile(false);
-                                                    }
-                                                }}
-                                            />
-                                                :
-                                                <><span className="link-style" onClick={() => viewFile(getValues('MobileFileUpload'))}>{getValues('MobileFileUpload')?.FileName}</span>
-                                                    <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} /></>}
-                                        </Col>
-                                    </Row>
-                                    <hr />
+                                <Row>
+                                    <Col md={4}>
+                                        <FormInput
+                                            label="Line Item ID"
+                                            name="LineItemId"
+                                            control={control}
+                                            errors={errors}
+                                            disabled
+                                        />
+                                    </Col>
+                                    <Col md={4}>
+                                        {(!attachments?.['MobileFileUpload'] || getValues('fileDeleted')) ? <FormInputFile
+                                            label="Data File Upload"
+                                            name="MobileFileUpload"
+                                            type="file"
+                                            control={control}
+                                            errors={errors}
+                                            onChange={(e) => {
+                                                if (e.target.files[0]) {
+                                                    setHasNewFile(true);
+                                                } else {
+                                                    setHasNewFile(false);
+                                                }
+                                            }}
+                                        />
+                                            :
+                                            <><span className="link-style" onClick={() => viewFile(getValues('MobileFileUpload'))}>{getValues('MobileFileUpload')?.FileName}</span>
+                                                {!disableFormCondition && <FontAwesomeIcon icon={faTrash} color="red" onClick={handleDeleteFile} fontSize={'12px'} cursor={'pointer'} />}</>}
+                                    </Col>
+                                </Row>
+                                <hr />
+                                <fieldset disabled={disableFormCondition}>
                                     <Row>
                                         <Col md={6}>
                                             <FormDropdown

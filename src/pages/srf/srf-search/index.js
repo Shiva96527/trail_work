@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from "react";
 import { getSrfSearchHTTP } from "../../../services/srf-service";
 import { toast } from "react-toastify";
 import { group_columns } from "./config/columns";
-import { DropdownList, Multiselect } from "react-widgets";
+import { DatePicker, DropdownList, Multiselect } from "react-widgets";
 import { useNavigate } from "react-router-dom";
 import useDropdownFilter from "../../../shared/hooks/dropdownFilterHook";
 const initialState = {
@@ -14,7 +14,9 @@ const initialState = {
     opportunity: '',
     status: '',
     group: '',
-    serviceType: []
+    serviceType: [],
+    StartDate: null,
+    EndDate: null
 }
 const SrfSearch = () => {
     const navigate = useNavigate();
@@ -52,6 +54,8 @@ const SrfSearch = () => {
             OpportunityCRMID: state?.opportunity,
             StatusName: state?.status,
             ServiceType: state?.serviceType?.join(','),
+            StartDate: state?.StartDate,
+            EndDate: state?.EndDate,
             Action: "Search",
             LoginUIID: sessionStorage.getItem('uiid')
         }
@@ -184,13 +188,23 @@ const SrfSearch = () => {
                                 <Col md={3}>
                                     <FormGroup>
                                         <Label>Submitted Start Date</Label>
-                                        <Input type="date" />
+                                        <DatePicker
+                                            defaultValue={new Date()}
+                                            valueEditFormat={{ dateStyle: "short" }}
+                                            valueDisplayFormat={{ dateStyle: "medium" }}
+                                            onChange={(date) => handleChange({ target: { name: 'StartDate', value: date } })}
+                                        />
                                     </FormGroup>
                                 </Col>
                                 <Col md={3}>
                                     <FormGroup>
                                         <Label>Submitted End Date</Label>
-                                        <Input type="date" />
+                                        <DatePicker
+                                            defaultValue={new Date()}
+                                            valueEditFormat={{ dateStyle: "short" }}
+                                            valueDisplayFormat={{ dateStyle: "medium" }}
+                                            onChange={(date) => handleChange({ target: { name: 'EndDate', value: date } })}
+                                        />
                                     </FormGroup>
                                 </Col>
                             </Row>
