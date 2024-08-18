@@ -32,7 +32,7 @@ import Swal from "sweetalert2";
 import { getWorkbook, populateGrid } from "./config/getDataFromExcel";
 import site_address_template from '../../../assets/site_address_template.xlsx';
 import XLSX from 'xlsx';
-
+import moment from "moment";
 const defaultValues = {
     SRFNumber: '',
     OpportunityCRMID: '',
@@ -119,7 +119,10 @@ const InboxSearchView = () => {
     generateSrfWatch('TypeofService');
     generateSrfWatch('IntegrationID');
     generateSrfWatch('SRFNumber');
-    const [gcpSyncFlag, setGCPSyncFlag] = useState(false);
+    const [gcpSyncFlag, setGCPSyncFlag] = useState(false);    
+    const currDateTime = moment(new Date()).format('YYYY-MM-DD hh:mm A')
+    const [gcpDownloadFile, setgcpDownloadFile] = useState('');
+
 
     useEffect(() => {
         if (state) {
@@ -1306,10 +1309,10 @@ const InboxSearchView = () => {
                                     {open.includes('12') ? <>
                                         <Row>
                                             <Col md={2}>
-                                                <Label>Data Preparation</Label>
+                                                <Label>Data Preparation for GCP Integration</Label>
                                             </Col>
                                             <Col md={3}>
-                                                <a href={site_address_template} rel="noreferrer" download={"site_address_template"} target="_blank">Download Template</a>
+                                                <a href={site_address_template} rel="noreferrer" download={"site_address_template"} target="_blank">GCP Download Template</a>
                                             </Col>
                                         </Row><br />
                                         <Row>
@@ -1322,16 +1325,17 @@ const InboxSearchView = () => {
                                                
                                                  {/* <span className={fileUploadMessage.type === 'success' ? 'file-upload-message-success' : 'file-upload-message-error'}>{fileUploadMessage.message}</span> */}
                                             </Col>
-                                            <span style={{ color: "red", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note:  Please make sure the uploaded Latitude & Longitude does not contains any special characters like  (!@#$%^&*()"<>?/\[],)  and no wordings/letters. The Latitude and Longitude has to be floating decimal values'}</span>
+                                            <span style={{ color: "red", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note: Please make sure the uploaded Latitude & Longitude does not contains any special characters like  (!@#$%^&*()"<>?/\[],)  and no wordings/letters. The Latitude and Longitude has to be floating decimal values'}</span>
                                             {                                                
                                                 // gcpSyncFlag === true &&
-                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>System will process the GCP integration in the scheduler. Upon sync, system will send the email notification for further action.</span>
+                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>Note: System will process the GCP integration in the scheduler. Upon sync, system will send the email notification for further action.</span>
                                             }
+                                            <span style={{ color: "green", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note: If the Indoor RSRP is >-110 then Coverage is Good (Green colour) and If the Indoor RSRP is <=-110 then Coverage is Poor (Red  colour). If the Blended RSRP is >-107 then Coverage is Good (Green colour) and If the Blended RSRP is <=-107 then Coverage is Poor (Red  colour)'}</span>
                                             <span className="required">{gcpColumnsError}</span>
                                         </Row><br />
                                         {gcpData?.length > 0 ? <Row>
                                             <div className="pull-right">
-                                                <Button color="primary" onClick={() => exportToExcel('gcp-table', 'download.xlsx')}>Export</Button>
+                                                <Button color="primary" onClick={() => exportToExcel('gcp-table', "GCPMobileDownload "+currDateTime+'.xlsx')}>Export</Button>
                                             </div>
                                             <table border={1} id="gcp-table">
                                                 <tbody>
