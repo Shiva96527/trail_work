@@ -49,8 +49,7 @@ const Login = (props) => {
         try {
             const { data } = await authenticateHTTP(payload);
             const { statusCode, statusMessage, Myosstoken, version, data: resultData } = data;
-            debugger;
-
+           
             if (statusCode === 200) {
                 if (version === appVersion) {
                     sessionStorage.setItem('token', Myosstoken);
