@@ -110,7 +110,7 @@ const SrfGroup = () => {
         setSelectedGroup(null);
     }
 
-    const handleAssignmentAction = async (data, selecteddata) => {
+    const handleAssignmentAction = async (data, selecteddata,type) => {
         const payload = {
             LoginUIID: sessionStorage.getItem('uiid'),
             SRFNumber: selecteddata?.SRFNumber,
@@ -125,6 +125,11 @@ const SrfGroup = () => {
         } else if (data?.fromModule === 'srfgroup-me') {
             payload['AssignUser'] = userInfo?.user?.DisplayName;
             payload['Action'] = 'Inbox';
+        }
+        if(type==='Update BizVertical')
+        {
+            payload['BizVertical'] = data?.bizVertical;
+            payload['Action'] = 'Update BizVertical';
         }
         try {
             const { data: { statusCode, statusMessage } } = await assignSRFHTTP(payload);
