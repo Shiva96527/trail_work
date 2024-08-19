@@ -1328,9 +1328,13 @@ const InboxSearchView = () => {
                                             <span style={{ color: "red", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note: Please make sure the uploaded Latitude & Longitude does not contains any special characters like  (!@#$%^&*()"<>?/\[],)  and no wordings/letters. The Latitude and Longitude has to be floating decimal values'}</span>
                                             {                                                
                                                 // gcpSyncFlag === true &&
-                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>Note: System will process the GCP integration in the scheduler. Upon sync, system will send the email notification for further action.</span>
+                                                <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>Note: System will processthe GCP integration in the scheduler. Upon sync, system will send the email notification for further action.</span>
                                             }
-                                            <span style={{ color: "green", fontWeight: "bold", fontSize: "10px", fontStyle: 'italic' }}>{'Note: If the Indoor RSRP is >-110 then Coverage is Good (Green colour) and If the Indoor RSRP is <=-110 then Coverage is Poor (Red  colour). If the Blended RSRP is >-107 then Coverage is Good (Green colour) and If the Blended RSRP is <=-107 then Coverage is Poor (Red  colour)'}</span>
+                                            <span style={{ color: "blue", fontWeight: "bold", fontSize: "10px"}}><span style={{fontWeight: "bold"}}> Note:</span> If the Indoor RSRP is greather than -110 then Coverage is <span style={{ color: "green"}}>Good.</span><br></br>
+                                            If the Indoor RSRP is less than or equal -110 then Coverage is <span style={{ color: "red"}}>Poor</span>.<br></br>
+                                            If the Blended RSRP is greater than -107 then Coverage is <span style={{ color: "green"}}>Good</span>.<br></br>
+                                            If the Blended RSRP is less than or equal -107 then Coverage is <span style={{ color: "red"}}>Poor</span>.
+                                            </span>
                                             <span className="required">{gcpColumnsError}</span>
                                         </Row><br />
                                         {gcpData?.length > 0 ? <Row>
