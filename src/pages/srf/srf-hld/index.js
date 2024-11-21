@@ -3,7 +3,7 @@ import { additional_info_columns, email_log_columns, financial_info_columns, rev
 import { cpqlog_columns } from "../srf-search-view/config/columns";
 import { useEffect, useRef, useState } from "react";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { getSrfByIdHTTP, getSrfHLDsHTTP, getSrfMailLogsHTTP, srfDeleteAttachmentHTTP, srfSaveWorkflowHTTP, srfUploadAttachmentHTTP, updateSrfWorkflowHTTP } from "../../../services/srf-service";
+import { getSrfByIdHTTP, getSrfHLDsHTTP, getSrfMailLogsHTTP, srfDeleteAttachmentHTTP, srfSaveWorkflowHTTP, srfUploadAttachmentHTTP, updateSrfWorkflowHTTP,SrfWMCPQCostUpdateAPI } from "../../../services/srf-service";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import SrfFinancialModal from "./financial-modal";
@@ -341,6 +341,39 @@ const SRFHLD = () => {
         }
     }
 
+    const cpqCostRejectHandler = async (data, action) => {
+        
+        
+        if (action === 'Reject to CPQ' || action === 'Reject to MPN') {
+            if (!rejectRemarks) {
+                setRemarksError('Please enter remarks');
+                return;
+            }        }
+      
+        const payload = {           
+            Action: action,
+            WorkflowId: localState?.WorkflowId,
+            ApiKey: "e23aef41-7ac0-41d1-80f9-90e7a08a6a00",
+            SRFReferenceNumber: localState?.SRFNumber,
+            IntegrationID: localState?.IntegrationID,
+            SRF_UserID: sessionStorage.getItem('uiid'),
+            rejectremarks: rejectRemarks
+        };
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
+                toast.success(statusMessage);
+                if (action !== 'Save Additional Info') {
+                    navigate(-1);
+                }
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
+    }
+
     const handleExpansion = (type) => {
         setOpen([]);
         if (type === 'all') {
@@ -651,7 +684,7 @@ const SRFHLD = () => {
                                     </fieldset>
                                 </AccordionBody>
                             </AccordionItem>
-                            {(WFStatusCode === 4 && srfDetails?.StatusName === 'HLD' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
+                            {/* {(WFStatusCode === 4 && srfDetails?.StatusName === 'HLD' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
                                 <AccordionHeader targetId="4"><strong>Reject SRF</strong></AccordionHeader>
                                 <AccordionBody accordionId="4">
                                     <Row>
@@ -673,12 +706,43 @@ const SRFHLD = () => {
                                     {location.pathname.includes('inbox') &&
                                         <div>
                                             {
-                                                <Button color="danger" onClick={() => workFlowSave(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
+                                                <Button color="danger" onClick={() => cpqCostRejectHandler(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
+                                            }
+                                        </div>}
+                                </AccordionBody>
+                            </AccordionItem> : null} */}
+                             {((WFStatusCode===4 ||WFStatusCode===3) && (srfDetails?.StatusName==='HLD'||srfDetails?.StatusName==='HLD (Pending)') && srfDetails?.IsChannel === 'CPQ' && (location.pathname.includes('inbox')||location.pathname.includes('outbox'))) ? <AccordionItem>
+                            {/* {([3,4].includes(WFStatusCode) && ['HLD','HLD (Pending)'].includes(srfDetails?.StatusName) && srfDetails?.IsChannel === 'CPQ' && ['inbox','outbox'].includes(location.pathname) )? <AccordionItem> */}
+                                <AccordionHeader targetId="4"><strong>Reject SRF</strong></AccordionHeader>
+                                <AccordionBody accordionId="4">
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label for="Remarks">Remarks<span className="required">*</span></Label>
+                                                <Input
+                                                    type="textarea"
+                                                    rows={4}
+                                                    id="Remarks"
+                                                    // disabled={!location.pathname.includes('inbox')}
+                                                   // disabled={!['inbox','outbox'].includes(location.pathname)}
+                                                    value={rejectRemarks}
+                                                    onChange={(e) => setRejectRemarks(e.target.value)}
+                                                />
+                                                {remarksError && <span className="required">{remarksError}</span>}
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                    {(location.pathname.includes('inbox')||location.pathname.includes('outbox')) &&
+                                        <div>
+                                            {
+                                                <Button color="danger" onClick={() => cpqCostRejectHandler(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
                                             }
                                         </div>}
                                 </AccordionBody>
                             </AccordionItem> : null}
-                            {(WFStatusCode === 3 && srfDetails?.StatusName === 'HLD Cost Pending' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
+
+                            {/* Reject option only for Reviewer */}
+                            {/* {(WFStatusCode === 3 && srfDetails?.StatusName === 'HLD Cost Pending' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
                                 <AccordionHeader targetId="5"><strong>Reject SRF</strong></AccordionHeader>
                                 <AccordionBody accordionId="5">
                                     <Row>
@@ -705,7 +769,7 @@ const SRFHLD = () => {
                                             }&nbsp;
                                         </div>}
                                 </AccordionBody>
-                            </AccordionItem> : null}
+                            </AccordionItem> : null} */}
                             <AccordionItem>
                                 <AccordionHeader targetId="6"><strong>Workflow</strong></AccordionHeader>
                                 <AccordionBody accordionId="6">

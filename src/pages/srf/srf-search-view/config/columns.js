@@ -297,6 +297,7 @@ const handleTooltipModal = (content) => {
 
 export const neptune_log_columns = [
     { headerName: 'Channel Reference ID', field: 'SRFChannelReferenceId', minWidth: 400 },
+    { headerName: 'URL', field: 'URL', minWidth: 250 },
     {
         headerName: 'Parameters', field: 'Parameters', minWidth: 250, cellRenderer: (v) => (
             <>
@@ -332,6 +333,7 @@ export const neptune_log_columns = [
 export const cpqlog_columns = () => {
     return [
         { headerName: 'Channel Reference ID', field: 'SRFChannelReferenceId', minWidth: 400 },
+        { headerName: 'URL', field: 'URL', minWidth: 500 },
         {
             headerName: 'Parameters', field: 'Parameters', minWidth: 250, cellRenderer: (v) => (
                 <>
