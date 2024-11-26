@@ -53,7 +53,8 @@ const SRFHLD = () => {
             TechnicalRiskAssessment: '',
             Timelines: '',
             hldFile: null,
-            financialFile: null
+            financialFile: null,
+            Remarks:''
         }
     })
 
@@ -149,7 +150,7 @@ const SRFHLD = () => {
             const { data: { data: resultData, statusCode, statusMessage } } = await getSrfByIdHTTP(payload);
             if (statusCode === 200) {
                 const { IsChannel, StatusName, ServiceType, WFStatusCode, AssignedTo } = resultData?.srfActionWorkFlowResponse || {};
-                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = resultData?.srfCreateInfoResponse;
+                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = resultData?.srfCreateInfoResponse;
                 const attachments = { hldFile: null, financialFile: null };
                 resultData?.SRFAttachments?.forEach(f => {
                     const { ColumnName } = f;
@@ -164,6 +165,7 @@ const SRFHLD = () => {
                 setValue('HighLevelSolution', HighLevelSolution);
                 setValue('TechnicalRiskAssessment', TechnicalRiskAssessment);
                 setValue('Timelines', Timelines);
+                setValue('Remarks', Remarks);
                 setValue('hldFile', attachments?.hldFile || null);
                 setValue('financialFile', attachments?.financialFile || null);
                 //setAdditionalInfo({ ...additionalInfo, ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines, hldFile: attachments?.hldFile ? attachments?.hldFile : null, financialFile: attachments?.financialFile ? attachments?.financialFile : null });
@@ -299,7 +301,7 @@ const SRFHLD = () => {
     }
 
     const workFlowSave = async (data, action) => {
-        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = data;
+        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = data;
         const payload = {
             ExecutiveSummary,
             HighLevelSolution,
@@ -307,12 +309,14 @@ const SRFHLD = () => {
             SRFNumber: localState?.SRFNumber,
             TechnicalRiskAssessment,
             Timelines,
+            Remarks,
             WorkflowId: localState?.WorkflowId,
             srfCreateInfoResponse: {
                 ExecutiveSummary,
                 HighLevelSolution,
                 TechnicalRiskAssessment,
-                Timelines
+                Timelines,
+                Remarks
             },
             srfLLDCatalogueResponse: ''
         };
@@ -440,7 +444,18 @@ const SRFHLD = () => {
             if (result.isConfirmed) {
                 if (action === 'Submit for Review') {
                     handleSubmit((data) => workFlowSave(data, action))();
-                } else {
+                }
+                if (action === 'Not Involved') {
+                    debugger;
+                var remarks=getValues('Remarks')
+                if(remarks===undefined||remarks===null||remarks==='')
+                {
+                    toast.error('Please enter remarks');
+                    return;
+                }
+                workFlowSave({ ...getValues() }, action);
+                }
+                 else {
                     workFlowSave({ ...getValues() }, action);
                 }
             }
@@ -641,6 +656,18 @@ const SRFHLD = () => {
                                                                     <FontAwesomeIcon icon={faTrash} color="red" onClick={() => handleDeleteFile('financialFile')} fontSize={'12px'} cursor={'pointer'} /></>
                                                             }
                                                         </FormGroup>
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <FormInput
+                                                            label="Remarks"
+                                                            name="Remarks"
+                                                            type="textarea"
+                                                            rows={4}
+                                                            disabled={hideActions}
+                                                            rules={{ required: 'Remarks is required' }}
+                                                            control={control}
+                                                            errors={errors}
+                                                        />
                                                     </Col>
                                                 </Row>
                                             </> :
