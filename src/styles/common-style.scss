@@ -1,0 +1,310 @@
+.card_outer_padding {
+    padding: 10px;
+    border: none !important;
+
+    .card-title {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.card-header,
+.card-title {
+    color: darkblue !important;
+    text-transform: none !important;
+    font-weight: bold;
+    font-size: 20px !important;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 0px !important;
+}
+
+.accordions-card-body {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.popover-header {
+    background: darkblue !important;
+    color: #fff !important;
+}
+
+.link-style {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: underline;
+    color: #0d6efd;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.form-control {
+    display: block !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
+}
+
+.form-control:disabled {
+    background-color: whitesmoke !important;
+    opacity: 1;
+}
+
+.required {
+    color: red;
+}
+
+.pull-right {
+    text-align: right;
+}
+
+#constant {
+    .accordion-button {
+        padding: 0px !important;
+    }
+
+    .accordion-item {
+        border-radius: 0px !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .accordion-item:first-of-type .accordion-button {
+        border-top-left-radius: 0px !important;
+        border-top-right-radius: 0px !important;
+    }
+
+    .accordion-button:focus {
+        border-color: none !important;
+        box-shadow: none !important;
+    }
+}
+
+.font-awersome {
+    cursor: pointer;
+}
+
+.custom-tooltip {
+    max-width: 300px;
+    z-index: 100000 !important
+}
+
+.auth-layout-container {
+    position: relative;
+    /* Ensure proper positioning for children */
+}
+
+.form-control {
+    display: block !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 13px !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
+}
+
+.form-label {
+    font-size: 13px !important;
+}
+
+.btn {
+    font-size: 13px !important;
+}
+
+.rw-widget-picker {
+    min-height: 31px !important;
+}
+
+.rw-widget {
+    font-size: 15px !important;
+}
+
+.srf-inner-title {
+    color: rgb(63, 81, 181);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 22px;
+    margin-bottom: 16px;
+}
+
+.accordion-header {
+
+    b,
+    strong {
+        color: rgb(63, 81, 181) !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        line-height: 22px !important;
+    }
+}
+
+.style-cursor {
+    cursor: pointer;
+}
+
+.accordion-button {
+    background-color: whitesmoke !important;
+    /* Remove expanded color */
+    border: none !important;
+    /* Remove border */
+    padding: 10px !important;
+}
+
+.accordion-button:focus {
+    box-shadow: none !important;
+}
+
+.fa-cursor {
+    cursor: pointer;
+}
+
+.accordion-body {
+    padding: 10px !important;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    /* Change the color as desired */
+    margin: 20px 0;
+    /* Adjust margin as needed */
+}
+
+input[type="date"] {
+    line-height: 1.5 !important;
+}
+
+.custom-multiselect-container {
+    z-index: 10000 !important;
+}
+
+.btn-primary {
+    background-color: #293897 !important;
+    border: #293897 !important;
+}
+
+.channel-highlight {
+    border: 2px solid green !important;
+}
+
+.font-awesome {
+    cursor: pointer;
+}
+
+.custom-modal {
+    max-width: 90%;
+    margin: 1.75rem auto;
+}
+
+/* Set maximum height and enable vertical scroll */
+.custom-modal .modal-body {
+    max-height: 82vh;
+    /* Adjust the value as needed */
+    overflow-y: auto;
+    padding-right: 17px;
+    /* Increase this value if scrollbar appears */
+}
+
+.swal2-shown .swal2-height-auto {
+    padding-right: 0px !important;
+}
+
+body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+    overflow: visible !important;
+}
+
+.srfhld-title-container {
+    display: flex;
+    justify-content: space-between;
+    /* Align items in a single row with space between them */
+    align-items: center;
+    /* Center-align items vertically */
+}
+
+.srfhld-title-pull-right {
+    display: flex;
+    /* Display its children in a row */
+    align-items: center;
+    /* Center-align the children vertically */
+}
+
+.card-title {
+    color: darkblue !important;
+    text-transform: none !important;
+    font-weight: bold;
+    font-size: 20px !important;
+}
+
+.login-panel {
+    border-top-width: 1ex !important;
+    border-top-color: #293897 !important;
+}
+
+.fullPage {
+    margin-top: 5rem;
+    padding: 45px;
+}
+
+.container,
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl,
+.container-xxl {
+    padding-right: 0px !important;
+}
+
+@media only screen and (max-width: 992px) {
+    .accordion-button {
+        overflow-x: scroll;
+    }
+}
+
+#gcp-table {
+    table {
+        border-collapse: collapse;
+        /* Ensures borders are not doubled */
+        width: 100%;
+        /* Optional: Sets table width to 100% */
+        margin: 10px;
+    }
+
+    tr,
+    td {
+        border: 1px solid lightgray;
+        font-size: 12px;
+        padding: 8px;
+        text-align: left;
+        /* Adds a border to both <tr> and <td> */
+    }
+
+    .gcp-custom-table-header {
+        background: rgb(63, 81, 181) !important;
+        color: #fff;
+        text-align: center;
+        height: 40px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+}
+
+fieldset:disabled {
+    pointer-events: none;
+}

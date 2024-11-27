@@ -1,0 +1,119 @@
+/* Add this CSS to your component or import it in your component file */
+/* You can also create a separate CSS file and import it */
+
+/* Style AG Grid container */
+.ag-theme-balham {
+    font-family: 'Arial, sans-serif';
+    box-shadow: none;
+    border: 1px solid #d9d9d9 !important;
+}
+
+/* Header Style */
+.ag-header {
+    background-color: rgb(63, 81, 181) !important;
+    color: #fff !important;
+    border-bottom: 1px solid #d9d9d9 !important;
+}
+
+.ag-header-cell {
+    border-right: 1px solid #d9d9d9 !important;
+    border-bottom: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.ag-cell-wrapper {
+    line-height: 1.5 !important;
+}
+
+.ag-header-cell-label {
+    font-size: 12px !important;
+    white-space: normal !important;
+    /* Allow word wrap */
+    overflow: visible !important;
+    /* Ensure content is fully visible */
+    text-overflow: clip !important;
+    /* Clip overflow content */
+}
+
+.ag-cell-value {
+    font-size: 12px !important;
+}
+
+.ag-header-row .ag-header-row-column {
+    background: aliceblue !important;
+}
+
+/* Row Style */
+.ag-row {
+    border-bottom: 1px solid #d9d9d9 !important;
+}
+
+/* Hover State */
+.ag-row-hover {
+    background-color: #fafafa;
+}
+
+/* Selected Row */
+.ag-row-selected {
+    background-color: #e6f7ff !important;
+}
+
+/* Cell Style */
+.ag-cell {
+    padding: 8px;
+    border-bottom: none;
+}
+
+/* Cell Hover State */
+.ag-cell-hover {
+    background-color: #e6f7ff !important;
+}
+
+/* Pagination Style */
+.ag-paging-panel {
+    background-color: #fafafa !important;
+    border-top: 1px solid #d9d9d9 !important;
+}
+
+.ag-paging-button {
+    color: #333;
+}
+
+.ag-header-cell-text {
+    color: #fff !important;
+}
+
+
+.ag-center-cols-viewport {
+    min-height: 40px !important;
+}
+
+.ag-root-wrapper {
+    overflow: visible !important;
+}
+
+.ag-cell {
+    overflow: visible !important;
+}
+
+#neptune-ag-grid {
+    .rw-popup-container {
+        position: relative !important;
+    }
+}
+
+.ag-icon-menu {
+    color: #fff !important;
+}
+
+.ag-header-group-cell {
+    justify-content: center !important;
+    color: #fff !important;
+}
+
+.ag-body{
+    min-height: 50px !important;
+}
+
+/* Customize as needed based on your Ant Design theme */

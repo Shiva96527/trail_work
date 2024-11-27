@@ -1,0 +1,101 @@
+#after-login-header {
+    background-color: #293897 !important;
+
+    .nav-item {
+        font-size: 14px;
+    }
+
+    .nav-link {
+        color: #fff !important;
+    }
+
+    .nav-link:hover {
+        color: #fff;
+    }
+
+    .dropdown-menu {
+        top: 32px;
+        background: #293897 !important;
+        font-size: 14px !important;
+    }
+
+    .dropdown-item {
+        color: #fff !important;
+    }
+
+    .dropdown-item:hover {
+        background: #230bfd !important;
+    }
+
+    .dropdown-menu::before {
+        display: none;
+    }
+
+    .dropdown-menu::after {
+        display: none;
+    }
+
+    .navbar {
+        padding: 0px !important;
+        height: 45px !important
+    }
+
+    .navbar-brand {
+        height: auto !important;
+    }
+
+    .ml-auto {
+        margin: 0 !important;
+    }
+
+    .left-menu {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .container-fluid {
+        padding-left: 0px !important;
+    }
+
+    position: sticky;
+    /* Make the header sticky */
+    top: 0;
+    /* Stick the header to the top of the viewport */
+    z-index: 1000;
+    /* Ensure the header is above other content */
+    /* Add additional styling as needed */
+
+    .nav-active {
+        color: lawngreen !important;
+        text-decoration: underline !important;
+    }
+
+    .navbar-collapse {
+        background: #293897;
+        text-align: center;
+    }
+
+    .navbar-nav .dropdown-menu {
+        position: absolute;
+    }
+
+    .dropdown-menu[data-bs-popper] {
+        left: 50%;
+    }
+
+    @media only screen and (max-width: 992px) {
+        .left-menu {
+            display: inline;
+        }
+
+        .collapse:not(.show) {
+            display: none !important;
+        }
+    }
+
+    @media only screen and (min-width: 993px) {
+        .left-menu {
+            display: flex;
+        }
+    }
+}
