@@ -24,7 +24,7 @@ const dummyData = [
     vendor: "NEC",
   },
   {
-    quoteNumber: "QT_02/2024/06/01",
+    quoteNumber: "QT_02/2024/06/02",
     assignee: "Prem02",
     department: "NETWORK ROLLOUT",
     opportunityID: "OPP_104580",
@@ -38,7 +38,7 @@ const dummyData = [
     vendor: "NEC",
   },
   {
-    quoteNumber: "QT_02/2024/06/03",    
+    quoteNumber: "QT_03/2024/06/03",    
     assignee: "Prem03",
     department: "NETWORK ROLLOUT",
     opportunityID: "OPP_104580",

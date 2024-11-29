@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Button, Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
 
 const QuoteReviewPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
+  const navigate = useNavigate();
   return (
     <div>
       {/* Title Section */}
@@ -27,6 +28,23 @@ const QuoteReviewPage = () => {
         }}
       >
         Quotation details
+        {/* Back Button positioned at the top right */}
+   <Button
+            color="primary"
+            onClick={() => navigate(-1)} // Go back to the previous page
+            style={{
+              position: "absolute", // Positioning the button
+              top: "70px",
+              right: "20px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              border: "none", // Removed border
+              outline: "none",
+              boxShadow: "none", // Removed box-shadow
+            }}
+          >
+            Back
+          </Button>
       </div>
       
       <div style={{ fontSize: '15px', padding: '10px 15px', color:'black', fontWeight:'normal' }}>

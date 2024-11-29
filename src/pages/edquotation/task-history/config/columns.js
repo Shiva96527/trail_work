@@ -31,21 +31,21 @@ export const inboxColumns = (handleAssignment) => [
       </>
     ),
   },
-  {
-    field: "srfNumber",
-    headerName: "SRF Number",
-    minWidth: 250,
-    cellStyle: { textAlign: "left", padding: "0px" },
-    cellRenderer: (v) => (
-      <span className="link-style">
-        {v.value}
-      </span>
-    ),
-  },
+  
   {
     field: "quoteNumber",
     headerName: "Quote Number",
     minWidth: 250,
+    cellStyle: { textAlign: "left", padding: "0px" },
+    cellRenderer: (v) => (
+      <span 
+        className="link-style"
+        style={{ cursor: "pointer" }} 
+        onClick={() => handleAssignment(v?.data, "others")} 
+      >
+        {v.value}
+      </span>
+    ),
   },
   {
     field: "assignee",
@@ -74,8 +74,14 @@ export const inboxColumns = (handleAssignment) => [
   },
   {
     field: "businessCaseNumber",
-    headerName: "Business Case Number",
+    headerName: "Business Case",
     minWidth: 230,
+  },
+  {
+    field: "srfNumber",
+    headerName: "SRF Number",
+    minWidth: 250,
+   
   },
   {
     field: "status",

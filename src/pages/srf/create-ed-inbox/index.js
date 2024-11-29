@@ -1,9 +1,8 @@
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Card, CardBody, CardTitle, Col, FormGroup, Input, Label, Row } from "reactstrap";
+import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Card, CardBody, CardTitle, Col, FormGroup, Input, Label, Row, Spinner } from "reactstrap";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { generateSrfHTTP } from "../../../services/srf-service";
 import { isAnyRequiredFieldEmpty } from "./config/schemas";
-import { Spinner } from 'reactstrap'; // Import Spinner from reactstrap
 import { useNavigate } from "react-router-dom";
 
 const generatedModel = {
@@ -66,7 +65,6 @@ const CreateSrfEdInbox = () => {
                         navigate('/neptune/edquotation/inbox');
                         console.log('All Records:', updatedRecords);  
                         return updatedRecords;
-                        
                     });
                 }
             } else {
@@ -77,14 +75,18 @@ const CreateSrfEdInbox = () => {
         }
 
         setIsLoading(false); 
-
         setGenerateSrfModel({ ...generatedModel });
     };
 
     return (
         <>
             <Card className="card_outer_padding">
-                <CardTitle>Create ED Quotation</CardTitle>
+                <div className="d-flex justify-content-between align-items-center">
+                    <CardTitle className="mx-auto">Create ED Quotation</CardTitle>
+                    <Button color="primary" onClick={() => navigate(-1)}>
+                        Back
+                    </Button>
+                </div>
                 <CardBody>
                     <div className="app-inner-layout__wrapper">
                         <Accordion flush open={open} toggle={toggle}>

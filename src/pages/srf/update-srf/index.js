@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 
 const UpdateSrfEdInbox = () => {
   const { state } = useLocation();
+  const navigate = useNavigate(); // Initialize navigate
   const [srfData, setSrfData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false); // Tracks if the update button was clicked
 
@@ -37,6 +38,7 @@ const UpdateSrfEdInbox = () => {
         margin: "40px auto", // Centers the card and ensures consistent spacing
         width: "90%",
         maxWidth: "1200px", // Restricts the card's maximum width
+        position: "relative", // To position the Back button absolutely inside the div
       }}
     >
       <Card style={{ border: "none" }}> {/* Removed border from the Card */}
@@ -110,6 +112,24 @@ const UpdateSrfEdInbox = () => {
               ))}
             </tbody>
           </Table>
+
+          {/* Back Button positioned at the top right */}
+          <Button
+            color="primary"
+            onClick={() => navigate(-1)} // Go back to the previous page
+            style={{
+              position: "absolute", // Positioning the button
+              top: "20px",
+              right: "20px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              border: "none", // Removed border
+              outline: "none",
+              boxShadow: "none", // Removed box-shadow
+            }}
+          >
+            Back
+          </Button>
 
           {/* Update Button */}
           <div style={{ textAlign: "center", marginTop: "30px" }}>

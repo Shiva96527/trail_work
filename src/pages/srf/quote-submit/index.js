@@ -3,32 +3,52 @@ import { Button, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Ta
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt, faDownload, faSave } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-
+import { useNavigate } from "react-router-dom";
 const QuoteSubmitPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const navigate = useNavigate();
 
   return (
     <div>
       {/* Title Section */}
       <div 
-        style={{
-          fontSize: '18px',
-          backgroundColor: '#293897',  
-          color: 'white',  
-          padding: '5px 100px', 
-          display: 'inline-block', 
-          marginTop: '30px', 
-          marginLeft: '15px',
-          borderTopLeftRadius: '10px',  
-          borderTopRightRadius: '10px', 
-          border: 'none', 
-          boxShadow: 'none',  
-          width: 'auto'  
-        }}
-      >
-        Quotation details
-      </div>
+  style={{
+    fontSize: '18px',
+    backgroundColor: '#293897',  
+    color: 'white',  
+    padding: '5px 100px', 
+    display: 'inline-block', 
+    marginTop: '30px', 
+    marginLeft: '15px',
+    borderTopLeftRadius: '10px',  
+    borderTopRightRadius: '10px', 
+    border: 'none', 
+    boxShadow: 'none',  
+    width: 'auto',
+    
+  }}
+>
+  Quotation details
+   {/* Back Button positioned at the top right */}
+   <Button
+            color="primary"
+            onClick={() => navigate(-1)} // Go back to the previous page
+            style={{
+              position: "absolute", // Positioning the button
+              top: "70px",
+              right: "20px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              border: "none", // Removed border
+              outline: "none",
+              boxShadow: "none", // Removed box-shadow
+            }}
+          >
+            Back
+          </Button>
+</div>
+
       
       <div style={{ fontSize: '15px', padding: '10px 15px', color:'black', fontWeight:'normal' }}>
         Survey Costing details
