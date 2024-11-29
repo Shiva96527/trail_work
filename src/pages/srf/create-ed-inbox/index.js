@@ -84,12 +84,12 @@ const CreateSrfEdInbox = () => {
     return (
         <>
             <Card className="card_outer_padding">
-                <CardTitle>Create SRF</CardTitle>
+                <CardTitle>Create ED Quotation</CardTitle>
                 <CardBody>
                     <div className="app-inner-layout__wrapper">
                         <Accordion flush open={open} toggle={toggle}>
                             <AccordionItem>
-                                <AccordionHeader targetId="1"><strong>SRF</strong></AccordionHeader>
+                                <AccordionHeader targetId="1"><strong>ED Quotation</strong></AccordionHeader>
                                 <AccordionBody accordionId="1">
                                     <Row>
                                         <Col md={3}>

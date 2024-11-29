@@ -32,8 +32,8 @@ export const inboxColumns = (handleAssignment) => [
     ),
   },
   {
-    field: "srfNumber",
-    headerName: "SRF Number",
+    field: "quoteNumber",
+    headerName: "Quote Number",
     minWidth: 250,
     cellStyle: { textAlign: "left", padding: "0px" },
     cellRenderer: (v) => (
@@ -41,11 +41,6 @@ export const inboxColumns = (handleAssignment) => [
         {v.value}
       </span>
     ),
-  },
-  {
-    field: "quoteNumber",
-    headerName: "Quote Number",
-    minWidth: 250,
   },
   {
     field: "assignee",

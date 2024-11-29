@@ -27,8 +27,8 @@ const columns = [
     ],
     [
       { label: "FIXCDS", key: "fixCDS" },
-      { label: "XXXX", key: "field2" },
-      { label: "XXXX", key: "field3" },
+      { label: "", key: "field2" },
+      { label: "", key: "field3" },
     ],
   ];
   
