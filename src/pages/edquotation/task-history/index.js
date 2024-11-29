@@ -179,12 +179,12 @@ const TableComponent = () => {
                   topActionButtons={< >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div style={{ display: 'inline-block' }}>
-                        <Button color="primary" size="sm" onClick={() => navigate('/neptune/srf/create-srf-ed-inbox')}>
+                        {/* <Button color="primary" size="sm" onClick={() => navigate('/neptune/srf/create-srf-ed-inbox')}>
                           <FontAwesomeIcon icon={faPlus} />
                         </Button>&nbsp;&nbsp;
                         <Button color="success" size="sm" onClick={toggleExcelModal}>
                           <FontAwesomeIcon icon={faFileExcel} style={{ fontSize: '15px' }}/>
-                        </Button>&nbsp;&nbsp;
+                        </Button>&nbsp;&nbsp; */}
                        
                         
                       </div>
@@ -203,7 +203,7 @@ const TableComponent = () => {
         </CardBody>
       </Card>
 
-      <Modal isOpen={excelModal} toggle={toggleExcelModal}>
+      {/* <Modal isOpen={excelModal} toggle={toggleExcelModal}>
         <ModalHeader toggle={toggleExcelModal}>
           <span style={{ flex: 1, textAlign: 'center' }}>Bulk Upload</span>
           <Button color="link" onClick={downloadTemplate} style={{ padding: '0' , color: '#293897'}}>
@@ -256,7 +256,7 @@ const TableComponent = () => {
             {loading ? <Spinner size="sm" color="light" /> : 'Submit'}
           </Button>
         </ModalFooter>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

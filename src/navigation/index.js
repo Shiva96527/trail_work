@@ -25,7 +25,7 @@ import UserGroupMapping from "../pages/general/user-group-mapping";
 import EdQuotationInbox from '../pages/edquotation/inbox';
 import TaskHistory from '../pages/edquotation/task-history';
 import MyGroup from '../pages/edquotation/my-group';
-import CreateSrfEdInbox from "../pages/srf/create-srf-ed-inbox"; 
+import CreateSrfEdInbox from "../pages/srf/create-ed-inbox"; 
 import UpdateSrfEdInbox from "../pages/srf/update-srf";
 import QuoteSubmitPage from "../pages/srf/quote-submit";
 import QuoteReviewPage from "../pages/srf/quote-review";
