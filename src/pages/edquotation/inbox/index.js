@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Card, CardBody, CardTitle, Col, Row, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faFileExcel, faDownload, faTrashAlt, faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faFileExcel, faDownload, faTrashAlt, faCloudUploadAlt, faCheckCircle, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { inboxColumns } from "./config/columns"; 
 import { useNavigate } from "react-router-dom";
@@ -184,6 +184,14 @@ const TableComponent = () => {
                         </Button>&nbsp;&nbsp;
                         <Button color="success" size="sm" onClick={toggleExcelModal}>
                           <FontAwesomeIcon icon={faFileExcel} style={{ fontSize: '15px' }}/>
+                        </Button>&nbsp;&nbsp;
+                       
+                        {/* Additional Submit Icons */}
+                        <Button color="secondary" size="sm" onClick={() => navigate('/neptune/srf/quotesubmit')}>
+                          <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: '15px' }} />
+                        </Button>&nbsp;&nbsp;
+                        <Button color="danger" size="sm" onClick={() => navigate('/neptune/srf/quotereview')}>
+                          <FontAwesomeIcon icon={faClipboardCheck} style={{ fontSize: '15px' }} />
                         </Button>&nbsp;&nbsp;
                       </div>
                     </div>

@@ -27,6 +27,8 @@ import TaskHistory from '../pages/edquotation/task-history';
 import MyGroup from '../pages/edquotation/my-group';
 import CreateSrfEdInbox from "../pages/srf/create-srf-ed-inbox"; 
 import UpdateSrfEdInbox from "../pages/srf/update-srf";
+import QuoteSubmitPage from "../pages/srf/quote-submit";
+import QuoteReviewPage from "../pages/srf/quote-review";
 
 export const approutes = (isAuth) => {
     const routes = [
@@ -73,8 +75,9 @@ export const approutes = (isAuth) => {
                 { path: '/neptune/edquotation/taskhistory', element: <TaskHistory /> },
                 { path: '/neptune/edquotation/mygroup', element: <MyGroup /> },
                 { path: '/neptune/srf/create-srf-ed-inbox', element: <CreateSrfEdInbox /> },
-                { path: '/neptune/srf/update-srf-ed-inbox/:srfNumber', element: <UpdateSrfEdInbox /> }
-         
+                { path: '/neptune/srf/update-srf-ed-inbox/:srfNumber', element: <UpdateSrfEdInbox /> },
+                { path: '/neptune/srf/quotesubmit', element: <QuoteSubmitPage /> },
+                { path: '/neptune/srf/quotereview', element: <QuoteReviewPage /> },
             ]
         }   
     ];
