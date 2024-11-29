@@ -10,6 +10,13 @@ const UpdateSrfEdInbox = () => {
   const [srfData, setSrfData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false); // Tracks if the update button was clicked
 
+  // Vendor options for the dropdown
+  const vendorOptions = [
+    { value: 'vendor1', label: 'Vendor 1' },
+    { value: 'vendor2', label: 'Vendor 2' },
+    { value: 'vendor3', label: 'Vendor 3' },
+  ];
+
   useEffect(() => {
     if (!state) toast.error("No SRF data found!");
   }, [state]);
@@ -56,6 +63,7 @@ const UpdateSrfEdInbox = () => {
               width: "100%",
               borderCollapse: "collapse",
               tableLayout: "fixed",
+              border: "1px solid black", // Set the table border to black
             }}
           >
             <tbody>
@@ -71,7 +79,7 @@ const UpdateSrfEdInbox = () => {
                           fontWeight: "bold",
                           textAlign: "center",
                           verticalAlign: "middle",
-                          border: "2px solid grey", // Border added here for each cell
+                          border: "1px solid black", // Black border for the table cells
                           padding: "10px",
                           width: "33.3%",
                         }}
@@ -85,26 +93,50 @@ const UpdateSrfEdInbox = () => {
                         style={{
                           textAlign: "center",
                           verticalAlign: "middle",
-                          border: "2px solid grey", // Border added here for each cell
+                          border: "1px solid black", // Black border for the table cells
                           padding: "10px",
                           width: "33.3%",
                         }}
                       >
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleInputChange(column.key, e.target.textContent.trim())
-                          }
-                          style={{
-                            display: "inline-block",
-                            width: "100%",
-                            textAlign: "center",
-                            outline: "none",
-                          }}
-                        >
-                          {srfData[column.key] || ""}
-                        </div>
+                        {column.key === 'vendor' ? (
+                          // Dropdown for vendor assignment
+                          <select
+                            value={srfData[column.key] || ''}
+                            onChange={(e) =>
+                              handleInputChange(column.key, e.target.value)
+                            }
+                            style={{
+                              textAlign: "center",
+                              outline: "none",
+                              padding: "8px", // Increased padding for better readability
+                              width: "100%",
+                              border: "1px solid lightgrey", // Light grey border for dropdown
+                            }}
+                          >
+                            <option value=""></option>
+                            {vendorOptions.map((vendor) => (
+                              <option key={vendor.value} value={vendor.value}>
+                                {vendor.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          // Default editable input for other fields
+                          <input
+                            type="text"
+                            value={srfData[column.key] || ""}
+                            onChange={(e) =>
+                              handleInputChange(column.key, e.target.value)
+                            }
+                            style={{
+                              textAlign: "center",
+                              width: "100%",
+                              outline: "none",
+                              padding: "8px", // Increased padding for input fields
+                              border: "1px solid lightgrey", // Light grey border for input fields
+                            }}
+                          />
+                        )}
                       </td>
                     </>
                   ))}
