@@ -25,6 +25,9 @@ import UserGroupMapping from "../pages/general/user-group-mapping";
 import EdQuotationInbox from '../pages/edquotation/inbox';
 import TaskHistory from '../pages/edquotation/task-history';
 import MyGroup from '../pages/edquotation/my-group';
+import CreateSrfEdInbox from "../pages/srf/create-srf-ed-inbox"; 
+import UpdateSrfEdInbox from "../pages/srf/update-srf";
+
 export const approutes = (isAuth) => {
     const routes = [
         {
@@ -66,11 +69,11 @@ export const approutes = (isAuth) => {
                 { path: '/neptune/srf/mygroup/view', element: <SrfSearchView /> },
                 { path: '/neptune/reports/srfreport', element: <SRFReport /> },
                 { path: '/neptune/general/usergroupmapping', element: <UserGroupMapping /> },
-               // Add routes for ED Quotation
-        { path: '/neptune/edquotation/inbox', element: <EdQuotationInbox /> },
-        { path: '/neptune/edquotation/taskhistory', element: <TaskHistory /> },
-        { path: '/neptune/edquotation/mygroup', element: <MyGroup /> },
-                
+                { path: '/neptune/edquotation/inbox', element: <EdQuotationInbox /> },
+                { path: '/neptune/edquotation/taskhistory', element: <TaskHistory /> },
+                { path: '/neptune/edquotation/mygroup', element: <MyGroup /> },
+                { path: '/neptune/srf/create-srf-ed-inbox', element: <CreateSrfEdInbox /> },
+                { path: '/neptune/srf/update-srf-ed-inbox/:srfNumber', element: <UpdateSrfEdInbox /> }
          
             ]
         }   
