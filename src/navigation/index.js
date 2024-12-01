@@ -29,6 +29,7 @@ import CreateSrfEdInbox from "../pages/srf/create-ed-inbox";
 import UpdateSrfEdInbox from "../pages/srf/update-srf";
 import QuoteSubmitPage from "../pages/srf/quote-submit";
 import QuoteReviewPage from "../pages/srf/quote-review";
+import VendorManagement from "../pages/admin/vendor-management"
 
 export const approutes = (isAuth) => {
     const routes = [
@@ -78,6 +79,7 @@ export const approutes = (isAuth) => {
                 { path: '/neptune/srf/update-srf-ed-inbox/:srfNumber', element: <UpdateSrfEdInbox /> },
                 { path: '/neptune/srf/quotesubmit', element: <QuoteSubmitPage /> },
                 { path: '/neptune/srf/quotereview', element: <QuoteReviewPage /> },
+                { path: '/neptune/vendor/management', element: <VendorManagement /> },
             ]
         }   
     ];
