@@ -4,10 +4,11 @@ import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 
+
 const UpdateSrfEdInbox = () => {
   const { state } = useLocation();
   const navigate = useNavigate(); // Initialize navigate
-  const [srfData, setSrfData] = useState(state || {});
+  const [edData, setEdData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false); // Tracks if the update button was clicked
 
   // Vendor options for the dropdown
@@ -18,25 +19,26 @@ const UpdateSrfEdInbox = () => {
   ];
 
   useEffect(() => {
-    if (!state) toast.error("No SRF data found!");
+    if (!state) toast.error("No ED data found!");
   }, [state]);
 
   const handleInputChange = (field, value) => {
-    setSrfData({
-      ...srfData,
+    setEdData({
+      ...edData,
       [field]: value,
     });
   };
 
   const handleSave = () => {
-    if (!srfData.srfNumber) {
+    if (!edData.srfNumber) {
       toast.error("Please complete all required fields!");
       return;
     }
 
-    console.log("Updated SRF Data:", srfData);
+    console.log("Updated SRF Data:", edData);
     toast.success("Data updated successfully!");
     setIsUpdated(true); // Show updated records after the button is clicked
+    navigate('/neptune/edquotation/inbox');
   };
 
   return (
@@ -51,7 +53,7 @@ const UpdateSrfEdInbox = () => {
       <Card style={{ border: "none" }}> {/* Removed border from the Card */}
         {/* Title */}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {srfData.srfNumber || "Loading..."}
+          {edData.srfNumber || "Loading..."}
         </CardTitle>
 
         {/* Table */}
@@ -101,7 +103,7 @@ const UpdateSrfEdInbox = () => {
                         {column.key === 'vendor' ? (
                           // Dropdown for vendor assignment
                           <select
-                            value={srfData[column.key] || ''}
+                            value={edData[column.key] || ''}
                             onChange={(e) =>
                               handleInputChange(column.key, e.target.value)
                             }
@@ -124,7 +126,7 @@ const UpdateSrfEdInbox = () => {
                           // Default editable input for other fields
                           <input
                             type="text"
-                            value={srfData[column.key] || ""}
+                            value={edData[column.key] || ""}
                             onChange={(e) =>
                               handleInputChange(column.key, e.target.value)
                             }
@@ -198,7 +200,7 @@ const UpdateSrfEdInbox = () => {
             >
               <h5>Updated Record</h5>
               <p style={{ textAlign: "left", fontSize: "14px", whiteSpace: "pre-wrap" }}>
-                {Object.entries(srfData)
+                {Object.entries(edData)
                   .filter(([key, value]) => value) // Only show non-empty fields
                   .map(([key, value]) => `${key}: ${value}`)
                   .join(" | ")}
