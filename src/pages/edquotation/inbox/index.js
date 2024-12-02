@@ -1,9 +1,30 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody, CardTitle, Col, Row, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Row,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Spinner,
+} from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faFileExcel, faDownload, faTrashAlt, faCloudUploadAlt, faCheckCircle, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faPlus,
+  faFileExcel,
+  faDownload,
+  faTrashAlt,
+  faCloudUploadAlt,
+  faCheckCircle,
+  faClipboardCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { inboxColumns } from "./config/columns"; 
+import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
@@ -38,7 +59,7 @@ const dummyData = [
     vendor: "NEC",
   },
   {
-    quoteNumber: "QT_03/2024/06/03",    
+    quoteNumber: "QT_03/2024/06/03",
     assignee: "Prem03",
     department: "NETWORK ROLLOUT",
     opportunityID: "OPP_104580",
@@ -64,7 +85,7 @@ const TableComponent = () => {
   };
 
   const handleAssignment = (row, actionType) => {
-    console.log('Action type:', actionType, 'for row:', row);
+    console.log("Action type:", actionType, "for row:", row);
 
     // Navigate to the update page when clicking on action icons
     if (actionType === "others" || actionType === "move") {
@@ -79,32 +100,35 @@ const TableComponent = () => {
           status: row.status,
           department: row.department,
           vendor: row.vendor,
-        }
+        },
       });
     }
   };
 
-  const columns = inboxColumns(handleAssignment); 
+  const columns = inboxColumns(handleAssignment);
 
   const onDrop = (acceptedFiles, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
-      toast.error('Some files were rejected. Please upload valid Excel files (.xls or .xlsx).');
+      toast.error(
+        "Some files were rejected. Please upload valid Excel files (.xls or .xlsx)."
+      );
     }
     // Explicitly filter out any non-Excel files
-    const validFiles = acceptedFiles.filter(file => 
-      file.name.endsWith('.xls') || file.name.endsWith('.xlsx')
+    const validFiles = acceptedFiles.filter(
+      (file) => file.name.endsWith(".xls") || file.name.endsWith(".xlsx")
     );
     if (validFiles.length > 0) {
       setFileUploaded((prev) => [...prev, ...validFiles]);
     } else {
-      toast.error('Only Excel files are allowed!');
+      toast.error("Only Excel files are allowed!");
     }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: '.xls,.xlsx', // Ensure only .xls and .xlsx files are accepted
-    onDropRejected: () => toast.error('Invalid file type! Only Excel files are allowed.'),
+    accept: ".xls,.xlsx", // Ensure only .xls and .xlsx files are accepted
+    onDropRejected: () =>
+      toast.error("Invalid file type! Only Excel files are allowed."),
   });
 
   const downloadTemplate = () => {
@@ -128,43 +152,43 @@ const TableComponent = () => {
 
   const handleSubmit = async () => {
     if (fileUploaded.length === 0) {
-      toast.error('Please upload at least one Excel file!');
+      toast.error("Please upload at least one Excel file!");
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log('Uploaded Files:', fileUploaded);
+      console.log("Uploaded Files:", fileUploaded);
 
       const fileBytesArray = await Promise.all(
         fileUploaded.map((file) => convertFileToBytes(file))
       );
 
-      console.log('Converted Byte Arrays:', fileBytesArray);
+      console.log("Converted Byte Arrays:", fileBytesArray);
 
       const payload = fileBytesArray.map((bytes, index) => ({
         fileName: fileUploaded[index].name,
         fileBytes: bytes,
       }));
 
-      console.log('Payload with bytes:', payload);
+      console.log("Payload with bytes:", payload);
 
       setTimeout(() => {
         setLoading(false);
-        toast.success('File uploaded successfully!');
+        toast.success("File uploaded successfully!");
         setFileUploaded([]);
         setExcelModal(false);
       }, 2000);
     } catch (error) {
       setLoading(false);
-      toast.error('Failed to process files. Please try again.');
-      console.error('Error processing files:', error);
+      toast.error("Failed to process files. Please try again.");
+      console.error("Error processing files:", error);
     }
   };
 
   const deleteFile = (file) => {
-    setFileUploaded(prevFiles => prevFiles.filter(f => f !== file));
+    setFileUploaded((prevFiles) => prevFiles.filter((f) => f !== file));
   };
 
   return (
@@ -176,26 +200,65 @@ const TableComponent = () => {
             <Row>
               <Col md="12">
                 <NeptuneAgGrid
-                  topActionButtons={< >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ display: 'inline-block' }}>
-                        <Button color="primary" size="sm" onClick={() => navigate('/neptune/srf/create-srf-ed-inbox')}>
-                          <FontAwesomeIcon icon={faPlus} />
-                        </Button>&nbsp;&nbsp;
-                        <Button color="success" size="sm" onClick={toggleExcelModal}>
-                          <FontAwesomeIcon icon={faFileExcel} style={{ fontSize: '15px' }}/>
-                        </Button>&nbsp;&nbsp;
-                       
-                        {/* Additional Submit Icons */}
-                        <Button color="secondary" size="sm" onClick={() => navigate('/neptune/srf/quotesubmit')}>
-                          <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: '15px' }} />
-                        </Button>&nbsp;&nbsp;
-                        <Button color="danger" size="sm" onClick={() => navigate('/neptune/srf/quotereview')}>
-                          <FontAwesomeIcon icon={faClipboardCheck} style={{ fontSize: '15px' }} />
-                        </Button>&nbsp;&nbsp;
+                  topActionButtons={
+                    <>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ display: "inline-block" }}>
+                          <Button
+                            color="primary"
+                            size="sm"
+                            onClick={() =>
+                              navigate("/neptune/srf/create-srf-ed-inbox")
+                            }
+                          >
+                            <FontAwesomeIcon icon={faPlus} />
+                          </Button>
+                          &nbsp;&nbsp;
+                          <Button color="primary" size="sm">
+                            <FontAwesomeIcon
+                              icon={faSearch}
+                              onClick={() => navigate("/neptune/ed/search")}
+                            />
+                          </Button>
+                          &nbsp;&nbsp;
+                          <Button
+                            color="success"
+                            size="sm"
+                            onClick={toggleExcelModal}
+                          >
+                            <FontAwesomeIcon
+                              icon={faFileExcel}
+                              style={{ fontSize: "15px" }}
+                            />
+                          </Button>
+                          &nbsp;&nbsp;
+                          {/* Additional Submit Icons */}
+                          <Button
+                            color="secondary"
+                            size="sm"
+                            onClick={() => navigate("/neptune/srf/quotesubmit")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              style={{ fontSize: "15px" }}
+                            />
+                          </Button>
+                          &nbsp;&nbsp;
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => navigate("/neptune/srf/quotereview")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faClipboardCheck}
+                              style={{ fontSize: "15px" }}
+                            />
+                          </Button>
+                          &nbsp;&nbsp;
+                        </div>
                       </div>
-                    </div>
-                  </>}
+                    </>
+                  }
                   data={dummyData}
                   dataprops={columns}
                   paginated={true}
@@ -211,35 +274,57 @@ const TableComponent = () => {
 
       <Modal isOpen={excelModal} toggle={toggleExcelModal}>
         <ModalHeader toggle={toggleExcelModal}>
-          <span style={{ flex: 1, textAlign: 'center' }}>Bulk Upload</span>
-          <Button color="link" onClick={downloadTemplate} style={{ padding: '0' , color: '#293897'}}>
-            <FontAwesomeIcon icon={faDownload} style={{ fontSize: '18px', marginLeft: '300px' }} />
+          <span style={{ flex: 1, textAlign: "center" }}>Bulk Upload</span>
+          <Button
+            color="link"
+            onClick={downloadTemplate}
+            style={{ padding: "0", color: "#293897" }}
+          >
+            <FontAwesomeIcon
+              icon={faDownload}
+              style={{ fontSize: "18px", marginLeft: "300px" }}
+            />
           </Button>
         </ModalHeader>
         <ModalBody>
-          <div {...getRootProps()} style={{
-                  textAlign: 'center', 
-                  border: '2px dashed #ddd', 
-                  padding: '20px', 
-                  cursor: 'pointer', 
-                  marginBottom: '20px',
-                  position: 'relative'
-                }}>
-            <input {...getInputProps()} style={{
-              position: 'absolute', 
-              top: 0, left: 0, 
-              width: '100%', height: '100%', opacity: 0 
-            }} />
-            <FontAwesomeIcon icon={faCloudUploadAlt} style={{ fontSize: '30px', color: '#293897' }} />
+          <div
+            {...getRootProps()}
+            style={{
+              textAlign: "center",
+              border: "2px dashed #ddd",
+              padding: "20px",
+              cursor: "pointer",
+              marginBottom: "20px",
+              position: "relative",
+            }}
+          >
+            <input
+              {...getInputProps()}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0,
+              }}
+            />
+            <FontAwesomeIcon
+              icon={faCloudUploadAlt}
+              style={{ fontSize: "30px", color: "#293897" }}
+            />
             <p>Click or drag files here to upload</p>
           </div>
           <ul>
             {fileUploaded.map((file, index) => (
-              <li key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <li
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
                 {file.name}
                 <FontAwesomeIcon
                   icon={faTrashAlt}
-                  style={{ color: 'red', cursor: 'pointer' }}
+                  style={{ color: "red", cursor: "pointer" }}
                   onClick={() => deleteFile(file)}
                 />
               </li>
@@ -250,16 +335,16 @@ const TableComponent = () => {
           <Button
             color="secondary"
             onClick={toggleExcelModal}
-            style={{ width: '20%' }}
+            style={{ width: "20%" }}
           >
             Cancel
           </Button>
           <Button
             color="primary"
             onClick={handleSubmit}
-            style={{ width: '20%' }}
+            style={{ width: "20%" }}
           >
-            {loading ? <Spinner size="sm" color="light" /> : 'Submit'}
+            {loading ? <Spinner size="sm" color="light" /> : "Submit"}
           </Button>
         </ModalFooter>
       </Modal>
