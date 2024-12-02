@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog, faUserFriends } from "@fortawesome/free-solid-svg-icons";
-import { statusMap } from "../../../../shared/config"; // Update the path as needed
+import { statusMap } from "../../../shared/config"; // Update the path as needed
 
 export const inboxColumns = (handleAssignment) => [
   {
@@ -17,17 +17,6 @@ export const inboxColumns = (handleAssignment) => [
           title="Reassign SRF"
           onClick={() => handleAssignment(v?.data, "others")} // Reassign action
         />
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        {v?.data?.status === "Assigned" && (
-          <FontAwesomeIcon
-            icon={faCog}
-            className="fa-cursor"
-            fontSize={"14px"}
-            data-toggle="tooltip"
-            title="Move to Group Queue"
-            onClick={() => handleAssignment(v?.data, "move")} // Move action
-          />
-        )}
       </>
     ),
   },
@@ -37,15 +26,14 @@ export const inboxColumns = (handleAssignment) => [
     minWidth: 250,
     cellStyle: { textAlign: "left", padding: "0px" },
     cellRenderer: (v) => (
-      <span 
+      <span
         className="link-style"
-        style={{ cursor: "pointer" }} 
-        onClick={() => handleAssignment(v?.data, "others")} 
+        style={{ cursor: "pointer" }}
+        onClick={() => handleAssignment(v?.data, "others")}
       >
         {v.value}
       </span>
     ),
-    
   },
   {
     field: "assignee",
@@ -68,14 +56,19 @@ export const inboxColumns = (handleAssignment) => [
     minWidth: 250,
   },
   {
-    field: "fixCDS",
-    headerName: "Fix CDS",
+    field: "fixCds",
+    headerName: "Fix CDS Number",
     minWidth: 150,
   },
   {
     field: "businessCaseNumber",
-    headerName: "Business Case",
+    headerName: "Business Case Number",
     minWidth: 230,
+  },
+  {
+    field: "srfNumber",
+    headerName: "SRF Number",
+    minWidth: 250,
   },
   {
     field: "status",

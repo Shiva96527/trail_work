@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardTitle, Col, Row, Modal, ModalHeader, ModalB
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faFileExcel, faDownload, faTrashAlt, faCloudUploadAlt, faCheckCircle, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { inboxColumns } from "./config/columns.js"; 
+import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
