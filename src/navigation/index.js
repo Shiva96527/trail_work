@@ -25,8 +25,8 @@ import UserGroupMapping from "../pages/general/user-group-mapping";
 import EdQuotationInbox from '../pages/edquotation/inbox';
 import TaskHistory from '../pages/edquotation/task-history';
 import MyGroup from '../pages/edquotation/my-group';
-import CreateSrfEdInbox from "../pages/srf/create-ed-inbox"; 
-import UpdateSrfEdInbox from "../pages/srf/update-srf";
+import CreateEd from "../pages/edquotation/create-ed"; 
+import UpdateEd from "../pages/edquotation/update-ed";
 import QuoteSubmitPage from "../pages/srf/quote-submit";
 import QuoteReviewPage from "../pages/srf/quote-review";
 import VendorManagement from "../pages/admin/vendor-management"
@@ -76,10 +76,10 @@ export const approutes = (isAuth) => {
                 { path: '/neptune/edquotation/inbox', element: <EdQuotationInbox /> },
                 { path: '/neptune/edquotation/taskhistory', element: <TaskHistory /> },
                 { path: '/neptune/edquotation/mygroup', element: <MyGroup /> },
-                { path: '/neptune/srf/create-srf-ed-inbox', element: <CreateSrfEdInbox /> },
-                { path: '/neptune/srf/update-srf-ed-inbox/:srfNumber', element: <UpdateSrfEdInbox /> },
-                { path: '/neptune/srf/quotesubmit', element: <QuoteSubmitPage /> },
-                { path: '/neptune/srf/quotereview', element: <QuoteReviewPage /> },
+                { path: '/neptune/edquotation/create-ed', element: <CreateEd /> },
+                { path: '/neptune/edquotation/update-ed/:srfNumber', element: <UpdateEd /> },
+                { path: '/neptune/edquotation/quotesubmit', element: <QuoteSubmitPage /> },
+                { path: '/neptune/edquotation/quotereview', element: <QuoteReviewPage /> },
                 { path: '/neptune/vendor/management', element: <VendorManagement /> },
                 { path: '/neptune/ed/search', element: <EdSearch /> },
             ]

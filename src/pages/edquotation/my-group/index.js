@@ -1,7 +1,27 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody, CardTitle, Col, Row, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Row,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Spinner,
+} from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faFileExcel, faDownload, faTrashAlt, faCloudUploadAlt, faCheckCircle, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faFileExcel,
+  faDownload,
+  faTrashAlt,
+  faCloudUploadAlt,
+  faCheckCircle,
+  faClipboardCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
@@ -64,11 +84,11 @@ const TableComponent = () => {
   };
 
   const handleAssignment = (row, actionType) => {
-    console.log('Action type:', actionType, 'for row:', row);
+    console.log("Action type:", actionType, "for row:", row);
 
     // Navigate to the update page when clicking on action icons
     if (actionType === "others" || actionType === "move") {
-      navigate(`/neptune/srf/update-srf-ed-inbox/${row.srfNumber}`, {
+      navigate(`/neptune/edquotation/update-ed/${row.srfNumber}`, {
         state: {
           srfNumber: row.srfNumber,
           assignee: row.assignee,
@@ -79,32 +99,35 @@ const TableComponent = () => {
           status: row.status,
           department: row.department,
           vendor: row.vendor,
-        }
+        },
       });
     }
   };
 
-  const columns = inboxColumns(handleAssignment); 
+  const columns = inboxColumns(handleAssignment);
 
   const onDrop = (acceptedFiles, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
-      toast.error('Some files were rejected. Please upload valid Excel files (.xls or .xlsx).');
+      toast.error(
+        "Some files were rejected. Please upload valid Excel files (.xls or .xlsx)."
+      );
     }
     // Explicitly filter out any non-Excel files
-    const validFiles = acceptedFiles.filter(file => 
-      file.name.endsWith('.xls') || file.name.endsWith('.xlsx')
+    const validFiles = acceptedFiles.filter(
+      (file) => file.name.endsWith(".xls") || file.name.endsWith(".xlsx")
     );
     if (validFiles.length > 0) {
       setFileUploaded((prev) => [...prev, ...validFiles]);
     } else {
-      toast.error('Only Excel files are allowed!');
+      toast.error("Only Excel files are allowed!");
     }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: '.xls,.xlsx', // Ensure only .xls and .xlsx files are accepted
-    onDropRejected: () => toast.error('Invalid file type! Only Excel files are allowed.'),
+    accept: ".xls,.xlsx", // Ensure only .xls and .xlsx files are accepted
+    onDropRejected: () =>
+      toast.error("Invalid file type! Only Excel files are allowed."),
   });
 
   const downloadTemplate = () => {
@@ -128,43 +151,43 @@ const TableComponent = () => {
 
   const handleSubmit = async () => {
     if (fileUploaded.length === 0) {
-      toast.error('Please upload at least one Excel file!');
+      toast.error("Please upload at least one Excel file!");
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log('Uploaded Files:', fileUploaded);
+      console.log("Uploaded Files:", fileUploaded);
 
       const fileBytesArray = await Promise.all(
         fileUploaded.map((file) => convertFileToBytes(file))
       );
 
-      console.log('Converted Byte Arrays:', fileBytesArray);
+      console.log("Converted Byte Arrays:", fileBytesArray);
 
       const payload = fileBytesArray.map((bytes, index) => ({
         fileName: fileUploaded[index].name,
         fileBytes: bytes,
       }));
 
-      console.log('Payload with bytes:', payload);
+      console.log("Payload with bytes:", payload);
 
       setTimeout(() => {
         setLoading(false);
-        toast.success('File uploaded successfully!');
+        toast.success("File uploaded successfully!");
         setFileUploaded([]);
         setExcelModal(false);
       }, 2000);
     } catch (error) {
       setLoading(false);
-      toast.error('Failed to process files. Please try again.');
-      console.error('Error processing files:', error);
+      toast.error("Failed to process files. Please try again.");
+      console.error("Error processing files:", error);
     }
   };
 
   const deleteFile = (file) => {
-    setFileUploaded(prevFiles => prevFiles.filter(f => f !== file));
+    setFileUploaded((prevFiles) => prevFiles.filter((f) => f !== file));
   };
 
   return (
@@ -176,20 +199,20 @@ const TableComponent = () => {
             <Row>
               <Col md="12">
                 <NeptuneAgGrid
-                  topActionButtons={< >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ display: 'inline-block' }}>
-                        {/* <Button color="primary" size="sm" onClick={() => navigate('/neptune/srf/create-srf-ed-inbox')}>
+                  topActionButtons={
+                    <>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ display: "inline-block" }}>
+                          {/* <Button color="primary" size="sm" onClick={() => navigate('/neptune/edquotation/create-ed')}>
                           <FontAwesomeIcon icon={faPlus} />
                         </Button>&nbsp;&nbsp; */}
-                        {/* <Button color="success" size="sm" onClick={toggleExcelModal}>
+                          {/* <Button color="success" size="sm" onClick={toggleExcelModal}>
                           <FontAwesomeIcon icon={faFileExcel} style={{ fontSize: '15px' }}/>
                         </Button>&nbsp;&nbsp; */}
-                       
-                       
+                        </div>
                       </div>
-                    </div>
-                  </>}
+                    </>
+                  }
                   data={dummyData}
                   dataprops={columns}
                   paginated={true}

@@ -90,7 +90,7 @@ const QuoteReviewPage = () => {
         <Table striped bordered style={{ borderColor: 'white', marginLeft: '15px', maxWidth: 'calc(100% - 30px)' }}>
           <thead>
             <tr>
-              <th style={{ width: '16.67%', backgroundColor: '#293897', color: 'white', padding: '12px' }}>Breakdwon</th>
+              <th style={{ width: '16.67%', backgroundColor: '#293897', color: 'white', padding: '12px' }}>Breakdown</th>
               <th style={{ width: '16.67%', backgroundColor: '#293897', color: 'white', padding: '12px' }}>Price book Value (RM) </th>
               <th style={{ width: '16.67%', backgroundColor: '#293897', color: 'white', padding: '12px' }}>Quotation (RM)</th>
               <th style={{ width: '16.67%', backgroundColor: '#293897', color: 'white', padding: '12px' }}>Variance (RM)</th>

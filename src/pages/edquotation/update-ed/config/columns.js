@@ -16,19 +16,16 @@ const columns = [
       { label: "Order Type", key: "orderType" },
     ],
     [
-      { label: "SRF Number", key: "srfNumber" },
-      { label: "Business Case Number", key: "businessCaseNumber" },
-      { label: "Vendor Assignment", key: "vendor" },
+      { label: "FIXCDS #", key: "fixCDS" },
+      { label: "SRF #", key: "srfNumber" },
     ],
     [
       { label: "Circuit ID", key: "circuitID" },
       { label: "ENS PIC", key: "ensPic" },
-      { label: "FIXCAS", key: "fixCas" },
+      { label: "FIXCAS #", key: "fixCas" },
     ],
     [
-      { label: "FIXCDS", key: "fixCDS" },
-      { label: "", key: "field2" },
-      { label: "", key: "field3" },
+      { label: "Vendor Assignment", key: "vendor" },
     ],
   ];
   
