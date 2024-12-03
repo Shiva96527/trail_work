@@ -273,33 +273,6 @@ const TableComponent = () => {
                             />
                           </Button>
                           &nbsp;&nbsp;
-                          {/* Additional Submit Icons */}
-                          <Button
-                            color="secondary"
-                            size="sm"
-                            onClick={() =>
-                              navigate("/neptune/edquotation/quotesubmit")
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={faCheckCircle}
-                              style={{ fontSize: "15px" }}
-                            />
-                          </Button>
-                          &nbsp;&nbsp;
-                          <Button
-                            color="danger"
-                            size="sm"
-                            onClick={() =>
-                              navigate("/neptune/edquotation/quotereview")
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={faClipboardCheck}
-                              style={{ fontSize: "15px" }}
-                            />
-                          </Button>
-                          &nbsp;&nbsp;
                         </div>
                       </div>
                     </>

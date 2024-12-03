@@ -60,9 +60,9 @@ const UpdateSrfEdInbox = () => {
         {" "}
         {/* Removed border from the Card */}
         {/* Title */}
-        <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
+        {/* <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {edData.quoteNumber || "Loading..."}
-        </CardTitle>
+        </CardTitle> */}
         {/* Table */}
         <CardBody style={{ padding: "0" }}>
           {" "}
@@ -70,7 +70,7 @@ const UpdateSrfEdInbox = () => {
           <Table
             bordered // Kept the border for the table
             style={{
-              marginTop: "50px",
+              marginTop: "20px",
               width: "100%",
               borderCollapse: "collapse",
               tableLayout: "fixed",
@@ -156,7 +156,7 @@ const UpdateSrfEdInbox = () => {
             </tbody>
           </Table>
           {/* Back Button positioned at the top right */}
-          <Button
+          {/* <Button
             color="primary"
             onClick={() => navigate(-1)} // Go back to the previous page
             style={{
@@ -171,7 +171,7 @@ const UpdateSrfEdInbox = () => {
             }}
           >
             Back
-          </Button>
+          </Button> */}
           {/* Update Button */}
           <div style={{ textAlign: "center", marginTop: "30px" }}>
             <Button
