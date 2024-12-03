@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate hook
-import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Card, CardTitle, Button, Row, Col, FormGroup, Label, Input, Badge, Accordion, AccordionItem, AccordionHeader, AccordionBody } from "reactstrap";
 import { toast } from "react-toastify";
-import columns from "./config/columns";
-
+import columns from "./config/columns"; // Import columns from your config
 
 const UpdateSrfEdInbox = () => {
   const { state } = useLocation();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [edData, setEdData] = useState(state || {});
-  const [isUpdated, setIsUpdated] = useState(false); // Tracks if the update button was clicked
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState("1");
 
   // Vendor options for the dropdown
   const vendorOptions = [
-    { value: 'vendor1', label: 'Vendor 1' },
-    { value: 'vendor2', label: 'Vendor 2' },
-    { value: 'vendor3', label: 'Vendor 3' },
+    { value: "vendor1", label: "Vendor 1" },
+    { value: "vendor2", label: "Vendor 2" },
+    { value: "vendor3", label: "Vendor 3" },
   ];
 
   useEffect(() => {
@@ -37,177 +37,112 @@ const UpdateSrfEdInbox = () => {
 
     console.log("Updated SRF Data:", edData);
     toast.success("Data updated successfully!");
-    setIsUpdated(true); // Show updated records after the button is clicked
-    navigate('/neptune/edquotation/inbox');
+    setIsUpdated(true);
+    navigate("/neptune/edquotation/inbox");
+  };
+
+  const toggleAccordion = (id) => {
+    setAccordionOpen(accordionOpen === id ? null : id);
   };
 
   return (
-    <div
-      style={{
-        margin: "40px auto", // Centers the card and ensures consistent spacing
-        width: "90%",
-        maxWidth: "1200px", // Restricts the card's maximum width
-        position: "relative", // To position the Back button absolutely inside the div
-      }}
-    >
-      <Card style={{ border: "none" }}> {/* Removed border from the Card */}
-        {/* Title */}
-        <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {edData.srfNumber || "Loading..."}
-        </CardTitle>
-
-        {/* Table */}
-        <CardBody style={{ padding: "0" }}> {/* Removed border from CardBody and adjusted padding */}
-          <Table
-            bordered // Kept the border for the table
-            style={{
-              marginTop: "50px",
-              width: "100%",
-              borderCollapse: "collapse",
-              tableLayout: "fixed",
-              border: "1px solid black", // Set the table border to black
-            }}
-          >
-            <tbody>
-              {columns.map((row, rowIndex) => (
-                <tr key={rowIndex} style={{ height: "60px" }}>
-                  {row.map((column, cellIndex) => (
-                    <>
-                      {/* Key Cell */}
-                      <td
-                        key={`key-${cellIndex}`}
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
-                          padding: "10px",
-                          width: "33.3%",
-                        }}
-                      >
-                        {column.label}
-                      </td>
-
-                      {/* Value Cell */}
-                      <td
-                        key={`value-${cellIndex}`}
-                        style={{
-                          textAlign: "center",
-                          verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
-                          padding: "10px",
-                          width: "33.3%",
-                        }}
-                      >
-                        {column.key === 'vendor' ? (
-                          // Dropdown for vendor assignment
-                          <select
-                            value={edData[column.key] || ''}
-                            onChange={(e) =>
-                              handleInputChange(column.key, e.target.value)
-                            }
-                            style={{
-                              textAlign: "center",
-                              outline: "none",
-                              padding: "8px", // Increased padding for better readability
-                              width: "100%",
-                              border: "1px solid lightgrey", // Light grey border for dropdown
-                            }}
-                          >
-                            <option value=""></option>
-                            {vendorOptions.map((vendor) => (
-                              <option key={vendor.value} value={vendor.value}>
-                                {vendor.label}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          // Default editable input for other fields
-                          <input
-                            type="text"
-                            value={edData[column.key] || ""}
-                            onChange={(e) =>
-                              handleInputChange(column.key, e.target.value)
-                            }
-                            style={{
-                              textAlign: "center",
-                              width: "100%",
-                              outline: "none",
-                              padding: "8px", // Increased padding for input fields
-                              border: "1px solid lightgrey", // Light grey border for input fields
-                            }}
-                          />
-                        )}
-                      </td>
-                    </>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          {/* Back Button positioned at the top right */}
+    <div style={{ margin: "40px auto", width: "98%", maxWidth: "2000px" }}> {/* Increased width and centered */}
+      <Card style={{ border: "none" }}>
+        <CardTitle style={{ textAlign: "center", marginTop: "-20px" }}> {/* Title moved up */}
+          {"Inbox View"}
           <Button
             color="primary"
-            onClick={() => navigate(-1)} // Go back to the previous page
+            onClick={() => navigate(-1)} // Navigate to the previous page
             style={{
-              position: "absolute", // Positioning the button
-              top: "20px",
+              position: "absolute",
+             
               right: "20px",
-              padding: "10px 20px",
+              padding: "5px 10px",
               fontSize: "16px",
-              border: "none", // Removed border
-              outline: "none",
-              boxShadow: "none", // Removed box-shadow
             }}
           >
             Back
           </Button>
+        </CardTitle>
 
-          {/* Update Button */}
-          <div style={{ textAlign: "center", marginTop: "30px" }}>
-            <Button
-              color="primary"
-              onClick={handleSave}
-              style={{
-                padding: "10px 20px",
-                width: "100px",
-                fontSize: "16px",
-                border: "none", // Removed border
-                outline: "none",
-                boxShadow: "none", // Removed box-shadow
-              }}
-            >
-              Update
-            </Button>
-          </div>
+        <Accordion open={accordionOpen} toggle={toggleAccordion}>
+          <AccordionItem>
+            <AccordionHeader targetId="1">
+              <strong>SRF Details</strong>&nbsp;&nbsp;
+              <Badge color="success">{edData?.srfNumber}</Badge>&nbsp;&nbsp;
+              {edData?.assignedTo && (
+                <Badge color="info">{"Assigned to->" + edData?.assignedTo}</Badge>
+              )}
+            </AccordionHeader>
+            <AccordionBody accordionId="1">
+              <fieldset>
+                {/* Loop through each row in columns */}
+                {columns.map((row, rowIndex) => (
+                  <Row key={rowIndex} style={{ marginBottom: "20px" }}>
+                    {/* Loop through each column in the row */}
+                    {row.map((column, colIndex) => (
+                      column.label && ( // Only render if the label exists
+                        <Col md={3} key={colIndex}> {/* Each column takes up 3/12 width = 4 columns per row */}
+                          <FormGroup>
+                            <Label for={column.key}>{column.label}</Label>
+                            {column.key === "vendor" ? (
+                              // Vendor dropdown with matching font size
+                              <Input
+                                id={column.key}
+                                type="select"
+                                value={edData[column.key] || ""}
+                                onChange={(e) =>
+                                  handleInputChange(column.key, e.target.value)
+                                }
+                                style={{
+                                  fontSize: "13px", // Ensure font size is consistent
+                                }}
+                              >
+                                <option value=""></option>
+                                {vendorOptions.map((vendor) => (
+                                  <option key={vendor.value} value={vendor.value}>
+                                    {vendor.label}
+                                  </option>
+                                ))}
+                              </Input>
+                            ) : (
+                              // Regular text input for other fields
+                              <Input
+                                id={column.key}
+                                type="text"
+                                value={edData[column.key] || ""}
+                                onChange={(e) =>
+                                  handleInputChange(column.key, e.target.value)
+                                }
+                                style={{
+                                  fontSize: "14px", // Same font size for input fields
+                                }}
+                              />
+                            )}
+                          </FormGroup>
+                        </Col>
+                      )
+                    ))}
+                  </Row>
+                ))}
+              </fieldset>
 
-          {/* Display Updated Data */}
-          {isUpdated && (
-            <div
-              style={{
-                marginTop: "40px",
-                textAlign: "center",
-                padding: "20px",
-                border: "2px solid #ddd",
-                borderRadius: "8px",
-                width: "80%",
-                margin: "40px auto",
-                backgroundColor: "#f9f9f9",
-                minHeight: "50px",
-              }}
-            >
-              <h5>Updated Record</h5>
-              <p style={{ textAlign: "left", fontSize: "14px", whiteSpace: "pre-wrap" }}>
-                {Object.entries(edData)
-                  .filter(([key, value]) => value) // Only show non-empty fields
-                  .map(([key, value]) => `${key}: ${value}`)
-                  .join(" | ")}
-              </p>
-            </div>
-          )}
-        </CardBody>
+              <div style={{ textAlign: "left", marginTop: "30px" }}>
+                <Button
+                  color="primary"
+                  onClick={handleSave}
+                  style={{
+                    padding: "10px 20px",
+                    width: "100px",
+                    fontSize: "16px",
+                  }}
+                >
+                  Update
+                </Button>
+              </div>
+            </AccordionBody>
+          </AccordionItem>
+        </Accordion>
       </Card>
     </div>
   );
