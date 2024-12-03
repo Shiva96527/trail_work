@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -28,7 +28,7 @@ import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
-
+import { getDigitalEDQuoteGrid } from "../../../services/ed-service";
 const dummyData = [
   {
     quoteNumber: "QT_01/2024/06/01",
@@ -43,6 +43,7 @@ const dummyData = [
     createdDate: "4/3/2024",
     createdBy: "Shiva",
     vendor: "NEC",
+    group: "GRP_NS_OFFNET",
   },
   {
     quoteNumber: "QT_02/2024/06/02",
@@ -57,6 +58,7 @@ const dummyData = [
     createdDate: "6/3/2024",
     createdBy: "PREM",
     vendor: "NEC",
+    group: "GRP_NS_OFFNET",
   },
   {
     quoteNumber: "QT_03/2024/06/03",
@@ -71,14 +73,42 @@ const dummyData = [
     createdDate: "6/3/2024",
     createdBy: "PREM",
     vendor: "NEC",
+    group: "GRP_NS_OFFNET",
   },
 ];
+
 
 const TableComponent = () => {
   const navigate = useNavigate();
   const [excelModal, setExcelModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
+  const [gridData, setGridData] = useState([]);
+
+  useEffect(() => {
+    getEDQuoteList();
+  }, []);
+
+  const getEDQuoteList = async (fromModal = false) => {
+    const payload = {
+      type: "inbox",
+      loginUIID: sessionStorage.getItem("uiid"),
+    };
+    try {
+      const {
+        data: { data: resultData, statusCode, statusMessage },
+      } = await getDigitalEDQuoteGrid(payload);
+      if (statusCode === 200) {
+        console.log("resultData", resultData);
+       // setGridData(resultData);
+       setGridData(dummyData);
+       
+        toast.success(statusMessage);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    }
+  };
 
   const toggleExcelModal = () => {
     setExcelModal(!excelModal);
@@ -89,8 +119,10 @@ const TableComponent = () => {
 
     // Navigate to the update page when clicking on action icons
     if (actionType === "others" || actionType === "move") {
-      navigate(`/neptune/srf/update-srf-ed-inbox/${row.srfNumber}`, {
+      navigate(`/neptune/edquotation/update-ed/${row.srfNumber}`, {
         state: {
+          group: row.group,
+          quoteNumber: row.quoteNumber,
           srfNumber: row.srfNumber,
           assignee: row.assignee,
           opportunityID: row.opportunityID,
@@ -207,24 +239,21 @@ const TableComponent = () => {
                           <Button
                             color="primary"
                             size="sm"
+                            data-toggle="tooltip"
+                            title="Manual Quote"
                             onClick={() =>
-                              navigate("/neptune/srf/create-srf-ed-inbox")
+                              navigate("/neptune/edquotation/create-ed")
                             }
                           >
                             <FontAwesomeIcon icon={faPlus} />
-                          </Button>
-                          &nbsp;&nbsp;
-                          <Button color="primary" size="sm">
-                            <FontAwesomeIcon
-                              icon={faSearch}
-                              onClick={() => navigate("/neptune/ed/search")}
-                            />
                           </Button>
                           &nbsp;&nbsp;
                           <Button
                             color="success"
                             size="sm"
                             onClick={toggleExcelModal}
+                            data-toggle="tooltip"
+                            title="Bulk upload"
                           >
                             <FontAwesomeIcon
                               icon={faFileExcel}
@@ -232,11 +261,25 @@ const TableComponent = () => {
                             />
                           </Button>
                           &nbsp;&nbsp;
+                          <Button
+                            color="primary"
+                            size="sm"
+                            data-toggle="tooltip"
+                            title="Search ED"
+                          >
+                            <FontAwesomeIcon
+                              icon={faSearch}
+                              onClick={() => navigate("/neptune/ed/search")}
+                            />
+                          </Button>
+                          &nbsp;&nbsp;
                           {/* Additional Submit Icons */}
                           <Button
                             color="secondary"
                             size="sm"
-                            onClick={() => navigate("/neptune/srf/quotesubmit")}
+                            onClick={() =>
+                              navigate("/neptune/edquotation/quotesubmit")
+                            }
                           >
                             <FontAwesomeIcon
                               icon={faCheckCircle}
@@ -247,7 +290,9 @@ const TableComponent = () => {
                           <Button
                             color="danger"
                             size="sm"
-                            onClick={() => navigate("/neptune/srf/quotereview")}
+                            onClick={() =>
+                              navigate("/neptune/edquotation/quotereview")
+                            }
                           >
                             <FontAwesomeIcon
                               icon={faClipboardCheck}
@@ -259,7 +304,7 @@ const TableComponent = () => {
                       </div>
                     </>
                   }
-                  data={dummyData}
+                  data={gridData}
                   dataprops={columns}
                   paginated={true}
                   itemsPerPage={10}

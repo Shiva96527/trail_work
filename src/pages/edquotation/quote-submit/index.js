@@ -1,21 +1,39 @@
 import React, { useState } from "react";
+
 import {
+  Accordion,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
   Button,
-  Input,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
+  Card,
   Table,
+  Badge,
+  CardBody,
+  CardTitle,
+  Col,
+  FormGroup,
+  Input,
+  Label,
+  Row,
 } from "reactstrap";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudUploadAlt,
   faDownload,
   faSave,
+  faToggleOff,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import columns from "./config/columns";
+
 const QuoteSubmitPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -32,7 +50,6 @@ const QuoteSubmitPage = () => {
     { value: "vendor3", label: "Vendor 3" },
   ];
 
- 
   const handleInputChange = (field, value) => {
     setQuoteData({
       ...quoteData,
@@ -587,56 +604,73 @@ const QuoteSubmitPage = () => {
       {/* Accordion Section for Quote Details and Implementation Costing Details */}
       <Card style={{ border: "none" }}>
         <CardTitle style={{ textAlign: "center", marginTop: "-20px" }}>
-          {/* {"Quote Submission"} */}
+          {"Quote Submission"}
         </CardTitle>
 
-        <Accordion open={accordionOpen} toggle={toggleAccordion} style={{ marginTop: "20px" }}>
+        <Accordion open={accordionOpen} toggle={toggleAccordion}>
           {/* Quote Details Accordion */}
           <AccordionItem>
             <AccordionHeader targetId="1">
               <strong>Survey Costing Details</strong>&nbsp;&nbsp;
-              <Badge color="success">{quoteData?.quoteNumber}</Badge>&nbsp;&nbsp;
+              <Badge color="success">{quoteData?.quoteNumber}</Badge>
+              &nbsp;&nbsp;
               {quoteData?.assignedTo && (
-                <Badge color="info">{"Assigned to->" + quoteData?.assignedTo}</Badge>
+                <Badge color="info">
+                  {"Assigned to->" + quoteData?.assignedTo}
+                </Badge>
               )}
             </AccordionHeader>
             <AccordionBody accordionId="1">
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -655,14 +689,11 @@ const QuoteSubmitPage = () => {
                   padding: "5px 10px",
                   fontSize: "14px",
                 }}
-                data-toggle="tooltip" 
-                title="Non-Standard Quotation"
               >
                 <FontAwesomeIcon
                   icon={toggleCostingDetails ? faToggleOn : faToggleOff}
                   style={{ marginRight: "8px" }}
                 />
-               
               </Button>
             </AccordionHeader>
             <AccordionBody accordionId="2">
@@ -670,39 +701,53 @@ const QuoteSubmitPage = () => {
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -710,7 +755,9 @@ const QuoteSubmitPage = () => {
           </AccordionItem>
 
           {/* Non-Standard Quotation Accordion */}
-          <AccordionItem style={{ display: toggleCostingDetails ? "block" : "none" }}>
+          <AccordionItem
+            style={{ display: toggleCostingDetails ? "block" : "none" }}
+          >
             <AccordionHeader targetId="3">
               <strong>Non-Standard Quotation</strong>
             </AccordionHeader>
@@ -719,39 +766,53 @@ const QuoteSubmitPage = () => {
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -762,21 +823,22 @@ const QuoteSubmitPage = () => {
 
       {/* Confirmation Modal for Implementation Costing Details */}
       <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)}>
-      <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
-        {toggleCostingDetails ? "Disable" : "Enable"} Non-Standard Quotation
-      </ModalHeader>
-      <ModalBody>
-        Are you sure you want to {toggleCostingDetails ? "disable" : "enable"} Non-Standard Quotation details?
-      </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={handleModalCancel}>
-          Cancel
-        </Button>
-        <Button color="primary" onClick={handleModalConfirm}>
-          {toggleCostingDetails ? "Disable" : "Enable"}
-        </Button>
-      </ModalFooter>
-    </Modal>
+        <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
+          {toggleCostingDetails ? "Disable" : "Enable"} Non-Standard Quotation
+        </ModalHeader>
+        <ModalBody>
+          Are you sure you want to {toggleCostingDetails ? "disable" : "enable"}{" "}
+          Non-Standard Quotation details?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={handleModalCancel}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleModalConfirm}>
+            {toggleCostingDetails ? "Disable" : "Enable"}
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };
