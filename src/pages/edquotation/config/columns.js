@@ -14,7 +14,7 @@ export const inboxColumns = (handleAssignment) => [
           className="fa-cursor"
           fontSize={"14px"}
           data-toggle="tooltip"
-          title="Reassign SRF"
+          title="Update ED"
           onClick={() => handleAssignment(v?.data, "others")} // Reassign action
         />
       </>
@@ -22,7 +22,7 @@ export const inboxColumns = (handleAssignment) => [
   },
   {
     field: "quoteNumber",
-    headerName: "Quote Number",
+    headerName: "Quote #",
     minWidth: 250,
     cellStyle: { textAlign: "left", padding: "0px" },
     cellRenderer: (v) => (
@@ -32,6 +32,16 @@ export const inboxColumns = (handleAssignment) => [
         onClick={() => handleAssignment(v?.data, "others")}
       >
         {v.value}
+      </span>
+    ),
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    minWidth: 200,
+    cellRenderer: (v) => (
+      <span style={{ color: statusMap[v?.data?.status]?.color }}>
+        <strong>{v?.data?.status}</strong>
       </span>
     ),
   },
@@ -51,18 +61,18 @@ export const inboxColumns = (handleAssignment) => [
     minWidth: 230,
   },
   {
-    field: "serviceOrderNumber",
-    headerName: "Service Order Number",
+    field: "fixCasNumber",
+    headerName: "FIXCAS #",
     minWidth: 250,
   },
   {
-    field: "fixCds",
-    headerName: "Fix CDS Number",
+    field: "fixCdsNumber",
+    headerName: "FIXCDS #",
     minWidth: 150,
   },
   {
     field: "businessCaseNumber",
-    headerName: "Business Case Number",
+    headerName: "BC #",
     minWidth: 230,
   },
   {
@@ -70,16 +80,7 @@ export const inboxColumns = (handleAssignment) => [
     headerName: "SRF Number",
     minWidth: 250,
   },
-  {
-    field: "status",
-    headerName: "Status",
-    minWidth: 200,
-    cellRenderer: (v) => (
-      <span style={{ color: statusMap[v?.data?.status]?.color }}>
-        <strong>{v?.data?.status}</strong>
-      </span>
-    ),
-  },
+
   {
     field: "createdDate",
     headerName: "Created Date",
@@ -93,6 +94,11 @@ export const inboxColumns = (handleAssignment) => [
   {
     field: "vendor",
     headerName: "Vendor",
+    minWidth: 150,
+  },
+  {
+    field: "group",
+    headerName: "Group",
     minWidth: 150,
   },
 ];

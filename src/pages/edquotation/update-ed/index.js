@@ -19,6 +19,7 @@ const UpdateSrfEdInbox = () => {
   ];
 
   useEffect(() => {
+    console.log('state', state)
     if (!state) toast.error("No ED data found!");
   }, [state]);
 
@@ -53,7 +54,7 @@ const UpdateSrfEdInbox = () => {
       <Card style={{ border: "none" }}> {/* Removed border from the Card */}
         {/* Title */}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {edData.srfNumber || "Loading..."}
+          {edData.quoteNumber || "Loading..."}
         </CardTitle>
 
         {/* Table */}
@@ -172,14 +173,14 @@ const UpdateSrfEdInbox = () => {
               onClick={handleSave}
               style={{
                 padding: "10px 20px",
-                width: "100px",
+                width: "160px",
                 fontSize: "16px",
                 border: "none", // Removed border
                 outline: "none",
                 boxShadow: "none", // Removed box-shadow
               }}
             >
-              Update
+              Submit to vendor
             </Button>
           </div>
 
