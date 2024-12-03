@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate hook
-import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  Button,
+  Table
+} from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
-
 
 const UpdateSrfEdInbox = () => {
   const { state } = useLocation();
@@ -13,13 +18,13 @@ const UpdateSrfEdInbox = () => {
 
   // Vendor options for the dropdown
   const vendorOptions = [
-    { value: 'vendor1', label: 'Vendor 1' },
-    { value: 'vendor2', label: 'Vendor 2' },
-    { value: 'vendor3', label: 'Vendor 3' },
+    { value: "vendor1", label: "Vendor 1" },
+    { value: "vendor2", label: "Vendor 2" },
+    { value: "vendor3", label: "Vendor 3" },
   ];
 
   useEffect(() => {
-    console.log('state', state)
+    console.log("state", state);
     if (!state) toast.error("No ED data found!");
   }, [state]);
 
@@ -39,7 +44,7 @@ const UpdateSrfEdInbox = () => {
     console.log("Updated SRF Data:", edData);
     toast.success("Data updated successfully!");
     setIsUpdated(true); // Show updated records after the button is clicked
-    navigate('/neptune/edquotation/inbox');
+    navigate("/neptune/edquotation/inbox");
   };
 
   return (
@@ -51,14 +56,17 @@ const UpdateSrfEdInbox = () => {
         position: "relative", // To position the Back button absolutely inside the div
       }}
     >
-      <Card style={{ border: "none" }}> {/* Removed border from the Card */}
+      <Card style={{ border: "none" }}>
+        {" "}
+        {/* Removed border from the Card */}
         {/* Title */}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {edData.quoteNumber || "Loading..."}
         </CardTitle>
-
         {/* Table */}
-        <CardBody style={{ padding: "0" }}> {/* Removed border from CardBody and adjusted padding */}
+        <CardBody style={{ padding: "0" }}>
+          {" "}
+          {/* Removed border from CardBody and adjusted padding */}
           <Table
             bordered // Kept the border for the table
             style={{
@@ -101,10 +109,10 @@ const UpdateSrfEdInbox = () => {
                           width: "33.3%",
                         }}
                       >
-                        {column.key === 'vendor' ? (
+                        {column.key === "vendor" ? (
                           // Dropdown for vendor assignment
                           <select
-                            value={edData[column.key] || ''}
+                            value={edData[column.key] || ""}
                             onChange={(e) =>
                               handleInputChange(column.key, e.target.value)
                             }
@@ -147,7 +155,6 @@ const UpdateSrfEdInbox = () => {
               ))}
             </tbody>
           </Table>
-
           {/* Back Button positioned at the top right */}
           <Button
             color="primary"
@@ -165,7 +172,6 @@ const UpdateSrfEdInbox = () => {
           >
             Back
           </Button>
-
           {/* Update Button */}
           <div style={{ textAlign: "center", marginTop: "30px" }}>
             <Button
@@ -183,7 +189,6 @@ const UpdateSrfEdInbox = () => {
               Submit to vendor
             </Button>
           </div>
-
           {/* Display Updated Data */}
           {isUpdated && (
             <div
@@ -200,7 +205,13 @@ const UpdateSrfEdInbox = () => {
               }}
             >
               <h5>Updated Record</h5>
-              <p style={{ textAlign: "left", fontSize: "14px", whiteSpace: "pre-wrap" }}>
+              <p
+                style={{
+                  textAlign: "left",
+                  fontSize: "14px",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
                 {Object.entries(edData)
                   .filter(([key, value]) => value) // Only show non-empty fields
                   .map(([key, value]) => `${key}: ${value}`)

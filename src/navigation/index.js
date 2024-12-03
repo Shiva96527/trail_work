@@ -22,69 +22,87 @@ import SRFUsers from "../pages/admin/srf-users";
 import SRFReport from "../pages/reports/srf-report";
 import DropdownConfig from "../pages/admin/dropdown-configuration";
 import UserGroupMapping from "../pages/general/user-group-mapping";
-import EdQuotationInbox from '../pages/edquotation/inbox';
-import TaskHistory from '../pages/edquotation/task-history';
-import MyGroup from '../pages/edquotation/my-group';
-import CreateEd from "../pages/edquotation/create-ed"; 
+import EdQuotationInbox from "../pages/edquotation/inbox";
+import TaskHistory from "../pages/edquotation/task-history";
+import MyGroup from "../pages/edquotation/my-group";
+import CreateEd from "../pages/edquotation/create-ed";
 import UpdateEd from "../pages/edquotation/update-ed";
 import QuoteSubmitPage from "../pages/srf/quote-submit";
 import QuoteReviewPage from "../pages/srf/quote-review";
-import VendorManagement from "../pages/admin/vendor-management"
-import EdSearch from "../pages/edquotation/ed-search"
+import VendorManagement from "../pages/admin/vendor-management";
+import EdSearch from "../pages/edquotation/ed-search";
+import QuoteDetailPage from "../pages/edquotation/ed-quote-detail";
 
 export const approutes = (isAuth) => {
-    const routes = [
+  const routes = [
+    {
+      path: "/",
+      element: <UnauthLayout />,
+      children: [
+        { path: "", element: <Navigate to="/login" /> },
+        { path: "/login", element: <Login /> },
+      ],
+    },
+    {
+      path: "/admin",
+      element: isAuth ? <AdminLayout /> : <Navigate to={"/login"} />,
+      children: [
+        { path: "/admin/users", element: <Users /> },
+        { path: "/admin/srfusers", element: <SRFUsers /> },
+        { path: "/admin/buildingdetails", element: <BuildingDetails /> },
+        { path: "/admin/costdetails", element: <CostDetails /> },
+        { path: "/admin/vascostconfig", element: <VASCostConfig /> },
+        { path: "/admin/roles", element: <Roles /> },
+        { path: "/admin/constants", element: <ConstantConfiguration /> },
+        { path: "/admin/audits", element: <AuditTrail /> },
+        { path: "/admin/groupmapping", element: <SRFGroupMapping /> },
+        { path: "/admin/srfcatalogue", element: <SRFCatalogueWorkflow /> },
+        { path: "/admin/dropdownconfig", element: <DropdownConfig /> },
+      ],
+    },
+    {
+      path: "/neptune",
+      element: isAuth ? <AuthLayout /> : <Navigate to={"/login"} />,
+      children: [
+        { path: "", element: <SrfInbox /> },
+        { path: "/neptune/srf/srfinbox", element: <SrfInbox /> },
+        { path: "/neptune/srf/srfinbox/view", element: <SrfSearchView /> },
+        { path: "/neptune/srf/search/view", element: <SrfSearchView /> },
+        { path: "/neptune/srf/inboxhld", element: <SRFHLD /> },
+        { path: "/neptune/srf/groupboxhld", element: <SRFHLD /> },
+        { path: "/neptune/srf/outboxhld", element: <SRFHLD /> },
+        { path: "/neptune/srf/srfoutbox", element: <SrfOutbox /> },
+        { path: "/neptune/srf/srfoutbox/view", element: <SrfSearchView /> },
+        { path: "/neptune/srf/mygroup", element: <SrfGroup /> },
+        { path: "/neptune/srf/search", element: <SrfSearch /> },
+        { path: "/neptune/srf/createsrf", element: <SrfSearchView /> },
+        { path: "/neptune/srf/mygroup/view", element: <SrfSearchView /> },
+        { path: "/neptune/reports/srfreport", element: <SRFReport /> },
         {
-            path: '/', element: <UnauthLayout />, children: [
-                { path: '', element: <Navigate to="/login" /> },
-                { path: '/login', element: <Login /> }
-            ]
+          path: "/neptune/general/usergroupmapping",
+          element: <UserGroupMapping />,
+        },
+        { path: "/neptune/edquotation/inbox", element: <EdQuotationInbox /> },
+        { path: "/neptune/edquotation/taskhistory", element: <TaskHistory /> },
+        { path: "/neptune/edquotation/mygroup", element: <MyGroup /> },
+        { path: "/neptune/edquotation/create-ed", element: <CreateEd /> },
+        {
+          path: "/neptune/edquotation/update-ed/:srfNumber",
+          element: <UpdateEd />,
         },
         {
-            path: '/admin', element: isAuth ? <AdminLayout /> : <Navigate to={'/login'} />, children: [
-                { path: '/admin/users', element: <Users /> },
-                { path: '/admin/srfusers', element: <SRFUsers /> },
-                { path: '/admin/buildingdetails', element: <BuildingDetails /> },
-                { path: '/admin/costdetails', element: <CostDetails /> },
-                { path: '/admin/vascostconfig', element: <VASCostConfig /> },
-                { path: '/admin/roles', element: <Roles /> },
-                { path: '/admin/constants', element: <ConstantConfiguration /> },
-                { path: '/admin/audits', element: <AuditTrail /> },
-                { path: '/admin/groupmapping', element: <SRFGroupMapping /> },
-                { path: '/admin/srfcatalogue', element: <SRFCatalogueWorkflow /> },
-                { path: '/admin/dropdownconfig', element: <DropdownConfig /> },
-             
-            ]
+          path: "/neptune/edquotation/quotesubmit",
+          element: <QuoteSubmitPage />,
         },
         {
-            path: '/neptune', element: isAuth ? <AuthLayout /> : <Navigate to={'/login'} />, children: [
-                { path: '', element: <SrfInbox /> },
-                { path: '/neptune/srf/srfinbox', element: <SrfInbox /> },
-                { path: '/neptune/srf/srfinbox/view', element: <SrfSearchView /> },
-                { path: '/neptune/srf/search/view', element: <SrfSearchView /> },
-                { path: '/neptune/srf/inboxhld', element: <SRFHLD /> },
-                { path: '/neptune/srf/groupboxhld', element: <SRFHLD /> },
-                { path: '/neptune/srf/outboxhld', element: <SRFHLD /> },
-                { path: '/neptune/srf/srfoutbox', element: <SrfOutbox /> },
-                { path: '/neptune/srf/srfoutbox/view', element: <SrfSearchView /> },
-                { path: '/neptune/srf/mygroup', element: <SrfGroup /> },
-                { path: '/neptune/srf/search', element: <SrfSearch /> },
-                { path: '/neptune/srf/createsrf', element: <SrfSearchView /> },
-                { path: '/neptune/srf/mygroup/view', element: <SrfSearchView /> },
-                { path: '/neptune/reports/srfreport', element: <SRFReport /> },
-                { path: '/neptune/general/usergroupmapping', element: <UserGroupMapping /> },
-                { path: '/neptune/edquotation/inbox', element: <EdQuotationInbox /> },
-                { path: '/neptune/edquotation/taskhistory', element: <TaskHistory /> },
-                { path: '/neptune/edquotation/mygroup', element: <MyGroup /> },
-                { path: '/neptune/edquotation/create-ed', element: <CreateEd /> },
-                { path: '/neptune/edquotation/update-ed/:srfNumber', element: <UpdateEd /> },
-                { path: '/neptune/edquotation/quotesubmit', element: <QuoteSubmitPage /> },
-                { path: '/neptune/edquotation/quotereview', element: <QuoteReviewPage /> },
-                { path: '/neptune/vendor/management', element: <VendorManagement /> },
-                { path: '/neptune/ed/search', element: <EdSearch /> },
-            ]
-        }   
-    ];
-    return routes;
-}
-
+          path: "/neptune/edquotation/quotereview",
+          element: <QuoteReviewPage />,
+        },
+        { path: "/neptune/vendor/management", element: <VendorManagement /> },
+        { path: "/neptune/ed/search", element: <EdSearch /> },
+        { path: "/neptune/edquotation/detail/:srfNumber", element: <QuoteDetailPage /> },
+      ],
+    },
+  ];
+  return routes;
+};
