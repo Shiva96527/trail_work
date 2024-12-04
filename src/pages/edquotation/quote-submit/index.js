@@ -14,8 +14,6 @@ import {
   faCloudUploadAlt,
   faDownload,
   faSave,
-  faToggleOff,
-  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import NeptuneAgGrid from "../../../components/ag-grid";
@@ -63,6 +61,47 @@ const QuoteSubmitPage = () => {
         onChange={(e) => params.setValue(e.target.value)}
       />
     );
+  };
+
+  // Inline styles for the custom toggle
+  const toggleStyles = {
+    container: {
+      display: "inline-block",
+      width: "50px",
+      height: "25px",
+      position: "relative",
+      cursor: "pointer",
+    },
+    input: {
+      appearance: "none",
+      width: "100%",
+      height: "100%",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      margin: 0,
+      opacity: 0,
+      cursor: "pointer",
+    },
+    slider: {
+      backgroundColor: toggleNonStandard ? "#293897" : "#ccc",
+      borderRadius: "25px",
+      position: "relative",
+      transition: "background-color 0.3s ease",
+      width: "100%",
+      height: "100%",
+    },
+    knob: {
+      content: '""',
+      position: "absolute",
+      top: "2px",
+      left: toggleNonStandard ? "25px" : "2px",
+      width: "21px",
+      height: "21px",
+      backgroundColor: "white",
+      borderRadius: "50%",
+      transition: "transform 0.3s ease, left 0.3s ease",
+    },
   };
 
   // Retrieve grid state from localStorage on component mount
@@ -201,28 +240,33 @@ const QuoteSubmitPage = () => {
               <>
                 <div
                   style={{
+                    display: "flex",
+                    alignItems: "center", // Ensure text and toggle are vertically aligned
                     fontSize: "18px",
                     fontWeight: "bold",
                     color: "black",
-                    alignItems: "center",
-                    display: "flex",
                   }}
                 >
-                  Implementation Costing Details
-                </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ marginRight: "10px" }}>
-                    Non-Standard Quotation
-                  </span>
-                  <FontAwesomeIcon
-                    icon={toggleNonStandard ? faToggleOn : faToggleOff}
+                  <span>Implementation Costing Details</span>
+                  <div
                     style={{
-                      cursor: "pointer",
-                      fontSize: "30px",
-                      color: "#293897",
+                      ...toggleStyles.container,
+                      transform: "scale(0.7)", // Reduce the size of the toggle
+                      marginLeft: "10px", // Add space between the text and the toggle
                     }}
-                    onClick={handleToggleConfirmation} // Trigger confirmation modal
-                  />
+                    onClick={handleToggleConfirmation}
+                    title="Non-Standard Quotation" // Tooltip text
+                  >
+                    <input
+                      type="checkbox"
+                      checked={toggleNonStandard}
+                      onChange={(e) => e.stopPropagation()}
+                      style={toggleStyles.input}
+                    />
+                    <div style={toggleStyles.slider}>
+                      <div style={toggleStyles.knob}></div>
+                    </div>
+                  </div>
                 </div>
               </>
             }

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons"; // Import faTrash icon
 
 export const columns = [
   {
@@ -22,31 +22,70 @@ export const columns = [
   {
     headerName: "MM#",
     field: "mmNumber",
-    minWidth: 120, // Minimum width for this column
+    minWidth: 120,
+    cellRenderer: (params) => (
+      <input
+        type="text"
+        value={params.value}
+        onChange={(e) => params.setValue(e.target.value)}
+        style={{
+          width: "100%",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          padding: "4px",
+        }}
+      />
+    ),
   },
   {
     headerName: "Description",
     field: "description",
-    minWidth: 250, // Minimum width for this column
+    minWidth: 250,
   },
   {
     headerName: "Quantity",
     field: "quantity",
-    minWidth: 150, // Minimum width for this column
+    minWidth: 150,
+    cellRenderer: (params) => (
+      <input
+        type="number"
+        value={params.value}
+        onChange={(e) => params.setValue(e.target.value)}
+        style={{
+          width: "100%",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          padding: "4px",
+        }}
+      />
+    ),
   },
   {
     headerName: "Unit Price",
     field: "unitPrice",
-    minWidth: 180, // Minimum width for this column
+    minWidth: 180,
   },
   {
     headerName: "Total Price",
     field: "totalPrice",
-    minWidth: 180, // Minimum width for this column
+    minWidth: 180,
   },
   {
     headerName: "Plant Code",
     field: "plantCode",
-    minWidth: 300, // Minimum width for this column
+    minWidth: 300,
+    cellRenderer: (params) => (
+      <input
+        type="text"
+        value={params.value}
+        onChange={(e) => params.setValue(e.target.value)}
+        style={{
+          width: "100%",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          padding: "4px",
+        }}
+      />
+    ),
   },
 ];
