@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate hook
-import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardBody,
+  Button,
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionBody,
+  Row,
+  Col,
+  FormGroup,
+  Label,
+  Input,
+  Badge,
+} from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 
 const UpdateEd = () => {
   const { state } = useLocation();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [edData, setEdData] = useState(state || {});
-  const [isUpdated, setIsUpdated] = useState(false); // Tracks if the update button was clicked
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [open, setOpen] = useState("1");
 
-  // Vendor options for the dropdown
-  const vendorOptions = [
-    { value: "vendor1", label: "Vendor 1" },
-    { value: "vendor2", label: "Vendor 2" },
-    { value: "vendor3", label: "Vendor 3" },
-  ];
+  // Hardcoded vendor options, or this could come from edData or elsewhere
+  const vendorOptions = ["NEC", "Vendor1", "Vendor2", "Vendor3"];
 
   useEffect(() => {
-    console.log("state", state);
     if (!state) toast.error("No ED data found!");
   }, [state]);
 
@@ -37,152 +47,113 @@ const UpdateEd = () => {
 
     console.log("Updated SRF Data:", edData);
     toast.success("Data updated successfully!");
-    setIsUpdated(true); // Show updated records after the button is clicked
+    setIsUpdated(true);
     navigate("/neptune/edquotation/inbox");
+  };
+
+  const toggleAccordion = (id) => {
+    setOpen(open === id ? null : id);
   };
 
   return (
     <div
       style={{
-        margin: "40px auto", // Centers the card and ensures consistent spacing
-        width: "90%",
-        maxWidth: "1200px", // Restricts the card's maximum width
-        position: "relative", // To position the Back button absolutely inside the div
+        margin: "40px auto",
+        width: "98%",
+        maxWidth: "1500px",
+        position: "relative",
       }}
     >
       <Card style={{ border: "none" }}>
-        {" "}
-        {/* Removed border from the Card */}
-        {/* Title */}
-        {/* <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {edData.quoteNumber || "Loading..."}
-        </CardTitle> */}
-        {/* Table */}
         <CardBody style={{ padding: "0" }}>
-          {" "}
-          {/* Removed border from CardBody and adjusted padding */}
-          <Table
-            bordered // Kept the border for the table
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              borderCollapse: "collapse",
-              tableLayout: "fixed",
-              border: "1px solid black", // Set the table border to black
-            }}
-          >
-            <tbody>
-              {columns.map((row, rowIndex) => (
-                <tr key={rowIndex} style={{ height: "60px" }}>
-                  {row.map((column, cellIndex) => (
-                    <>
-                      {/* Key Cell */}
-                      <td
-                        key={`key-${cellIndex}`}
-                        style={{
-                          backgroundColor: "#f5f5f5",
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
-                          padding: "10px",
-                          width: "33.3%",
-                        }}
-                      >
-                        {column.label}
-                      </td>
+          {/* Accordion for all labels */}
+          <Accordion open={open} toggle={toggleAccordion}>
+            <AccordionItem>
+              <AccordionHeader targetId="1">
+                <strong>Quote Details</strong>
+                {/* Green badge with quote number */}
+                {edData?.quoteNumber && (
+                  <Badge color="success" style={{ marginLeft: "15px" }}>
+                    {edData?.quoteNumber}
+                  </Badge>
+                )}
+              </AccordionHeader>
+              <AccordionBody accordionId="1">
+                {/* Loop through columns and render inputs */}
+                {columns.map((columnGroup, index) => (
+                  <Row
+                    key={index}
+                    style={{ marginTop: index > 0 ? "20px" : "0" }}
+                  >
+                    {columnGroup.map((column, colIndex) => (
+                      <Col md={3} key={colIndex}>
+                        <FormGroup>
+                          <Label for={column.key}>{column.label}</Label>
+                          {column.key === "vendor" ? (
+                            // Vendor Assignment as Dropdown using vendorOptions
+                            <Input
+                              type="select"
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onChange={(e) =>
+                                handleInputChange(column.key, e.target.value)
+                              }
+                              style={{
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
+                              }}
+                            >
+                              <option value="">Select Vendor</option>
+                              {/* Dynamically populate vendor options */}
+                              {vendorOptions.map((vendor, index) => (
+                                <option key={index} value={vendor}>
+                                  {vendor}
+                                </option>
+                              ))}
+                            </Input>
+                          ) : (
+                            // Default Input for other fields
+                            <Input
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onChange={(e) =>
+                                handleInputChange(column.key, e.target.value)
+                              }
+                              style={{
+                                fontSize: "10px", // Ensures font size is aligned with the vendor dropdown
+                                padding: "8px", // Consistent padding
+                              }}
+                            />
+                          )}
+                        </FormGroup>
+                      </Col>
+                    ))}
+                  </Row>
+                ))}
 
-                      {/* Value Cell */}
-                      <td
-                        key={`value-${cellIndex}`}
-                        style={{
-                          textAlign: "center",
-                          verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
-                          padding: "10px",
-                          width: "33.3%",
-                        }}
-                      >
-                        {column.key === "vendor" ? (
-                          // Dropdown for vendor assignment
-                          <select
-                            value={edData[column.key] || ""}
-                            onChange={(e) =>
-                              handleInputChange(column.key, e.target.value)
-                            }
-                            style={{
-                              textAlign: "center",
-                              outline: "none",
-                              padding: "8px", // Increased padding for better readability
-                              width: "100%",
-                              border: "1px solid lightgrey", // Light grey border for dropdown
-                            }}
-                          >
-                            <option value=""></option>
-                            {vendorOptions.map((vendor) => (
-                              <option key={vendor.value} value={vendor.value}>
-                                {vendor.label}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          // Default editable input for other fields
-                          <input
-                            type="text"
-                            value={edData[column.key] || ""}
-                            onChange={(e) =>
-                              handleInputChange(column.key, e.target.value)
-                            }
-                            style={{
-                              textAlign: "center",
-                              width: "100%",
-                              outline: "none",
-                              padding: "8px", // Increased padding for input fields
-                              border: "1px solid lightgrey", // Light grey border for input fields
-                            }}
-                          />
-                        )}
-                      </td>
-                    </>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          {/* Back Button positioned at the top right */}
-          {/* <Button
-            color="primary"
-            onClick={() => navigate(-1)} // Go back to the previous page
-            style={{
-              position: "absolute", // Positioning the button
-              top: "20px",
-              right: "20px",
-              padding: "10px 20px",
-              fontSize: "16px",
-              border: "none", // Removed border
-              outline: "none",
-              boxShadow: "none", // Removed box-shadow
-            }}
-          >
-            Back
-          </Button> */}
-          {/* Update Button */}
-          <div style={{ textAlign: "center", marginTop: "30px" }}>
-            <Button
-              color="primary"
-              onClick={handleSave}
-              style={{
-                padding: "10px 20px",
-                width: "160px",
-                fontSize: "16px",
-                border: "none", // Removed border
-                outline: "none",
-                boxShadow: "none", // Removed box-shadow
-              }}
-            >
-              Submit to vendor
-            </Button>
-          </div>
+                {/* Place the "Submit to Vendor" button inside AccordionBody */}
+                <div style={{ textAlign: "left", marginTop: "30px" }}>
+                  <Button
+                    color="primary"
+                    onClick={handleSave}
+                    style={{
+                      padding: "10px 20px",
+                      width: "160px",
+                      fontSize: "16px",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                    }}
+                  >
+                    Submit to vendor
+                  </Button>
+                </div>
+              </AccordionBody>
+            </AccordionItem>
+          </Accordion>
+
           {/* Display Updated Data */}
           {isUpdated && (
             <div
@@ -202,12 +173,12 @@ const UpdateEd = () => {
               <p
                 style={{
                   textAlign: "left",
-                  fontSize: "14px",
+                  fontSize: "12px",
                   whiteSpace: "pre-wrap",
                 }}
               >
                 {Object.entries(edData)
-                  .filter(([key, value]) => value) // Only show non-empty fields
+                  .filter(([key, value]) => value)
                   .map(([key, value]) => `${key}: ${value}`)
                   .join(" | ")}
               </p>

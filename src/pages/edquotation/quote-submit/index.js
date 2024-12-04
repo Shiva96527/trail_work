@@ -1,16 +1,99 @@
-import React, { useState } from "react";
-import { Button, Input, Table, Form, FormGroup, Row } from "reactstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Input,
+  Form,
+  Row,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudUploadAlt,
   faDownload,
   faSave,
+  faToggleOff,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import NeptuneAgGrid from "../../../components/ag-grid";
+import { columns } from "./config/columns";
+
 const QuoteSubmitPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const [gridState, setGridState] = useState(null);
+  const [toggleNonStandard, setToggleNonStandard] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Sample data for the grids (to display default rows with inputs and buttons)
+  const gridData = [
+    {
+      mmNumber: "",
+      description: "",
+      quantity: "",
+      unitPrice: "",
+      totalPrice: "",
+      plantCode: "",
+    },
+    {
+      mmNumber: "",
+      description: "",
+      quantity: "",
+      unitPrice: "",
+      totalPrice: "",
+      plantCode: "",
+    },
+  ];
+
+  // Define custom cell renderer for the MM# column with button and input
+  const mmCellRenderer = (params) => {
+    return (
+      <div>
+        <Button>-</Button>
+        <Input
+          type="text"
+          value={params.value}
+          onChange={(e) => params.setValue(e.target.value)}
+        />
+      </div>
+    );
+  };
+
+  // Define custom cell renderer for the Quantity and Plant Code columns with inputs
+  const inputCellRenderer = (params) => {
+    return (
+      <Input
+        type="text"
+        value={params.value}
+        onChange={(e) => params.setValue(e.target.value)}
+      />
+    );
+  };
+
+  // Retrieve grid state from localStorage on component mount
+  useEffect(() => {
+    const savedState = localStorage.getItem("gridState");
+    if (savedState) {
+      setGridState(JSON.parse(savedState));
+    }
+  }, []);
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  // Open the confirmation modal
+  const handleToggleConfirmation = () => setModalOpen(true);
+
+  // Handle modal cancel
+  const handleModalCancel = () => setModalOpen(false);
+
+  // Handle modal confirm
+  const handleModalConfirm = () => {
+    setToggleNonStandard((prev) => !prev); // Toggle the state
+    setModalOpen(false); // Close the modal
+  };
 
   return (
     <div>
@@ -18,14 +101,14 @@ const QuoteSubmitPage = () => {
         color="primary"
         onClick={() => navigate(-1)} // Go back to the previous page
         style={{
-          position: "absolute", // Positioning the button
+          position: "absolute",
           top: "70px",
           right: "20px",
           padding: "10px 20px",
           fontSize: "16px",
-          border: "none", // Removed border
+          border: "none",
           outline: "none",
-          boxShadow: "none", // Removed box-shadow
+          boxShadow: "none",
         }}
       >
         Back
@@ -53,38 +136,12 @@ const QuoteSubmitPage = () => {
             <FontAwesomeIcon icon={faSave} style={{ marginRight: "8px" }} />
             Save
           </Button>
-          {/* <Button
-            color="primary"
-            style={{
-              marginRight: "10px",
-              backgroundColor: "#007bff",
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faDownload} // Change the icon for the second left button
-              style={{ marginRight: "8px" }}
-            />
-            Download Template
-          </Button>
-          <Button
-            color="primary"
-            style={{
-              marginRight: "10px",
-              backgroundColor: "#007bff",
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faCloudUploadAlt} // You can change the icon for the left button
-              style={{ marginRight: "8px" }}
-            />
-            Upload
-          </Button> */}
 
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between", // Space between the left and right buttons
-              width: "79%"
+              justifyContent: "space-between",
+              width: "79%",
             }}
           >
             <div style={{ display: "flex" }}>
@@ -96,7 +153,7 @@ const QuoteSubmitPage = () => {
                 }}
               >
                 <FontAwesomeIcon
-                  icon={faDownload} // Change the icon for the second left button
+                  icon={faDownload}
                   style={{ marginRight: "8px" }}
                 />
                 Download Template
@@ -109,403 +166,143 @@ const QuoteSubmitPage = () => {
                 }}
               >
                 <FontAwesomeIcon
-                  icon={faCloudUploadAlt} // You can change the icon for the left button
+                  icon={faCloudUploadAlt}
                   style={{ marginRight: "8px" }}
                 />
                 Upload
               </Button>
             </div>
-
-            {/* Right Buttons */}
-            <div style={{ display: "flex", marginRight: "15px" }}>
-              <Button
-                color="primary"
-                style={{
-                  backgroundColor: "#007bff",
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faDownload}
-                  style={{ marginRight: "8px" }}
-                />
-                Export
-              </Button>
-            </div>
           </div>
         </Row>
       </Form>
-      {/* Table Section */}
-      <div style={{ marginTop: "20px" }}>
-        {/* First Table - Quotation Details */}
 
-        <Table
-          striped
-          bordered
+      <div style={{ position: "relative" }}>
+        {/* First Table - Quotation Details */}
+        <div
           style={{
-            borderColor: "white",
-            marginLeft: "15px",
-            maxWidth: "calc(100% - 30px)",
+            fontSize: "18px",
+            padding: "10px 15px",
+            fontWeight: "bold",
+            color: "black",
           }}
         >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                MM#
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Description
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Quantity
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Unit Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Total Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Plant Code
-              </th>
-            </tr>
-          </thead>
+          Quotation Details
+        </div>
 
-          <tbody>
-            <tr>
-              <td
-                style={{
-                  backgroundColor: "#E6F0FF",
-                  padding: "12px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                {/* + and - buttons with border and background colors */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    border: "1px solid #ddd",
-                    borderRadius: "5px",
-                    padding: "2px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "30px",
-                      height: "23px",
-                      backgroundColor: "red",
-                      color: "white",
-                      textAlign: "center",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      marginRight: "10px",
-                    }}
-                  >
-                    -
-                  </div>
-                  <input
-                    type="text"
-                    style={{
-                      padding: "1px 1px",
-                      border: "1px solid #ddd",
-                      borderRadius: "5px",
-                      flex: 1,
-                    }}
-                  />
-                </div>
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                <input
-                  type="text"
-                  style={{
-                    padding: "1px 1px",
-                    border: "1px solid #ddd",
-                    borderRadius: "5px",
-                    flex: 1,
-                  }}
-                />
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                <input
-                  type="text"
-                  style={{
-                    padding: "1px 1px",
-                    border: "1px solid #ddd",
-                    borderRadius: "5px",
-                    flex: 1,
-                  }}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-            </tr>
-          </tbody>
-        </Table>
+        <NeptuneAgGrid
+          data={gridData} // Use gridData as the data for the grid
+          dataprops={columns} // Pass column definitions for Quotation Details
+          gridOptions={{
+            domLayout: "autoHeight",
+            paginationPageSize: 10,
+            rowHeight: 50,
+
+            noRowsOverlay: "No data to show", // Override no data message
+            suppressExcelExport: true, // Disable Excel export button
+            suppressCsvExport: true,
+            suppressMenus: true, // Disable CSV export button
+          }}
+          style={{
+            marginTop: "-10px", // Or position: relative + top: -20px
+            paddingTop: "0", // Ensure no padding is affecting positioning
+          }}
+        />
 
         {/* Second Table - Implementation Costing Details */}
         <div
           style={{
-            fontSize: "15px",
+            fontSize: "18px",
             padding: "10px 15px",
             fontWeight: "bold",
             color: "black",
-            marginBottom: "10px",
+            marginTop: "30px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Implementation Costing Details
-        </div>
-        <Table
-          striped
-          bordered
-          style={{
-            borderColor: "white",
-            marginLeft: "15px",
-            maxWidth: "calc(100% - 30px)",
-          }}
-        >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                MM#
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Description
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Quantity
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Unit Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Total Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Plant Code
-              </th>
-            </tr>
-          </thead>
+          <span>Implementation Costing Details</span>
 
-          <tbody>
-            <tr>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-            </tr>
-          </tbody>
-        </Table>
-
-        {/* Third Table - Non Standard Quotation */}
-        <div
-          style={{
-            fontSize: "15px",
-            padding: "10px 15px",
-            fontWeight: "bold",
-            color: "black",
-            marginBottom: "10px",
-          }}
-        >
-          Non Standard Quotation
+          {/* Toggle Button for Non-Standard Quotation */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={{ marginRight: "10px" }}>Non-Standard Quotation</span>
+            <FontAwesomeIcon
+              icon={toggleNonStandard ? faToggleOn : faToggleOff}
+              style={{
+                cursor: "pointer",
+                fontSize: "30px",
+                color: "#293897",
+              }}
+              onClick={handleToggleConfirmation} // Trigger confirmation modal
+            />
+          </div>
         </div>
-        <Table
-          striped
-          bordered
-          style={{
-            borderColor: "white",
-            marginLeft: "15px",
-            maxWidth: "calc(100% - 30px)",
+
+        {/* Always visible - Implementation Costing Details Grid */}
+        <NeptuneAgGrid
+          data={gridData} // Use gridData as the data for the grid
+          dataprops={columns} // Pass column definitions for Implementation Costing
+          gridOptions={{
+            domLayout: "autoHeight",
+            paginationPageSize: 10,
+            rowHeight: 50,
+
+            suppressExcelExport: true, // Disable Excel export button
+            suppressCsvExport: true,
+            suppressMenus: true, // Disable CSV export button
           }}
-        >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                MM#
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Description
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Quantity
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Unit Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Total Price
-              </th>
-              <th
-                style={{
-                  width: "20%",
-                  backgroundColor: "#666666",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Plant Code
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#e0e0e0", padding: "12px" }}></td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#f0f0f0", padding: "12px" }}></td>
-            </tr>
-          </tbody>
-        </Table>
+        />
+
+        {/* Render Non-Standard Quotation Grid when the toggle is on */}
+        {toggleNonStandard && (
+          <>
+            <div
+              style={{
+                fontSize: "18px",
+                padding: "10px 15px",
+                fontWeight: "bold",
+                color: "black",
+                marginTop: "30px",
+              }}
+            >
+              Non-Standard Quotation
+            </div>
+
+            <NeptuneAgGrid
+              data={gridData} // Use gridData as the data for the grid
+              dataprops={columns} // Pass column definitions for Non-Standard Quotation
+              gridOptions={{
+                domLayout: "autoHeight",
+                paginationPageSize: 10,
+                rowHeight: 50,
+                // Override no data message
+                suppressExcelExport: true, // Disable Excel export button
+                suppressCsvExport: true,
+                suppressMenus: true, // Disable CSV export button
+              }}
+            />
+          </>
+        )}
       </div>
+
+      {/* Confirmation Modal */}
+      <Modal isOpen={modalOpen} toggle={handleModalCancel}>
+        <ModalHeader toggle={handleModalCancel}>
+          {toggleNonStandard ? "Disable" : "Enable"} Non-Standard Quotation
+        </ModalHeader>
+        <ModalBody>
+          Are you sure you want to {toggleNonStandard ? "disable" : "enable"}{" "}
+          the Non-Standard Quotation section?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={handleModalCancel}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleModalConfirm}>
+            {toggleNonStandard ? "Disable" : "Enable"}
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };
