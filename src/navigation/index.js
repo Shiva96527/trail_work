@@ -27,8 +27,8 @@ import TaskHistory from "../pages/edquotation/task-history";
 import MyGroup from "../pages/edquotation/my-group";
 import CreateEd from "../pages/edquotation/create-ed";
 import UpdateEd from "../pages/edquotation/update-ed";
-import QuoteSubmitPage from "../pages/srf/quote-submit";
-import QuoteReviewPage from "../pages/srf/quote-review";
+import QuoteSubmitPage from "../pages/edquotation/quote-submit";
+import QuoteReviewPage from "../pages/edquotation/quote-review";
 import VendorManagement from "../pages/admin/vendor-management";
 import EdSearch from "../pages/edquotation/ed-search";
 import QuoteDetailPage from "../pages/edquotation/ed-quote-detail";
@@ -100,7 +100,10 @@ export const approutes = (isAuth) => {
         },
         { path: "/neptune/vendor/management", element: <VendorManagement /> },
         { path: "/neptune/ed/search", element: <EdSearch /> },
-        { path: "/neptune/edquotation/detail/:srfNumber", element: <QuoteDetailPage /> },
+        {
+          path: "/neptune/edquotation/detail/:srfNumber",
+          element: <QuoteDetailPage />,
+        },
       ],
     },
   ];
