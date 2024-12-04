@@ -1,20 +1,11 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Input,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Table,
-} from "reactstrap";
+import { Button, Input, Table, Form, FormGroup, Row } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudUploadAlt,
   faDownload,
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 const QuoteSubmitPage = () => {
   const { state } = useLocation();
@@ -32,7 +23,6 @@ const QuoteSubmitPage = () => {
     { value: "vendor3", label: "Vendor 3" },
   ];
 
- 
   const handleInputChange = (field, value) => {
     setQuoteData({
       ...quoteData,
@@ -74,102 +64,47 @@ const QuoteSubmitPage = () => {
   };
 
   return (
-    <div style={{ margin: "40px auto", width: "98%", maxWidth: "2000px" }}>
-      {/* Title Section */}
-      <div
+    <div>
+      <Button
+        color="primary"
+        onClick={() => navigate(-1)} // Go back to the previous page
         style={{
-          fontSize: "18px",
-          backgroundColor: "#293897",
-          color: "white",
-          padding: "5px 100px",
-          display: "inline-block",
-          marginTop: "30px",
-          marginLeft: "15px",
-          borderTopLeftRadius: "10px",
-          borderTopRightRadius: "10px",
-          border: "none",
-          boxShadow: "none",
-          width: "auto",
+          position: "absolute", // Positioning the button
+          top: "70px",
+          right: "20px",
+          padding: "10px 20px",
+          fontSize: "16px",
+          border: "none", // Removed border
+          outline: "none",
+          boxShadow: "none", // Removed box-shadow
         }}
       >
-        Quotation details
-        {/* Back Button positioned at the top right */}
-        <Button
-          color="primary"
-          onClick={() => navigate(-1)} // Go back to the previous page
-          style={{
-            position: "absolute", // Positioning the button
-            top: "70px",
-            right: "20px",
-            padding: "10px 20px",
-            fontSize: "16px",
-            border: "none", // Removed border
-            outline: "none",
-            boxShadow: "none", // Removed box-shadow
-          }}
-        >
-          Back
-        </Button>
-      </div>
+        Back
+      </Button>
 
-      <div
-        style={{
-          fontSize: "15px",
-          padding: "10px 15px",
-          color: "black",
-          fontWeight: "normal",
-        }}
-      >
-        Survey Costing details
-      </div>
-
-      {/* OA# Input Section */}
-      <div
-        style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}
-      >
-        <label
-          style={{
-            padding: "6px 110px",
-            backgroundColor: "#293897",
-            color: "white",
-            border: "1px solid #ddd",
-            borderRadius: "0px",
-            fontWeight: "bold",
-            textAlign: "center",
-            marginRight: "10px",
-            marginLeft: "15px",
-          }}
-        >
-          OA#
-        </label>
-
-        <Input
-          type="text"
-          style={{
-            width: "220px",
-            padding: "10px",
-            marginRight: "15px",
-            marginLeft: "15px",
-          }}
-        />
-
-        <Button color="primary">
-          <FontAwesomeIcon icon={faSave} style={{ marginRight: "8px" }} />
-          Save
-        </Button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between", // Space between the left and right buttons
-          marginBottom: "15px",
-          width: "100%", // Ensure the div stretches across the full width
-        }}
-      >
-        {/* Left Buttons */}
-        <div style={{ display: "flex", marginLeft: "15px" }}>
+      <Form className="my-4">
+        <Row className="row-cols-lg-auto g-3 align-items-center m-1">
+          <Input
+            type="text"
+            placeholder="Enter OA#"
+            style={{
+              width: "220px",
+              padding: "10px",
+              marginRight: "15px",
+              marginLeft: "15px",
+            }}
+          />
           <Button
+            color="primary"
+            style={{
+              marginRight: "5px",
+              backgroundColor: "#007bff",
+            }}
+          >
+            <FontAwesomeIcon icon={faSave} style={{ marginRight: "8px" }} />
+            Save
+          </Button>
+          {/* <Button
             color="primary"
             style={{
               marginRight: "10px",
@@ -194,23 +129,62 @@ const QuoteSubmitPage = () => {
               style={{ marginRight: "8px" }}
             />
             Upload
-          </Button>
-        </div>
+          </Button> */}
 
-        {/* Right Buttons */}
-        <div style={{ display: "flex", marginRight: "15px" }}>
-          <Button
-            color="primary"
+          <div
             style={{
-              backgroundColor: "#007bff",
+              display: "flex",
+              justifyContent: "space-between", // Space between the left and right buttons
+              width: "79%",
             }}
           >
-            <FontAwesomeIcon icon={faDownload} style={{ marginRight: "8px" }} />
-            Export
-          </Button>
-        </div>
-      </div>
+            <div style={{ display: "flex" }}>
+              <Button
+                color="primary"
+                style={{
+                  marginRight: "10px",
+                  backgroundColor: "#007bff",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faDownload} // Change the icon for the second left button
+                  style={{ marginRight: "8px" }}
+                />
+                Download Template
+              </Button>
+              <Button
+                color="primary"
+                style={{
+                  marginRight: "10px",
+                  backgroundColor: "#007bff",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faCloudUploadAlt} // You can change the icon for the left button
+                  style={{ marginRight: "8px" }}
+                />
+                Upload
+              </Button>
+            </div>
 
+            {/* Right Buttons */}
+            <div style={{ display: "flex", marginRight: "15px" }}>
+              <Button
+                color="primary"
+                style={{
+                  backgroundColor: "#007bff",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faDownload}
+                  style={{ marginRight: "8px" }}
+                />
+                Export
+              </Button>
+            </div>
+          </div>
+        </Row>
+      </Form>
       {/* Table Section */}
       <div style={{ marginTop: "20px" }}>
         {/* First Table - Quotation Details */}
@@ -590,53 +564,74 @@ const QuoteSubmitPage = () => {
           {/* {"Quote Submission"} */}
         </CardTitle>
 
-        <Accordion open={accordionOpen} toggle={toggleAccordion} style={{ marginTop: "20px" }}>
+        <Accordion
+          open={accordionOpen}
+          toggle={toggleAccordion}
+          style={{ marginTop: "20px" }}
+        >
           {/* Quote Details Accordion */}
           <AccordionItem>
             <AccordionHeader targetId="1">
               <strong>Survey Costing Details</strong>&nbsp;&nbsp;
-              <Badge color="success">{quoteData?.quoteNumber}</Badge>&nbsp;&nbsp;
+              <Badge color="success">{quoteData?.quoteNumber}</Badge>
+              &nbsp;&nbsp;
               {quoteData?.assignedTo && (
-                <Badge color="info">{"Assigned to->" + quoteData?.assignedTo}</Badge>
+                <Badge color="info">
+                  {"Assigned to->" + quoteData?.assignedTo}
+                </Badge>
               )}
             </AccordionHeader>
             <AccordionBody accordionId="1">
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -655,14 +650,13 @@ const QuoteSubmitPage = () => {
                   padding: "5px 10px",
                   fontSize: "14px",
                 }}
-                data-toggle="tooltip" 
+                data-toggle="tooltip"
                 title="Non-Standard Quotation"
               >
                 <FontAwesomeIcon
                   icon={toggleCostingDetails ? faToggleOn : faToggleOff}
                   style={{ marginRight: "8px" }}
                 />
-               
               </Button>
             </AccordionHeader>
             <AccordionBody accordionId="2">
@@ -670,39 +664,53 @@ const QuoteSubmitPage = () => {
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -710,7 +718,9 @@ const QuoteSubmitPage = () => {
           </AccordionItem>
 
           {/* Non-Standard Quotation Accordion */}
-          <AccordionItem style={{ display: toggleCostingDetails ? "block" : "none" }}>
+          <AccordionItem
+            style={{ display: toggleCostingDetails ? "block" : "none" }}
+          >
             <AccordionHeader targetId="3">
               <strong>Non-Standard Quotation</strong>
             </AccordionHeader>
@@ -719,39 +729,53 @@ const QuoteSubmitPage = () => {
               <fieldset>
                 {columns.map((row, rowIndex) => (
                   <Row key={rowIndex} style={{ marginBottom: "20px" }}>
-                    {row.map((column, colIndex) => (
-                      column.label && (
-                        <Col md={3} key={colIndex}>
-                          <FormGroup>
-                            <Label for={column.key}>{column.label}</Label>
-                            {column.key === "vendor" ? (
-                              <Input
-                                id={column.key}
-                                type="select"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "13px" }}
-                              >
-                                <option value=""></option>
-                                {vendorOptions.map((vendor) => (
-                                  <option key={vendor.value} value={vendor.value}>
-                                    {vendor.label}
-                                  </option>
-                                ))}
-                              </Input>
-                            ) : (
-                              <Input
-                                id={column.key}
-                                type="text"
-                                value={quoteData[column.key] || ""}
-                                onChange={(e) => handleInputChange(column.key, e.target.value)}
-                                style={{ fontSize: "14px" }}
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                      )
-                    ))}
+                    {row.map(
+                      (column, colIndex) =>
+                        column.label && (
+                          <Col md={3} key={colIndex}>
+                            <FormGroup>
+                              <Label for={column.key}>{column.label}</Label>
+                              {column.key === "vendor" ? (
+                                <Input
+                                  id={column.key}
+                                  type="select"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  <option value=""></option>
+                                  {vendorOptions.map((vendor) => (
+                                    <option
+                                      key={vendor.value}
+                                      value={vendor.value}
+                                    >
+                                      {vendor.label}
+                                    </option>
+                                  ))}
+                                </Input>
+                              ) : (
+                                <Input
+                                  id={column.key}
+                                  type="text"
+                                  value={quoteData[column.key] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      column.key,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{ fontSize: "14px" }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        )
+                    )}
                   </Row>
                 ))}
               </fieldset>
@@ -762,21 +786,22 @@ const QuoteSubmitPage = () => {
 
       {/* Confirmation Modal for Implementation Costing Details */}
       <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)}>
-      <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
-        {toggleCostingDetails ? "Disable" : "Enable"} Non-Standard Quotation
-      </ModalHeader>
-      <ModalBody>
-        Are you sure you want to {toggleCostingDetails ? "disable" : "enable"} Non-Standard Quotation details?
-      </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={handleModalCancel}>
-          Cancel
-        </Button>
-        <Button color="primary" onClick={handleModalConfirm}>
-          {toggleCostingDetails ? "Disable" : "Enable"}
-        </Button>
-      </ModalFooter>
-    </Modal>
+        <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
+          {toggleCostingDetails ? "Disable" : "Enable"} Non-Standard Quotation
+        </ModalHeader>
+        <ModalBody>
+          Are you sure you want to {toggleCostingDetails ? "disable" : "enable"}{" "}
+          Non-Standard Quotation details?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={handleModalCancel}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleModalConfirm}>
+            {toggleCostingDetails ? "Disable" : "Enable"}
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };

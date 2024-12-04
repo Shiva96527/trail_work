@@ -16,6 +16,9 @@ const UpdateEd = () => {
     { value: "vendor1", label: "Vendor 1" },
     { value: "vendor2", label: "Vendor 2" },
     { value: "vendor3", label: "Vendor 3" },
+    { value: "vendor1", label: "Vendor 1" },
+    { value: "vendor2", label: "Vendor 2" },
+    { value: "vendor3", label: "Vendor 3" },
   ];
 
   useEffect(() => {
@@ -38,7 +41,7 @@ const UpdateEd = () => {
 
     console.log("Updated SRF Data:", edData);
     toast.success("Data updated successfully!");
-    setIsUpdated(true);
+    setIsUpdated(true); // Show updated records after the button is clicked
     navigate("/neptune/edquotation/inbox");
   };
 
@@ -56,40 +59,30 @@ const UpdateEd = () => {
       }}
     >
       <Card style={{ border: "none" }}>
-        {" "}
-        {/* Removed border from the Card */}
-        {/* Title */}
-        <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {edData.quoteNumber || "Loading..."}
-        </CardTitle>
-        {/* Table */}
         <CardBody style={{ padding: "0" }}>
-          {" "}
-          {/* Removed border from CardBody and adjusted padding */}
           <Table
-            bordered // Kept the border for the table
+            bordered
             style={{
-              marginTop: "50px",
+              marginTop: "20px",
               width: "100%",
               borderCollapse: "collapse",
               tableLayout: "fixed",
-              border: "1px solid black", // Set the table border to black
+              border: "1px solid black",
             }}
           >
             <tbody>
               {columns.map((row, rowIndex) => (
                 <tr key={rowIndex} style={{ height: "60px" }}>
                   {row.map((column, cellIndex) => (
-                    <>
+                    <React.Fragment key={cellIndex}>
                       {/* Key Cell */}
                       <td
-                        key={`key-${cellIndex}`}
                         style={{
                           backgroundColor: "#f5f5f5",
                           fontWeight: "bold",
                           textAlign: "center",
                           verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
+                          border: "1px solid black",
                           padding: "10px",
                           width: "33.3%",
                         }}
@@ -99,17 +92,15 @@ const UpdateEd = () => {
 
                       {/* Value Cell */}
                       <td
-                        key={`value-${cellIndex}`}
                         style={{
                           textAlign: "center",
                           verticalAlign: "middle",
-                          border: "1px solid black", // Black border for the table cells
+                          border: "1px solid black",
                           padding: "10px",
                           width: "33.3%",
                         }}
                       >
                         {column.key === "vendor" ? (
-                          // Dropdown for vendor assignment
                           <select
                             value={edData[column.key] || ""}
                             onChange={(e) =>
@@ -118,9 +109,9 @@ const UpdateEd = () => {
                             style={{
                               textAlign: "center",
                               outline: "none",
-                              padding: "8px", // Increased padding for better readability
+                              padding: "8px",
                               width: "100%",
-                              border: "1px solid lightgrey", // Light grey border for dropdown
+                              border: "1px solid lightgrey",
                             }}
                           >
                             <option value=""></option>
@@ -131,7 +122,6 @@ const UpdateEd = () => {
                             ))}
                           </select>
                         ) : (
-                          // Default editable input for other fields
                           <input
                             type="text"
                             value={edData[column.key] || ""}
@@ -142,63 +132,68 @@ const UpdateEd = () => {
                               textAlign: "center",
                               width: "100%",
                               outline: "none",
-                              padding: "8px", // Increased padding for input fields
-                              border: "1px solid lightgrey", // Light grey border for input fields
+                              padding: "8px",
+                              border: "1px solid lightgrey",
                             }}
                           />
                         )}
                       </td>
-                    </>
+                    </React.Fragment>
                   ))}
                 </tr>
               ))}
             </tbody>
           </Table>
-          {/* Back Button positioned at the top right */}
-          <Button
-            color="primary"
-            onClick={() => navigate(-1)} // Navigate to the previous page
-            style={{
-              position: "absolute",
 
-              right: "20px",
-              padding: "5px 10px",
-              fontSize: "16px",
-            }}
-          >
-            Back
-          </Button>
+          {/* Submit Button */}
+          <div style={{ textAlign: "center", marginTop: "30px" }}>
+            <Button
+              color="primary"
+              onClick={handleSave}
+              style={{
+                padding: "10px 20px",
+                width: "160px",
+                fontSize: "16px",
+                border: "none",
+                outline: "none",
+                boxShadow: "none",
+              }}
+            >
+              Submit to vendor
+            </Button>
+          </div>
+
+          {/* Display Updated Data */}
+          {isUpdated && (
+            <div
+              style={{
+                marginTop: "40px",
+                textAlign: "center",
+                padding: "20px",
+                border: "2px solid #ddd",
+                borderRadius: "8px",
+                width: "80%",
+                margin: "40px auto",
+                backgroundColor: "#f9f9f9",
+                minHeight: "50px",
+              }}
+            >
+              <h5>Updated Record</h5>
+              <p
+                style={{
+                  textAlign: "left",
+                  fontSize: "14px",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {Object.entries(edData)
+                  .filter(([key, value]) => value) // Only show non-empty fields
+                  .map(([key, value]) => `${key}: ${value}`)
+                  .join(" | ")}
+              </p>
+            </div>
+          )}
         </CardBody>
-        {/* Update Button */}
-        <div style={{ textAlign: "center", marginTop: "30px" }}>
-          <Button
-            color="primary"
-            onClick={handleSave}
-            style={{
-              padding: "10px 20px",
-              width: "160px",
-              fontSize: "16px",
-              border: "none", // Removed border
-              outline: "none",
-              boxShadow: "none", // Removed box-shadow
-            }}
-          >
-            Submit to vendor
-          </Button>
-        </div>
-        <div style={{ textAlign: "left", marginTop: "30px" }}>
-          <Button
-            color="primary"
-            onClick={handleSave}
-            style={{
-              padding: "10px 20px",
-              width: "100px",
-              fontSize: "16px",
-            }}
-          >
-            Update
-          </Button>
-        </div>
       </Card>
     </div>
   );

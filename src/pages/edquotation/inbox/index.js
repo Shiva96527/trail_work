@@ -78,6 +78,55 @@ const dummyData = [
 ];
 
 
+
+const dummyData = [
+  {
+    quoteNumber: "QT_01/2024/06/01",
+    assignee: "Prem01",
+    department: "NETWORK ROLLOUT",
+    opportunityID: "OPP_104569",
+    serviceOrderNumber: "99345765234",
+    fixCDS: "3423113",
+    businessCaseNumber: "BC2400693",
+    srfNumber: "SRF32727_D_MOBILE",
+    status: "Vendor Assignment",
+    createdDate: "4/3/2024",
+    createdBy: "Shiva",
+    vendor: "NEC",
+    group:"GRP_NS_OFFNET"
+  },
+  {
+    group:"GRP_NS_OFFNET",
+    quoteNumber: "QT_02/2024/06/02",
+    assignee: "Prem02",
+    department: "NETWORK ROLLOUT",
+    opportunityID: "OPP_104580",
+    serviceOrderNumber: "99345765143",
+    fixCDS: "3425113",
+    businessCaseNumber: "BC2400793",
+    srfNumber: "SRF32727_S_MOBILE",
+    status: "Vendor Assignment",
+    createdDate: "6/3/2024",
+    createdBy: "PREM",
+    vendor: "NEC",
+  },
+  {
+    quoteNumber: "QT_03/2024/06/03",
+    assignee: "Prem03",
+    department: "NETWORK ROLLOUT",
+    opportunityID: "OPP_104580",
+    serviceOrderNumber: "99345765143",
+    fixCDS: "3425113",
+    businessCaseNumber: "BC2400793",
+    srfNumber: "SRF32727_S_MOBILE3",
+    status: "Vendor Assignment",
+    createdDate: "6/3/2024",
+    createdBy: "PREM",
+    vendor: "NEC",
+    group:"GRP_NS_OFFNET"
+  },
+];
+
 const TableComponent = () => {
   const navigate = useNavigate();
   const [excelModal, setExcelModal] = useState(false);
@@ -86,7 +135,8 @@ const TableComponent = () => {
   const [gridData, setGridData] = useState([]);
 
   useEffect(() => {
-    getEDQuoteList();
+    // getEDQuoteList();
+    setGridData(dummyData);
   }, []);
 
   const getEDQuoteList = async (fromModal = false) => {
@@ -119,7 +169,7 @@ const TableComponent = () => {
 
     // Navigate to the update page when clicking on action icons
     if (actionType === "others" || actionType === "move") {
-      navigate(`/neptune/edquotation/update-ed/${row.srfNumber}`, {
+      navigate(`/neptune/edquotation/detail/${row.srfNumber}`, {
         state: {
           group: row.group,
           quoteNumber: row.quoteNumber,
@@ -270,33 +320,6 @@ const TableComponent = () => {
                             <FontAwesomeIcon
                               icon={faSearch}
                               onClick={() => navigate("/neptune/ed/search")}
-                            />
-                          </Button>
-                          &nbsp;&nbsp;
-                          {/* Additional Submit Icons */}
-                          <Button
-                            color="secondary"
-                            size="sm"
-                            onClick={() =>
-                              navigate("/neptune/edquotation/quotesubmit")
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={faCheckCircle}
-                              style={{ fontSize: "15px" }}
-                            />
-                          </Button>
-                          &nbsp;&nbsp;
-                          <Button
-                            color="danger"
-                            size="sm"
-                            onClick={() =>
-                              navigate("/neptune/edquotation/quotereview")
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={faClipboardCheck}
-                              style={{ fontSize: "15px" }}
                             />
                           </Button>
                           &nbsp;&nbsp;
