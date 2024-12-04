@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate hook
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Button,
-  Table
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Button, Table } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 
-const UpdateSrfEdInbox = () => {
+const UpdateEd = () => {
   const { state } = useLocation();
   const navigate = useNavigate(); // Initialize navigate
   const [edData, setEdData] = useState(state || {});
@@ -225,4 +219,4 @@ const UpdateSrfEdInbox = () => {
   );
 };
 
-export default UpdateSrfEdInbox;
+export default UpdateEd;
