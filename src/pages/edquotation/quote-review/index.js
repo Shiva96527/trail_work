@@ -10,23 +10,6 @@ const QuoteReviewPage = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <Button
-        color="primary"
-        onClick={() => navigate(-1)} // Go back to the previous page
-        style={{
-          position: "absolute", // Positioning the button
-          top: "70px",
-          right: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          border: "none", // Removed border
-          outline: "none",
-          boxShadow: "none", // Removed box-shadow
-        }}
-      >
-        Back
-      </Button>
-
       {/* First Table (2 Columns) */}
       <div style={{ marginTop: "25px" }}>
         <Table

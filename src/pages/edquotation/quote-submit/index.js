@@ -31,20 +31,12 @@ const QuoteSubmitPage = () => {
   // Sample data for the grids (to display default rows with inputs and buttons)
   const gridData = [
     {
-      mmNumber: "",
-      description: "",
-      quantity: "",
-      unitPrice: "",
-      totalPrice: "",
-      plantCode: "",
-    },
-    {
-      mmNumber: "",
-      description: "",
-      quantity: "",
-      unitPrice: "",
-      totalPrice: "",
-      plantCode: "",
+      mmNumber: "56003817",
+      description: "SURVEY,DESIGN,PM",
+      quantity: 1.0,
+      unitPrice: "1,489.36",
+      totalPrice: "1.489.36",
+      plantCode: "FN57",
     },
   ];
 
@@ -97,23 +89,6 @@ const QuoteSubmitPage = () => {
 
   return (
     <div>
-      <Button
-        color="primary"
-        onClick={() => navigate(-1)} // Go back to the previous page
-        style={{
-          position: "absolute",
-          top: "70px",
-          right: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          border: "none",
-          outline: "none",
-          boxShadow: "none",
-        }}
-      >
-        Back
-      </Button>
-
       <Form className="my-4">
         <Row className="row-cols-lg-auto g-3 align-items-center m-1">
           <Input
@@ -176,27 +151,28 @@ const QuoteSubmitPage = () => {
         </Row>
       </Form>
 
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", margin: "20px" }}>
         {/* First Table - Quotation Details */}
-        <div
-          style={{
-            fontSize: "18px",
-            padding: "10px 15px",
-            fontWeight: "bold",
-            color: "black",
-          }}
-        >
-          Quotation Details
-        </div>
-
         <NeptuneAgGrid
           data={gridData} // Use gridData as the data for the grid
           dataprops={columns} // Pass column definitions for Quotation Details
+          topActionButtons={
+            <div
+              style={{
+                fontSize: "18px",
+                fontWeight: "bold",
+                color: "black",
+                alignItems: "center",
+                display: "flex",
+              }}
+            >
+              Quotation Details
+            </div>
+          }
           gridOptions={{
             domLayout: "autoHeight",
             paginationPageSize: 10,
             rowHeight: 50,
-
             noRowsOverlay: "No data to show", // Override no data message
             suppressExcelExport: true, // Disable Excel export button
             suppressCsvExport: true,
@@ -208,69 +184,86 @@ const QuoteSubmitPage = () => {
           }}
         />
 
-        {/* Second Table - Implementation Costing Details */}
+        {/* Always visible - Implementation Costing Details Grid */}
         <div
           style={{
             fontSize: "18px",
-            padding: "10px 15px",
-            fontWeight: "bold",
-            color: "black",
             marginTop: "30px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <span>Implementation Costing Details</span>
-
-          {/* Toggle Button for Non-Standard Quotation */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ marginRight: "10px" }}>Non-Standard Quotation</span>
-            <FontAwesomeIcon
-              icon={toggleNonStandard ? faToggleOn : faToggleOff}
-              style={{
-                cursor: "pointer",
-                fontSize: "30px",
-                color: "#293897",
-              }}
-              onClick={handleToggleConfirmation} // Trigger confirmation modal
-            />
-          </div>
+          <NeptuneAgGrid
+            data={gridData} // Use gridData as the data for the grid
+            dataprops={columns} // Pass column definitions for Implementation Costing
+            topActionButtons={
+              <>
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    color: "black",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
+                  Implementation Costing Details
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span style={{ marginRight: "10px" }}>
+                    Non-Standard Quotation
+                  </span>
+                  <FontAwesomeIcon
+                    icon={toggleNonStandard ? faToggleOn : faToggleOff}
+                    style={{
+                      cursor: "pointer",
+                      fontSize: "30px",
+                      color: "#293897",
+                    }}
+                    onClick={handleToggleConfirmation} // Trigger confirmation modal
+                  />
+                </div>
+              </>
+            }
+            gridOptions={{
+              domLayout: "autoHeight",
+              paginationPageSize: 10,
+              rowHeight: 50,
+              suppressExcelExport: true, // Disable Excel export button
+              suppressCsvExport: true,
+              suppressMenus: true, // Disable CSV export button
+            }}
+          />
         </div>
-
-        {/* Always visible - Implementation Costing Details Grid */}
-        <NeptuneAgGrid
-          data={gridData} // Use gridData as the data for the grid
-          dataprops={columns} // Pass column definitions for Implementation Costing
-          gridOptions={{
-            domLayout: "autoHeight",
-            paginationPageSize: 10,
-            rowHeight: 50,
-
-            suppressExcelExport: true, // Disable Excel export button
-            suppressCsvExport: true,
-            suppressMenus: true, // Disable CSV export button
-          }}
-        />
 
         {/* Render Non-Standard Quotation Grid when the toggle is on */}
         {toggleNonStandard && (
-          <>
-            <div
-              style={{
-                fontSize: "18px",
-                padding: "10px 15px",
-                fontWeight: "bold",
-                color: "black",
-                marginTop: "30px",
-              }}
-            >
-              Non-Standard Quotation
-            </div>
-
+          <div
+            style={{
+              fontSize: "18px",
+              marginTop: "30px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <NeptuneAgGrid
               data={gridData} // Use gridData as the data for the grid
               dataprops={columns} // Pass column definitions for Non-Standard Quotation
+              topActionButtons={
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    color: "black",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
+                  Non-Standard Quotation
+                </div>
+              }
               gridOptions={{
                 domLayout: "autoHeight",
                 paginationPageSize: 10,
@@ -281,8 +274,24 @@ const QuoteSubmitPage = () => {
                 suppressMenus: true, // Disable CSV export button
               }}
             />
-          </>
+          </div>
         )}
+      </div>
+
+      <div style={{ textAlign: "left", marginTop: "30px", marginLeft: "20px" }}>
+        <Button
+          color="primary"
+          style={{
+            padding: "10px 20px",
+            width: "160px",
+            fontSize: "16px",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+          }}
+        >
+          Submit
+        </Button>
       </div>
 
       {/* Confirmation Modal */}

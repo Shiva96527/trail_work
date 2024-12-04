@@ -7,9 +7,9 @@ const columns = [
     { label: "Opportunity ID", key: "opportunityID" },
   ],
   [
-    { label: "Service Order Number", key: "serviceOrderNumber" },
-    { label: "FIXCDS #", key: "fixCDS" },
-    { label: "Business Case Number", key: "businessCaseNumber" },
+    { label: "FIXCAS #", key: "fixCasNumber" },
+    { label: "FIXCDS #", key: "fixCdsNumber" },
+    { label: "Business Case #", key: "businessCaseNumber" },
     { label: "SRF #", key: "srfNumber" },
   ],
   [
@@ -23,7 +23,6 @@ const columns = [
       label: "Vendor Assignment",
       key: "vendor",
     },
-    { label: "FIXCAS #", key: "fixCAS" },
   ],
 ];
 

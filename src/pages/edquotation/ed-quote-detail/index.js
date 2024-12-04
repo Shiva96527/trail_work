@@ -10,7 +10,7 @@ import {
   Button,
   CardBody,
 } from "reactstrap";
-import UpdateSrfEdInbox from "../../edquotation/update-ed";
+import Request from "../request";
 import QuoteSubmitPage from "../../edquotation/quote-submit";
 import QuoteReviewPage from "../../edquotation/quote-review";
 import EDQuoteWorkflow from "../workflow/index";
@@ -20,19 +20,23 @@ import { toast } from "react-toastify";
 //new to add two more component for mail and workflow
 const tabConfig = {
   1: {
-    title: "Quotation Details",
-    component: <UpdateSrfEdInbox />,
+    title: "Request",
+    component: <Request />,
   },
   2: {
-    title: "Survey Costing details",
+    title: "Quote details",
     component: <QuoteSubmitPage />,
   },
   3: {
-    title: "Overall Costing details",
+    title: "Overall Costing",
     component: <QuoteReviewPage />,
   },
   4: {
-    title: "Workflow ",
+    title: "Workflow",
+    component: <EDQuoteWorkflow />,
+  },
+  5: {
+    title: "Email logs ",
     component: <EDQuoteWorkflow />,
   },
 };
@@ -44,7 +48,6 @@ export default function QuoteDetailPage() {
 
   useEffect(() => {
     constructTabs();
-    console.log("called");
   }, []);
 
   useEffect(() => {
@@ -60,7 +63,6 @@ export default function QuoteDetailPage() {
     let tempNavItems = [];
     let tempTabPane = [];
     for (const [key, value] of Object.entries(tabConfig)) {
-      console.log("key,currentActiveTab", key, currentActiveTab);
       tempNavItems.push(
         <NavItem key={key}>
           <NavLink

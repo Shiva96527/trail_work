@@ -18,9 +18,10 @@ import {
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 
-const UpdateEd = () => {
+const Request = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  console.log('field,value', state)
   const [edData, setEdData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false);
   const [open, setOpen] = useState("1");
@@ -70,7 +71,7 @@ const UpdateEd = () => {
           <Accordion open={open} toggle={toggleAccordion}>
             <AccordionItem>
               <AccordionHeader targetId="1">
-                <strong>Quote Details</strong>
+                <strong>Quotation Number</strong>
                 {/* Green badge with quote number */}
                 {edData?.quoteNumber && (
                   <Badge color="success" style={{ marginLeft: "15px" }}>
@@ -190,4 +191,4 @@ const UpdateEd = () => {
   );
 };
 
-export default UpdateEd;
+export default Request;

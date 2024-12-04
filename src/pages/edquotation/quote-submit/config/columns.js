@@ -1,4 +1,24 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+
 export const columns = [
+  {
+    field: "assign",
+    headerName: "Action",
+    minWidth: 50,
+    cellRenderer: (v) => (
+      <>
+        <FontAwesomeIcon
+          icon={faTrash}
+          className="fa-cursor"
+          fontSize={"14px"}
+          data-toggle="tooltip"
+          title="Update ED"
+          // onClick={() => handleAssignment(v?.data, "others")} // Reassign action
+        />
+      </>
+    ),
+  },
   {
     headerName: "MM#",
     field: "mmNumber",
@@ -27,6 +47,6 @@ export const columns = [
   {
     headerName: "Plant Code",
     field: "plantCode",
-    minWidth: 150, // Minimum width for this column
+    minWidth: 300, // Minimum width for this column
   },
 ];
