@@ -155,7 +155,7 @@ const CreateSrfEdInbox = () => {
                     </Col>
                     <Col md={3}>
                       <FormGroup>
-                        <Label for="BC">BC</Label>
+                        <Label for="BC">BC #</Label>
                         <Input
                           name="BC"
                           id="BC"

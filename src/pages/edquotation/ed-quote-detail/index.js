@@ -16,6 +16,7 @@ import QuoteReviewPage from "../../edquotation/quote-review";
 import EDQuoteWorkflow from "../workflow/index";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
 import { toast } from "react-toastify";
+import EmailLogs from "../email-logs";
 
 //new to add two more component for mail and workflow
 const tabConfig = {
@@ -37,7 +38,7 @@ const tabConfig = {
   },
   5: {
     title: "Email logs ",
-    component: <EDQuoteWorkflow />,
+    component: <EmailLogs />,
   },
 };
 

@@ -166,7 +166,7 @@ const QuoteSubmitPage = () => {
                 display: "flex",
               }}
             >
-              Quotation Details
+              Survey Details
             </div>
           }
           gridOptions={{
