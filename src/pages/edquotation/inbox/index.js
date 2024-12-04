@@ -77,56 +77,6 @@ const dummyData = [
   },
 ];
 
-
-
-const dummyData = [
-  {
-    quoteNumber: "QT_01/2024/06/01",
-    assignee: "Prem01",
-    department: "NETWORK ROLLOUT",
-    opportunityID: "OPP_104569",
-    serviceOrderNumber: "99345765234",
-    fixCDS: "3423113",
-    businessCaseNumber: "BC2400693",
-    srfNumber: "SRF32727_D_MOBILE",
-    status: "Vendor Assignment",
-    createdDate: "4/3/2024",
-    createdBy: "Shiva",
-    vendor: "NEC",
-    group:"GRP_NS_OFFNET"
-  },
-  {
-    group:"GRP_NS_OFFNET",
-    quoteNumber: "QT_02/2024/06/02",
-    assignee: "Prem02",
-    department: "NETWORK ROLLOUT",
-    opportunityID: "OPP_104580",
-    serviceOrderNumber: "99345765143",
-    fixCDS: "3425113",
-    businessCaseNumber: "BC2400793",
-    srfNumber: "SRF32727_S_MOBILE",
-    status: "Vendor Assignment",
-    createdDate: "6/3/2024",
-    createdBy: "PREM",
-    vendor: "NEC",
-  },
-  {
-    quoteNumber: "QT_03/2024/06/03",
-    assignee: "Prem03",
-    department: "NETWORK ROLLOUT",
-    opportunityID: "OPP_104580",
-    serviceOrderNumber: "99345765143",
-    fixCDS: "3425113",
-    businessCaseNumber: "BC2400793",
-    srfNumber: "SRF32727_S_MOBILE3",
-    status: "Vendor Assignment",
-    createdDate: "6/3/2024",
-    createdBy: "PREM",
-    vendor: "NEC",
-    group:"GRP_NS_OFFNET"
-  },
-];
-
 const TableComponent = () => {
   const navigate = useNavigate();
   const [excelModal, setExcelModal] = useState(false);
@@ -150,9 +100,9 @@ const TableComponent = () => {
       } = await getDigitalEDQuoteGrid(payload);
       if (statusCode === 200) {
         console.log("resultData", resultData);
-       // setGridData(resultData);
-       setGridData(dummyData);
-       
+        // setGridData(resultData);
+        setGridData(dummyData);
+
         toast.success(statusMessage);
       }
     } catch (e) {

@@ -10,19 +10,18 @@ import {
   Button,
   CardBody,
 } from "reactstrap";
-import UpdateSrfEdInbox from "../../edquotation/update-ed";
-import QuoteSubmitPage from "../../srf/quote-submit";
-import QuoteReviewPage from "../../srf/quote-review";
+import UpdateEd from "../../edquotation/update-ed";
+import QuoteSubmitPage from "../../edquotation/quote-submit";
+import QuoteReviewPage from "../../edquotation/quote-review";
 import EDQuoteWorkflow from "../workflow/index";
-import { useNavigate,useLocation } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
 import { toast } from "react-toastify";
-
 
 //new to add two more component for mail and workflow
 const tabConfig = {
   1: {
     title: "Quotation Details",
-    component: <UpdateSrfEdInbox />,
+    component: <UpdateEd />,
   },
   2: {
     title: "Survey Costing details",
@@ -81,7 +80,7 @@ export default function QuoteDetailPage() {
 
   return (
     <>
-      <Card style={{ border: "none",marginTop: "10px" }}>
+      <Card style={{ border: "none", marginTop: "10px" }}>
         {" "}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {state?.quoteNumber || "Loading..."}
