@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Card, CardTitle, CardBody,Table,Button } from "reactstrap";
+import { Card, CardTitle, CardBody, Table, Button } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns"; // Import columns from your config
 
@@ -19,7 +19,7 @@ const UpdateEd = () => {
   ];
 
   useEffect(() => {
-    console.log('state', state)
+    console.log("state", state);
     if (!state) toast.error("No ED data found!");
   }, [state]);
 
@@ -55,14 +55,17 @@ const UpdateEd = () => {
         position: "relative", // To position the Back button absolutely inside the div
       }}
     >
-      <Card style={{ border: "none" }}> {/* Removed border from the Card */}
+      <Card style={{ border: "none" }}>
+        {" "}
+        {/* Removed border from the Card */}
         {/* Title */}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {edData.quoteNumber || "Loading..."}
         </CardTitle>
-
         {/* Table */}
-        <CardBody style={{ padding: "0" }}> {/* Removed border from CardBody and adjusted padding */}
+        <CardBody style={{ padding: "0" }}>
+          {" "}
+          {/* Removed border from CardBody and adjusted padding */}
           <Table
             bordered // Kept the border for the table
             style={{
@@ -105,10 +108,10 @@ const UpdateEd = () => {
                           width: "33.3%",
                         }}
                       >
-                        {column.key === 'vendor' ? (
+                        {column.key === "vendor" ? (
                           // Dropdown for vendor assignment
                           <select
-                            value={edData[column.key] || ''}
+                            value={edData[column.key] || ""}
                             onChange={(e) =>
                               handleInputChange(column.key, e.target.value)
                             }
@@ -151,14 +154,13 @@ const UpdateEd = () => {
               ))}
             </tbody>
           </Table>
-
           {/* Back Button positioned at the top right */}
           <Button
             color="primary"
             onClick={() => navigate(-1)} // Navigate to the previous page
             style={{
               position: "absolute",
-             
+
               right: "20px",
               padding: "5px 10px",
               fontSize: "16px",
@@ -167,39 +169,36 @@ const UpdateEd = () => {
             Back
           </Button>
         </CardBody>
-
-          {/* Update Button */}
-          <div style={{ textAlign: "center", marginTop: "30px" }}>
-            <Button
-              color="primary"
-              onClick={handleSave}
-              style={{
-                padding: "10px 20px",
-                width: "160px",
-                fontSize: "16px",
-                border: "none", // Removed border
-                outline: "none",
-                boxShadow: "none", // Removed box-shadow
-              }}
-            >
-              Submit to vendor
-            </Button>
-          </div>
-
-              <div style={{ textAlign: "left", marginTop: "30px" }}>
-                <Button
-                  color="primary"
-                  onClick={handleSave}
-                  style={{
-                    padding: "10px 20px",
-                    width: "100px",
-                    fontSize: "16px",
-                  }}
-                >
-                  Update
-                </Button>
-              </div>
-            
+        {/* Update Button */}
+        <div style={{ textAlign: "center", marginTop: "30px" }}>
+          <Button
+            color="primary"
+            onClick={handleSave}
+            style={{
+              padding: "10px 20px",
+              width: "160px",
+              fontSize: "16px",
+              border: "none", // Removed border
+              outline: "none",
+              boxShadow: "none", // Removed box-shadow
+            }}
+          >
+            Submit to vendor
+          </Button>
+        </div>
+        <div style={{ textAlign: "left", marginTop: "30px" }}>
+          <Button
+            color="primary"
+            onClick={handleSave}
+            style={{
+              padding: "10px 20px",
+              width: "100px",
+              fontSize: "16px",
+            }}
+          >
+            Update
+          </Button>
+        </div>
       </Card>
     </div>
   );
