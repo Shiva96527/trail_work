@@ -455,13 +455,19 @@ const SRFHLD = () => {
                 }
                 if (action === 'Not Involved') {
                     debugger;
-                var remarks=getValues('Remarks')
-                if(remarks===undefined||remarks===null||remarks==='')
-                {
-                    toast.error('Please enter remarks');
-                    return;
+                        var remarks=getValues('Remarks')
+                        if(remarks===undefined||remarks===null||remarks==='')
+                        {
+                            toast.error('Please enter remarks');
+                            return;
+                        }
+                        workFlowSave({ ...getValues() }, action);
                 }
-                workFlowSave({ ...getValues() }, action);
+                if (action === 'Update Cost and Close SRF') {
+                    cpqUpdateCostandCloseSRFHandler({ ...getValues() }, action);
+                }
+                if (action === 'Manual Update Cost and Close SRF') {
+                    workFlowSave({ ...getValues() }, 'Update Cost and Close SRF');
                 }
                  else {
                     workFlowSave({ ...getValues() }, action);
