@@ -21,7 +21,7 @@ import columns from "./config/columns";
 const Request = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log('field,value', state)
+  console.log("field,value", state);
   const [edData, setEdData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false);
   const [open, setOpen] = useState("1");
@@ -54,6 +54,16 @@ const Request = () => {
 
   const toggleAccordion = (id) => {
     setOpen(open === id ? null : id);
+  };
+
+  const handleSRFNumberClick = () => {
+    // Navigate to the SRF platform page
+    navigate(`/neptune/srf/srfinbox`);
+  };
+
+  const handleServiceOrderNumberClick = () => {
+    // Navigate to the Service Order platform page
+    navigate(`/neptune/general/usergroupmapping`);
   };
 
   return (
@@ -90,7 +100,43 @@ const Request = () => {
                       <Col md={3} key={colIndex}>
                         <FormGroup>
                           <Label for={column.key}>{column.label}</Label>
-                          {column.key === "vendor" ? (
+                          {column.key === "srfNumber" ? (
+                            // Keep the SRF Number as an Input box, but add a clickable link behavior
+                            <Input
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onClick={handleSRFNumberClick}
+                              readOnly
+                              style={{
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
+                                color: "#007bff", // Link color
+                                textDecoration: "underline", // Underline the link
+                                border: "1px solid #ccc", // Keep consistent with other inputs
+                                cursor: "pointer", // Makes it clear the input is clickable
+                                textAlign: "left", // Aligns content to the left, like other inputs
+                              }}
+                            />
+                          ) : column.key === "serviceOrderNumber" ? (
+                            // Service Order Number - Displaying as a clickable input field
+                            <Input
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onClick={handleServiceOrderNumberClick}
+                              readOnly
+                              style={{
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
+                                color: "#007bff", // Link color
+                                textDecoration: "underline", // Underline the link
+                                border: "1px solid #ccc", // Keep consistent with other inputs
+                                cursor: "pointer", // Makes it clear the input is clickable
+                                textAlign: "left", // Aligns content to the left, like other inputs
+                              }}
+                            />
+                          ) : column.key === "vendor" ? (
                             // Vendor Assignment as Dropdown using vendorOptions
                             <Input
                               type="select"
@@ -123,8 +169,8 @@ const Request = () => {
                                 handleInputChange(column.key, e.target.value)
                               }
                               style={{
-                                fontSize: "10px", // Ensures font size is aligned with the vendor dropdown
-                                padding: "8px", // Consistent padding
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
                               }}
                             />
                           )}

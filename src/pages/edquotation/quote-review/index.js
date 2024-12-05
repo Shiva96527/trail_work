@@ -1,233 +1,213 @@
-import React, { useState } from "react";
-import { Button, Table } from "reactstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useCallback, useEffect } from "react";
+import NeptuneAgGrid from "../../../components/ag-grid";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleNonStandard as toggleNonStandardAction } from "../../../redux/slices/globalSlice.js";
+import { workflowColumns } from "./config/columns.js";
+// Columns for Total Info Grid
+const totalInfoColumns = [
+  {
+    headerName: "Label",
+    field: "label",
+    sortable: true,
+    filter: true,
+    width: 300,
+  },
+  {
+    headerName: "Value",
+    field: "value",
+    sortable: true,
+    filter: true,
+    width: 1100,
+  },
+];
 
 const QuoteReviewPage = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const navigate = useNavigate();
+  const [totalInfo, setTotalInfo] = useState([
+    { label: "Total Quotation (RM)", value: "1,489.36" },
+    {
+      label: "Total SRF Cost (RM)",
+      value: "*not visible for vendor view*",
+      style: { color: "gray" },
+    },
+    {
+      label: "Balance in SRF (RM)",
+      value: "*not visible for vendor view*",
+      style: { color: "gray" },
+    },
+  ]);
+
+  const [workflowList, setWorkflowList] = useState([
+    {
+      breakdown: "Survey",
+      priceBookValue: "*not visible for vendor view*",
+      quotation: "1,489.36",
+      variance: "*not visible for vendor view*",
+      remarks: "",
+      isRejected: false,
+    },
+    {
+      breakdown: "Implementation",
+      priceBookValue: "",
+      quotation: "",
+      variance: "",
+      remarks: "",
+      isRejected: false,
+    },
+    {
+      breakdown: "Non-Standard Quotation",
+      priceBookValue: "",
+      quotation: "",
+      variance: "",
+      remarks: "",
+      isRejected: false,
+    },
+  ]);
+
+  const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
+
+  // Get the value of toggleNonStandard from the global state
+  const toggleNonStandard = useSelector(
+    (state) => state.globalSlice.toggleNonStandard
+  );
+
+  const handleApprove = useCallback(
+    (params) => {
+      const updatedData = [...workflowList];
+      const rowIndex = params.node.rowIndex;
+      updatedData[rowIndex] = {
+        ...updatedData[rowIndex],
+        isRejected: false,
+        remarks: "",
+      };
+      setWorkflowList(updatedData);
+      validateBeforeUpdate(updatedData);
+      toast.success(`Approved: ${params.data.breakdown}`);
+    },
+    [workflowList]
+  );
+
+  const handleReject = useCallback(
+    (params) => {
+      const updatedData = [...workflowList];
+      const rowIndex = params.node.rowIndex;
+      updatedData[rowIndex] = { ...updatedData[rowIndex], isRejected: true };
+      setWorkflowList(updatedData);
+      validateBeforeUpdate(updatedData); // Check if any rejected row is missing remarks
+      toast.error(`Rejected: ${params.data.breakdown}`);
+      toast.error(`Remarks are required when rejecting.`);
+    },
+    [workflowList]
+  );
+
+  const handleRemarksChange = useCallback(
+    (e, params) => {
+      const updatedData = [...workflowList];
+      const rowIndex = params.node.rowIndex;
+      updatedData[rowIndex] = {
+        ...updatedData[rowIndex],
+        remarks: e.target.value,
+      };
+      setWorkflowList(updatedData);
+      validateBeforeUpdate(updatedData); // Revalidate after remarks change
+    },
+    [workflowList]
+  );
+
+  const validateBeforeUpdate = useCallback((updatedData) => {
+    const hasEmptyRemarks = updatedData.some(
+      (item) => item.isRejected && !item.remarks.trim()
+    );
+    setIsUpdateEnabled(!hasEmptyRemarks); // Disable if any rejected row has empty remarks
+  }, []);
+
+  const handleCalculateVariance = () => {
+    const updatedData = workflowList.map((item) => {
+      if (item.priceBookValue && item.quotation) {
+        const priceBookValue = parseFloat(item.priceBookValue);
+        const quotation = parseFloat(item.quotation);
+        item.variance = (quotation - priceBookValue).toFixed(2);
+      } else {
+        item.variance = "";
+      }
+      return item;
+    });
+    setWorkflowList(updatedData);
+    toast.success("Variance calculated successfully!");
+  };
+
   return (
-    <div>
-      {/* First Table (2 Columns) */}
-      <div style={{ marginTop: "25px" }}>
-        <Table
-          striped
-          bordered
-          style={{
-            borderColor: "white",
-            marginLeft: "15px",
-            maxWidth: "calc(100% - 30px)",
-          }}
-        >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: "30%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                &nbsp;
-              </th>
-              <th
-                style={{
-                  width: "70%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                &nbsp;
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                Total Quotation (RM)
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                1,489.36
-              </td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                Total SRF Cost (RM)
-              </td>
-              <td
-                style={{
-                  backgroundColor: "#E6F0FF",
-                  padding: "12px",
-                  color: "#A9A9A9",
-                }}
-              >
-                *not visible for vendor view*
-              </td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                Balance in SRF (RM)
-              </td>
-              <td
-                style={{
-                  backgroundColor: "#E6F0FF",
-                  padding: "12px",
-                  color: "#A9A9A9",
-                }}
-              >
-                *not visible for vendor view*
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+    <div style={{ marginTop: "30px", marginLeft: "15px", marginRight: "15px" }}>
+      {/* First Grid (Total Info) */}
+      <div style={{ marginTop: "20px" }}>
+        <NeptuneAgGrid
+          refId="total-info"
+          data={totalInfo}
+          dataprops={totalInfoColumns}
+          paginated={false}
+          itemsPerPage={10}
+          searchable={false}
+          exportable={false}
+        />
       </div>
 
-      {/* Second Table (6 Columns and 4 Rows) */}
+      {/* Second Grid (Workflow) */}
       <div style={{ marginTop: "20px" }}>
-        <Table
-          striped
-          bordered
+        <NeptuneAgGrid
+          refId="quote-review"
+          data={workflowList}
+          dataprops={workflowColumns(
+            handleApprove,
+            handleReject,
+            handleRemarksChange,
+            toggleNonStandard
+          )}
+          paginated={false}
+          itemsPerPage={10}
+          searchable={false}
+          exportable={false}
+        />
+      </div>
+
+      {/* Calculate Variance Button */}
+      <div style={{ position: "fixed", bottom: "90px", left: "20px" }}>
+        <button
+          onClick={handleCalculateVariance}
           style={{
-            borderColor: "white",
-            marginLeft: "15px",
-            maxWidth: "calc(100% - 30px)",
+            padding: "7px 14px",
+            backgroundColor: "#293897",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "14px",
           }}
         >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Breakdown
-              </th>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Price book Value (RM){" "}
-              </th>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Quotation (RM)
-              </th>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Variance (RM)
-              </th>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Approve/Reject
-              </th>
-              <th
-                style={{
-                  width: "16.67%",
-                  backgroundColor: "#293897",
-                  color: "white",
-                  padding: "12px",
-                }}
-              >
-                Remarks
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                Survey
-              </td>
-              <td
-                style={{
-                  backgroundColor: "#E6F0FF",
-                  padding: "12px",
-                  color: "#A9A9A9",
-                }}
-              >
-                *not visible for vendor view*
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                1,489.36
-              </td>
-              <td
-                style={{
-                  backgroundColor: "#E6F0FF",
-                  padding: "12px",
-                  color: "#A9A9A9",
-                }}
-              >
-                *not visible for vendor view*
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                <Button color="success">Approve</Button>
-                <Button color="danger" style={{ marginLeft: "5px" }}>
-                  Reject
-                </Button>
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                <input
-                  type="text"
-                  style={{
-                    padding: "1px 1px",
-                    border: "1px solid #ddd",
-                    borderRadius: "5px",
-                    flex: 1,
-                  }}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}>
-                Implementation
-              </td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#F1F9FF", padding: "12px" }}></td>
-            </tr>
-            <tr>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}>
-                Non-Standard Quotation
-              </td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-              <td style={{ backgroundColor: "#E6F0FF", padding: "12px" }}></td>
-            </tr>
-          </tbody>
-        </Table>
+          Calculate Variance
+        </button>
       </div>
+
+      {/* Update Button */}
+      <div style={{ position: "fixed", bottom: "90px", left: "180px" }}>
+        <button
+          onClick={() => toast.success("Update clicked successfully!")}
+          disabled={!isUpdateEnabled}
+          style={{
+            padding: "7px 14px",
+            backgroundColor: "#293897",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: isUpdateEnabled ? "pointer" : "not-allowed",
+            fontSize: "14px",
+          }}
+        >
+          Update
+        </button>
+      </div>
+
+      <ToastContainer />
     </div>
   );
 };

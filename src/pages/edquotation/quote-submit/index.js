@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Input,
@@ -18,13 +19,19 @@ import {
 import { useNavigate } from "react-router-dom";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { columns } from "./config/columns";
+import { toggleNonStandard as toggleNonStandardAction } from "../../../redux/slices/globalSlice.js";
 
 const QuoteSubmitPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
   const [gridState, setGridState] = useState(null);
-  const [toggleNonStandard, setToggleNonStandard] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Get toggle state from Redux
+  const toggleNonStandard = useSelector(
+    (state) => state.globalSlice.toggleNonStandard
+  );
 
   // Sample data for the grids (to display default rows with inputs and buttons)
   const gridData = [
@@ -37,31 +44,6 @@ const QuoteSubmitPage = () => {
       plantCode: "FN57",
     },
   ];
-
-  // Define custom cell renderer for the MM# column with button and input
-  const mmCellRenderer = (params) => {
-    return (
-      <div>
-        <Button>-</Button>
-        <Input
-          type="text"
-          value={params.value}
-          onChange={(e) => params.setValue(e.target.value)}
-        />
-      </div>
-    );
-  };
-
-  // Define custom cell renderer for the Quantity and Plant Code columns with inputs
-  const inputCellRenderer = (params) => {
-    return (
-      <Input
-        type="text"
-        value={params.value}
-        onChange={(e) => params.setValue(e.target.value)}
-      />
-    );
-  };
 
   // Inline styles for the custom toggle
   const toggleStyles = {
@@ -122,7 +104,8 @@ const QuoteSubmitPage = () => {
 
   // Handle modal confirm
   const handleModalConfirm = () => {
-    setToggleNonStandard((prev) => !prev); // Toggle the state
+    // Dispatch the toggle action to Redux store
+    dispatch(toggleNonStandardAction()); // Use the action to toggle the state
     setModalOpen(false); // Close the modal
   };
 
@@ -312,7 +295,6 @@ const QuoteSubmitPage = () => {
                 domLayout: "autoHeight",
                 paginationPageSize: 10,
                 rowHeight: 50,
-                // Override no data message
                 suppressExcelExport: true, // Disable Excel export button
                 suppressCsvExport: true,
                 suppressMenus: true, // Disable CSV export button
