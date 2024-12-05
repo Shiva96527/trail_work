@@ -357,7 +357,7 @@ const SRFHLD = () => {
         const payload = {           
             Action: action,
             WorkflowId: localState?.WorkflowId,
-            ApiKey: "e23aef41-7ac0-41d1-80f9-90e7a08a6a00",
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
             SRFReferenceNumber: localState?.SRFNumber,
             IntegrationID: localState?.IntegrationID,
             SRF_UserID: sessionStorage.getItem('uiid'),
@@ -447,19 +447,50 @@ const SRFHLD = () => {
                 }
                 if (action === 'Not Involved') {
                     debugger;
-                var remarks=getValues('Remarks')
-                if(remarks===undefined||remarks===null||remarks==='')
-                {
-                    toast.error('Please enter remarks');
-                    return;
+                        var remarks=getValues('Remarks')
+                        if(remarks===undefined||remarks===null||remarks==='')
+                        {
+                            toast.error('Please enter remarks');
+                            return;
+                        }
+                        workFlowSave({ ...getValues() }, action);
                 }
-                workFlowSave({ ...getValues() }, action);
+                if (action === 'Update Cost and Close SRF') {
+                    cpqUpdateCostandCloseSRFHandler({ ...getValues() }, action);
+                }
+                if (action === 'Manual Update Cost and Close SRF') {
+                    workFlowSave({ ...getValues() }, 'Update Cost and Close SRF');
                 }
                  else {
                     workFlowSave({ ...getValues() }, action);
                 }
             }
         })
+    }
+
+    const cpqUpdateCostandCloseSRFHandler = async (data, action) => {
+        
+        debugger;
+        const payload = {           
+            Action: action,
+            WorkflowId: localState?.WorkflowId,
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
+            SRFReferenceNumber: localState?.SRFNumber,
+            IntegrationID: localState?.IntegrationID,
+            SRF_UserID: sessionStorage.getItem('uiid'),
+            rejectremarks: rejectRemarks
+        };
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
+                toast.success(statusMessage);
+                navigate(-1);
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
     }
 
     const handleDownloadFile = (data) => {
@@ -704,7 +735,7 @@ const SRFHLD = () => {
                                                 }
                                                 {
                                                     srfDetails?.StatusName === "HLD" && srfDetails?.IsChannel === 'Neptune' &&
-                                                    <Button color="primary" onClick={() => handleCustomSubmit('Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
+                                                    <Button color="primary" onClick={() => handleCustomSubmit('Manual Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
                                                 }
                                             </div>}
                                         </form>
