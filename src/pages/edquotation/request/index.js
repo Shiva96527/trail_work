@@ -17,11 +17,12 @@ import {
 } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
+import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
 
 const Request = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log('field,value', state)
+  console.log("field,value", state);
   const [edData, setEdData] = useState(state || {});
   const [isUpdated, setIsUpdated] = useState(false);
   const [open, setOpen] = useState("1");
@@ -40,20 +41,58 @@ const Request = () => {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!edData.srfNumber) {
       toast.error("Please complete all required fields!");
       return;
     }
 
-    console.log("Updated SRF Data:", edData);
-    toast.success("Data updated successfully!");
-    setIsUpdated(true);
-    navigate("/neptune/edquotation/inbox");
+    // Prepare payload
+    const payload = {
+      loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
+      quoteNumber: edData.quoteNumber,
+      assignee: edData.assignee,
+      department: edData.department,
+      opportunityID: edData.opportunityID,
+      serviceOrderNumber: edData.serviceOrderNumber,
+      fixCDS: edData.fixCDS,
+      businessCaseNumber: edData.businessCaseNumber,
+      srfNumber: edData.srfNumber,
+      status: edData.status,
+      createdDate: edData.createdDate,
+      vendor: edData.vendor,
+    };
+
+    try {
+      // Call the updateDigitalEDQuote API
+      const response = await updateDigitalEDQuote(payload);
+
+      if (response.statusCode === 200) {
+        toast.success("Data updated successfully!");
+        setIsUpdated(true);
+        // Optionally navigate after successful update
+        navigate("/neptune/edquotation/inbox");
+      } else {
+        toast.error(response.statusMessage || "Failed to update the record.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating the data.");
+      console.error("Update Error: ", error);
+    }
   };
 
   const toggleAccordion = (id) => {
     setOpen(open === id ? null : id);
+  };
+
+  const handleSRFNumberClick = () => {
+    // Navigate to the SRF platform page
+    navigate(`/neptune/srf/srfinbox`);
+  };
+
+  const handleServiceOrderNumberClick = () => {
+    // Navigate to the Service Order platform page
+    navigate(`/neptune/general/usergroupmapping`);
   };
 
   return (
@@ -90,7 +129,43 @@ const Request = () => {
                       <Col md={3} key={colIndex}>
                         <FormGroup>
                           <Label for={column.key}>{column.label}</Label>
-                          {column.key === "vendor" ? (
+                          {column.key === "srfNumber" ? (
+                            // Keep the SRF Number as an Input box, but add a clickable link behavior
+                            <Input
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onClick={handleSRFNumberClick}
+                              readOnly
+                              style={{
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
+                                color: "#007bff", // Link color
+                                textDecoration: "underline", // Underline the link
+                                border: "1px solid #ccc", // Keep consistent with other inputs
+                                cursor: "pointer", // Makes it clear the input is clickable
+                                textAlign: "left", // Aligns content to the left, like other inputs
+                              }}
+                            />
+                          ) : column.key === "serviceOrderNumber" ? (
+                            // Service Order Number - Displaying as a clickable input field
+                            <Input
+                              name={column.key}
+                              id={column.key}
+                              value={edData[column.key] || ""}
+                              onClick={handleServiceOrderNumberClick}
+                              readOnly
+                              style={{
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
+                                color: "#007bff", // Link color
+                                textDecoration: "underline", // Underline the link
+                                border: "1px solid #ccc", // Keep consistent with other inputs
+                                cursor: "pointer", // Makes it clear the input is clickable
+                                textAlign: "left", // Aligns content to the left, like other inputs
+                              }}
+                            />
+                          ) : column.key === "vendor" ? (
                             // Vendor Assignment as Dropdown using vendorOptions
                             <Input
                               type="select"
@@ -123,8 +198,8 @@ const Request = () => {
                                 handleInputChange(column.key, e.target.value)
                               }
                               style={{
-                                fontSize: "10px", // Ensures font size is aligned with the vendor dropdown
-                                padding: "8px", // Consistent padding
+                                fontSize: "13px", // Ensures font size is aligned with other inputs
+                                padding: "8px", // Ensures padding is consistent
                               }}
                             />
                           )}

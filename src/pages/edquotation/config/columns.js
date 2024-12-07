@@ -61,6 +61,11 @@ export const inboxColumns = (handleAssignment) => [
     minWidth: 230,
   },
   {
+    field: "serviceOrderNumber",
+    headerName: "Service Order #",
+    minWidth: 230,
+  },
+  {
     field: "fixCasNumber",
     headerName: "FIXCAS #",
     minWidth: 250,
