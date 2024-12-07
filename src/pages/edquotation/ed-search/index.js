@@ -11,11 +11,13 @@ import {
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { useLayoutEffect, useState } from "react";
 import { searchDigitalEDQuote } from "../../../services/ed-service";
+import { searchDigitalEDQuote } from "../../../services/ed-service";
 import { toast } from "react-toastify";
 import { inboxColumns } from "../config/columns";
 import { DatePicker, DropdownList, Multiselect } from "react-widgets";
 import { useNavigate } from "react-router-dom";
 import useDropdownFilter from "../../../shared/hooks/dropdownFilterHook";
+import { format } from "date-fns";
 import { format } from "date-fns";
 
 const initialState = {
@@ -23,10 +25,13 @@ const initialState = {
   assignee: "",
   department: "",
   opportunityID: "",
+  serviceOrderNumber: "",
   fixCDS: "",
   businessCaseNumber: "",
   srfNumber: "",
   status: "",
+  startDate: "",
+  endDate: "",
   startDate: "",
   endDate: "",
   requestor: "",
@@ -64,10 +69,12 @@ const EdSearch = () => {
     const payload = {
       ...state,
       ...{ LoginUIID: sessionStorage.getItem("uiid") },
+      ...{ LoginUIID: sessionStorage.getItem("uiid") },
     };
     try {
       const {
         data: { data: resultData, statusCode, statusMessage },
+      } = await searchDigitalEDQuote(payload);
       } = await searchDigitalEDQuote(payload);
       if (statusCode === 200) {
         setSearchList(resultData);
@@ -123,7 +130,11 @@ const EdSearch = () => {
                 <Col md={3}>
                   <FormGroup>
                     <Label for="quoteNumber">Quote #</Label>
+                    <Label for="quoteNumber">Quote #</Label>
                     <Input
+                      name="quoteNumber"
+                      id="quoteNumber"
+                      value={state?.quoteNumber}
                       name="quoteNumber"
                       id="quoteNumber"
                       value={state?.quoteNumber}
@@ -148,6 +159,7 @@ const EdSearch = () => {
                     <DropdownList
                       data={[
                         "NETWORK ROLLOUT",
+                        "NETWORK ROLLOUT",
                         "Planner",
                         "Engineering",
                         "Account Manager",
@@ -156,6 +168,7 @@ const EdSearch = () => {
                         "Solution Architect",
                       ]}
                       value={state?.department}
+                      onChange={(v) => setState({ ...state, department: v })}
                       onChange={(v) => setState({ ...state, department: v })}
                     />
                   </FormGroup>
@@ -171,13 +184,25 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-              </Row>
-
-              <Row>
+                <Col md={3}>
+                  <FormGroup>
+                    <Label for="serviceOrderNumber">Service Order #</Label>
+                    <Input
+                      name="serviceOrderNumber"
+                      id="serviceOrderNumber"
+                      value={state?.serviceOrderNumber}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                </Col>
                 <Col md={3}>
                   <FormGroup>
                     <Label for="fixCDS">Fix CDS #</Label>
+                    <Label for="fixCDS">Fix CDS #</Label>
                     <Input
+                      name="fixCDS"
+                      id="fixCDS"
+                      value={state?.fixCDS}
                       name="fixCDS"
                       id="fixCDS"
                       value={state?.fixCDS}
@@ -212,7 +237,7 @@ const EdSearch = () => {
                     <Label for="status">Status</Label>
                     <DropdownList
                       data={[
-                        "Vendor Assignment",
+                        "Vendor Assignmnet",
                         "Draft",
                         "Submitted",
                         "Assigned",
@@ -228,6 +253,7 @@ const EdSearch = () => {
                         "MPN Rejected",
                         "SRF Rejected(CPQ)",
                         "Closed",
+                        "",
                         "",
                       ]}
                       value={state?.status}
@@ -251,38 +277,40 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-                <Col md={3}>
-                  <FormGroup>
-                    <Label>Submitted Start Date</Label>
-                    <DatePicker
-                      defaultValue={null}
-                      value={
-                        state?.startDate ? new Date(state?.startDate) : null
-                      }
-                      onChange={(date) => {
-                        const formattedDate = date
-                          ? format(new Date(date), "dd-MMM-yyyy")
-                          : "";
-                        setState({ ...state, startDate: formattedDate });
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col md={3}>
-                  <FormGroup>
-                    <Label>Submitted End Date</Label>
-                    <DatePicker
-                      defaultValue={null}
-                      value={state?.endDate ? new Date(state?.endDate) : null}
-                      onChange={(date) => {
-                        const formattedDate = date
-                          ? format(new Date(date), "dd-MMM-yyyy")
-                          : "";
-                        setState({ ...state, endDate: formattedDate });
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
+                <Row>
+                  <Col md={3}>
+                    <FormGroup>
+                      <Label>Submitted Start Date</Label>
+                      <DatePicker
+                        defaultValue={null} // No initial date selected
+                        value={
+                          state?.startDate ? new Date(state?.startDate) : null
+                        } // Convert string to Date
+                        onChange={(date) => {
+                          const formattedDate = date
+                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
+                            : "";
+                          setState({ ...state, startDate: formattedDate });
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md={3}>
+                    <FormGroup>
+                      <Label>Submitted End Date</Label>
+                      <DatePicker
+                        defaultValue={null} // No initial date selected
+                        value={state?.endDate ? new Date(state?.endDate) : null} // Convert string to Date
+                        onChange={(date) => {
+                          const formattedDate = date
+                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
+                            : "";
+                          setState({ ...state, endDate: formattedDate });
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
               </Row>
 
               <div>
