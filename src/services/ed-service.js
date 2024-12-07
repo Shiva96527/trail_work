@@ -27,7 +27,7 @@ export const updateDigitalEDQuote = (payload) => {
 export const searchDigitalEDQuote = (payload) => {
   return onSrfApiCall({
     method: "POST",
-    url: "/DigitalizeQuote/search",
+    url: "/DigitalizeQuote/DigitalizeQuoteSearch",
     data: payload,
   });
 };
