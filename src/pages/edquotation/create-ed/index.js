@@ -16,21 +16,21 @@ import {
 } from "reactstrap";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { generateSrfHTTP } from "../../../services/srf-service";
+import { createDigitalEDQuote } from "../../../services/ed-service";
 import { isAnyRequiredFieldEmpty } from "./config/schemas";
 import { useNavigate } from "react-router-dom";
 
 const generatedModel = {
-  Assignee: "",
-  OpportunityID: "",
-  FIXCAS: "",
-  FixCDS: "",
-  BC: "",
-  SRF: "",
+  assignee: "",
+  opportunityID: "",
+  fixCasNumber: "",
+  fixCdsNumber: "",
+  businessCaseNumber: "",
+  srfNumber: "",
 };
 
-const CreateSrfEdInbox = () => {
-  const [generatedSrfModel, setGenerateSrfModel] = useState({
+const CreateEd = () => {
+  const [generatedEdModel, setGenerateEdModel] = useState({
     ...generatedModel,
   });
   const [open, setOpen] = useState("1");
@@ -46,13 +46,13 @@ const CreateSrfEdInbox = () => {
     }
   };
 
-  const handleSrfChange = (e) => {
+  const handleEdChange = (e) => {
     const { name, value } = e.target;
-    setGenerateSrfModel({ ...generatedSrfModel, [name]: value });
+    setGenerateEdModel({ ...generatedEdModel, [name]: value });
   };
 
-  const handleGenerateSrfSubmit = async () => {
-    const hasError = isAnyRequiredFieldEmpty(generatedSrfModel);
+  const handleEdSubmit = async () => {
+    const hasError = isAnyRequiredFieldEmpty(generatedEdModel);
 
     if (hasError) {
       toast.error("Please fill in required fields.");
@@ -62,27 +62,27 @@ const CreateSrfEdInbox = () => {
     setIsLoading(true); // Show the loading spinner when submitting
 
     // Prepare the payload with the form data
-    const payload = {};
-    const tempPayload = { ...generatedSrfModel };
-    const commaSeparatedService = tempPayload?.TypeofService?.map(
-      (m) => m.value
-    ).join(",");
-    tempPayload.TypeofService = commaSeparatedService;
-    payload["srfCreateInfoResponse"] = { ...tempPayload };
-    payload["Action"] = "Generate SRF";
-    payload["LoginUIID"] = sessionStorage.getItem("uiid");
-
+    const payload = {
+      loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
+      assignee: generatedEdModel.assignee,
+      opportunityID: generatedEdModel.opportunityID,
+      fixCasNumber: generatedEdModel.fixCasNumber,
+      fixCdsNumber: generatedEdModel.fixCdsNumber,
+      businessCaseNumber: generatedEdModel.businessCaseNumber,
+      srfNumber: generatedEdModel.srfNumber,
+    };
+    console.log("payload", payload);
     try {
       const {
         data: { data: resultData, statusCode, statusMessage },
-      } = await generateSrfHTTP(payload);
+      } = await createDigitalEDQuote(payload);
 
       if (statusCode === 200) {
         toast.success("Record created successfully");
         if (resultData) {
           // Append the new record to the existing records array
           setRecords((prevRecords) => {
-            const updatedRecords = [...prevRecords, { ...generatedSrfModel }];
+            const updatedRecords = [...prevRecords, { ...generatedEdModel }];
             navigate("/neptune/edquotation/inbox");
             console.log("All Records:", updatedRecords);
             return updatedRecords;
@@ -96,7 +96,7 @@ const CreateSrfEdInbox = () => {
     }
 
     setIsLoading(false);
-    setGenerateSrfModel({ ...generatedModel });
+    setGenerateEdModel({ ...generatedModel });
   };
 
   return (
@@ -121,10 +121,10 @@ const CreateSrfEdInbox = () => {
                       <FormGroup>
                         <Label for="srfNumber">SRF #</Label>
                         <Input
-                          name="SRF"
+                          name="srfNumber"
                           id="srfNumber"
-                          value={generatedSrfModel?.SRF}
-                          onChange={handleSrfChange}
+                          value={generatedEdModel?.srfNumber}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -135,10 +135,10 @@ const CreateSrfEdInbox = () => {
                           <span className="required">*</span>
                         </Label>
                         <Input
-                          name="OpportunityID"
-                          id="OpportunityCRMID"
-                          value={generatedSrfModel?.OpportunityID}
-                          onChange={handleSrfChange}
+                          name="opportunityID"
+                          id="opportunityID"
+                          value={generatedEdModel?.opportunityID}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -146,10 +146,10 @@ const CreateSrfEdInbox = () => {
                       <FormGroup>
                         <Label for="AssigneeName">Assignee</Label>
                         <Input
-                          name="Assignee"
-                          id="AssigneeName"
-                          value={generatedSrfModel?.Assignee}
-                          onChange={handleSrfChange}
+                          name="assignee"
+                          id="assignee"
+                          value={generatedEdModel?.assignee}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -157,10 +157,10 @@ const CreateSrfEdInbox = () => {
                       <FormGroup>
                         <Label for="BC">BC #</Label>
                         <Input
-                          name="BC"
-                          id="BC"
-                          value={generatedSrfModel?.BC}
-                          onChange={handleSrfChange}
+                          name="businessCaseNumber"
+                          id="businessCaseNumber"
+                          value={generatedEdModel?.businessCaseNumber}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -172,8 +172,8 @@ const CreateSrfEdInbox = () => {
                         <Input
                           name="fixCasNumber"
                           id="fixCasNumber"
-                          value={generatedSrfModel?.FIXCAS}
-                          onChange={handleSrfChange}
+                          value={generatedEdModel?.fixCasNumber}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -183,8 +183,8 @@ const CreateSrfEdInbox = () => {
                         <Input
                           name="fixCdsNumber"
                           id="fixCdsNumber"
-                          value={generatedSrfModel?.FixCDS}
-                          onChange={handleSrfChange}
+                          value={generatedEdModel?.fixCdsNumber}
+                          onChange={handleEdChange}
                         />
                       </FormGroup>
                     </Col>
@@ -192,7 +192,7 @@ const CreateSrfEdInbox = () => {
                   <div>
                     <Button
                       color="primary"
-                      onClick={handleGenerateSrfSubmit}
+                      onClick={handleEdSubmit}
                       disabled={isLoading}
                     >
                       {isLoading ? (
@@ -229,4 +229,4 @@ const CreateSrfEdInbox = () => {
   );
 };
 
-export default CreateSrfEdInbox;
+export default CreateEd;
