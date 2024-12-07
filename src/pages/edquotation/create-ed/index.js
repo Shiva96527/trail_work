@@ -102,9 +102,16 @@ const CreateEd = () => {
   return (
     <>
       <Card className="card_outer_padding">
-        <div className="d-flex justify-content-between align-items-center">
+        <div
+          className="d-flex justify-content-between align-items-center"
+          style={{ margin: "25px 0px" }}
+        >
           <CardTitle className="mx-auto">Create ED Quotation</CardTitle>
-          <Button color="primary" onClick={() => navigate(-1)}>
+          <Button
+            color="primary"
+            onClick={() => navigate(-1)}
+            style={{ padding: "10px 20px" }}
+          >
             Back
           </Button>
         </div>
