@@ -10,27 +10,27 @@ import {
 } from "reactstrap";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { useLayoutEffect, useState } from "react";
-import { getSrfSearchHTTP } from "../../../services/srf-service";
+import { searchDigitalEDQuote } from "../../../services/ed-service";
 import { toast } from "react-toastify";
 import { inboxColumns } from "../config/columns";
 import { DatePicker, DropdownList, Multiselect } from "react-widgets";
 import { useNavigate } from "react-router-dom";
 import useDropdownFilter from "../../../shared/hooks/dropdownFilterHook";
+import { format } from "date-fns";
 
 const initialState = {
   quoteNumber: "",
   assignee: "",
   department: "",
-  opportunity: "",
+  opportunityID: "",
   serviceOrderNumber: "",
-  fixCds: "",
+  fixCDS: "",
   businessCaseNumber: "",
   srfNumber: "",
   status: "",
-  startDate: null,
-  endDate: null,
+  startDate: "",
+  endDate: "",
   requestor: "",
-  vendor: "",
 };
 
 const EdSearch = () => {
@@ -64,12 +64,12 @@ const EdSearch = () => {
   const getSearchData = async () => {
     const payload = {
       ...state,
-      ...{ Action: "Search", LoginUIID: sessionStorage.getItem("uiid") },
+      ...{ LoginUIID: sessionStorage.getItem("uiid") },
     };
     try {
       const {
         data: { data: resultData, statusCode, statusMessage },
-      } = await getSrfSearchHTTP(payload);
+      } = await searchDigitalEDQuote(payload);
       if (statusCode === 200) {
         setSearchList(resultData);
         toast.success(statusMessage);
@@ -124,11 +124,11 @@ const EdSearch = () => {
               <Row>
                 <Col md={3}>
                   <FormGroup>
-                    <Label for="srfNumber">Quote #</Label>
+                    <Label for="quoteNumber">Quote #</Label>
                     <Input
-                      name="srfNumber"
-                      id="srfNumber"
-                      value={state?.srfNumber}
+                      name="quoteNumber"
+                      id="quoteNumber"
+                      value={state?.quoteNumber}
                       onChange={handleChange}
                     />
                   </FormGroup>
@@ -149,6 +149,7 @@ const EdSearch = () => {
                     <Label for="department">Department</Label>
                     <DropdownList
                       data={[
+                        "NETWORK ROLLOUT",
                         "Planner",
                         "Engineering",
                         "Account Manager",
@@ -157,19 +158,17 @@ const EdSearch = () => {
                         "Solution Architect",
                       ]}
                       value={state?.department}
-                      onChange={(v) =>
-                        handleChange({ target: { name: "group", value: v } })
-                      }
+                      onChange={(v) => setState({ ...state, department: v })}
                     />
                   </FormGroup>
                 </Col>
                 <Col md={3}>
                   <FormGroup>
-                    <Label for="opportunity">Opportunity ID</Label>
+                    <Label for="opportunityID">Opportunity ID</Label>
                     <Input
-                      name="opportunity"
-                      id="opportunity"
-                      value={state?.opportunity}
+                      name="opportunityID"
+                      id="opportunityID"
+                      value={state?.opportunityID}
                       onChange={handleChange}
                     />
                   </FormGroup>
@@ -187,11 +186,11 @@ const EdSearch = () => {
                 </Col>
                 <Col md={3}>
                   <FormGroup>
-                    <Label for="fixCds">Fix CDS #</Label>
+                    <Label for="fixCDS">Fix CDS #</Label>
                     <Input
-                      name="fixCds"
-                      id="fixCds"
-                      value={state?.fixCds}
+                      name="fixCDS"
+                      id="fixCDS"
+                      value={state?.fixCDS}
                       onChange={handleChange}
                     />
                   </FormGroup>
@@ -225,6 +224,7 @@ const EdSearch = () => {
                     <Label for="status">Status</Label>
                     <DropdownList
                       data={[
+                        "Vendor Assignmnet",
                         "Draft",
                         "Submitted",
                         "Assigned",
@@ -240,6 +240,7 @@ const EdSearch = () => {
                         "MPN Rejected",
                         "SRF Rejected(CPQ)",
                         "Closed",
+                        "",
                       ]}
                       value={state?.status}
                       onChange={(v) =>
@@ -259,36 +260,40 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-                <Col md={3}>
-                  <FormGroup>
-                    <Label>Submitted Start Date</Label>
-                    <DatePicker
-                      defaultValue={new Date()}
-                      valueEditFormat={{ dateStyle: "short" }}
-                      valueDisplayFormat={{ dateStyle: "medium" }}
-                      onChange={(date) =>
-                        handleChange({
-                          target: { name: "StartDate", value: date },
-                        })
-                      }
-                    />
-                  </FormGroup>
-                </Col>
-                <Col md={3}>
-                  <FormGroup>
-                    <Label>Submitted End Date</Label>
-                    <DatePicker
-                      defaultValue={new Date()}
-                      valueEditFormat={{ dateStyle: "short" }}
-                      valueDisplayFormat={{ dateStyle: "medium" }}
-                      onChange={(date) =>
-                        handleChange({
-                          target: { name: "EndDate", value: date },
-                        })
-                      }
-                    />
-                  </FormGroup>
-                </Col>
+                <Row>
+                  <Col md={3}>
+                    <FormGroup>
+                      <Label>Submitted Start Date</Label>
+                      <DatePicker
+                        defaultValue={null} // No initial date selected
+                        value={
+                          state?.startDate ? new Date(state?.startDate) : null
+                        } // Convert string to Date
+                        onChange={(date) => {
+                          const formattedDate = date
+                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
+                            : "";
+                          setState({ ...state, startDate: formattedDate });
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md={3}>
+                    <FormGroup>
+                      <Label>Submitted End Date</Label>
+                      <DatePicker
+                        defaultValue={null} // No initial date selected
+                        value={state?.endDate ? new Date(state?.endDate) : null} // Convert string to Date
+                        onChange={(date) => {
+                          const formattedDate = date
+                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
+                            : "";
+                          setState({ ...state, endDate: formattedDate });
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
               </Row>
               <div>
                 <Button
