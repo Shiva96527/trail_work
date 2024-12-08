@@ -55,9 +55,7 @@ const OverallCostingPage = () => {
 
   const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
 
-  const { toggleNonStandard, digitalizeQuoteId } = useSelector(
-    (state) => state?.globalSlice
-  );
+  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -69,11 +67,9 @@ const OverallCostingPage = () => {
     // setWorkflowList(quoteDetail?.overallCostingGridList);
   };
 
-  const constructSummaryTable = ({
-    balanceInSRFRM,
-    totalQuotationRM,
-    totalSRFCostRM,
-  }) => {
+  const constructSummaryTable = (quotationSummary) => {
+    const { balanceInSRFRM, totalQuotationRM, totalSRFCostRM } =
+      quotationSummary || {};
     return [
       { label: "Total Quotation", value: totalQuotationRM },
       {
@@ -87,9 +83,11 @@ const OverallCostingPage = () => {
     ];
   };
 
-  const handleApprove = useCallback(
-    (params) => {
+  const handleApproveOrReject = useCallback(
+    (params, action) => {
+      //action is approve / reject
       const updatedData = [...workflowList];
+      console.log("updatedData", updatedData);
       const rowIndex = params.node.rowIndex;
       updatedData[rowIndex] = {
         ...updatedData[rowIndex],
@@ -97,60 +95,52 @@ const OverallCostingPage = () => {
         remarks: "",
       };
       setWorkflowList(updatedData);
-      validateBeforeUpdate(updatedData);
+      // validateBeforeUpdate(updatedData);
       toast.success(`Approved: ${params.data.breakdown}`);
-    },
-    [workflowList]
-  );
-
-  const handleReject = useCallback(
-    (params) => {
-      const updatedData = [...workflowList];
-      const rowIndex = params.node.rowIndex;
-      updatedData[rowIndex] = { ...updatedData[rowIndex], isRejected: true };
-      setWorkflowList(updatedData);
-      validateBeforeUpdate(updatedData); // Check if any rejected row is missing remarks
-      toast.error(`Rejected: ${params.data.breakdown}`);
-      toast.error(`Remarks are required when rejecting.`);
     },
     [workflowList]
   );
 
   const handleRemarksChange = useCallback(
     (e, params) => {
-      const updatedData = [...workflowList];
       const rowIndex = params.node.rowIndex;
+      if (rowIndex === 0) {
+      } else if (rowIndex === 1) {
+      } else {
+      }
+      const updatedData = [...workflowList];
       updatedData[rowIndex] = {
         ...updatedData[rowIndex],
         remarks: e.target.value,
       };
-      setWorkflowList(updatedData);
-      validateBeforeUpdate(updatedData); // Revalidate after remarks change
+      console.log("updatedData", updatedData);
+      // setWorkflowList(updatedData);
+      // validateBeforeUpdate(updatedData); // Revalidate after remarks change
     },
     [workflowList]
   );
 
-  const validateBeforeUpdate = useCallback((updatedData) => {
-    const hasEmptyRemarks = updatedData.some(
-      (item) => item.isRejected && !item.remarks.trim()
-    );
-    setIsUpdateEnabled(!hasEmptyRemarks); // Disable if any rejected row has empty remarks
-  }, []);
+  // const validateBeforeUpdate = useCallback((updatedData) => {
+  //   const hasEmptyRemarks = updatedData.some(
+  //     (item) => item.isRejected && !item.remarks.trim()
+  //   );
+  //   setIsUpdateEnabled(!hasEmptyRemarks); // Disable if any rejected row has empty remarks
+  // }, []);
 
-  const handleCalculateVariance = () => {
-    const updatedData = workflowList.map((item) => {
-      if (item.priceBookValue && item.quotation) {
-        const priceBookValue = parseFloat(item.priceBookValue);
-        const quotation = parseFloat(item.quotation);
-        item.variance = (quotation - priceBookValue).toFixed(2);
-      } else {
-        item.variance = "";
-      }
-      return item;
-    });
-    setWorkflowList(updatedData);
-    toast.success("Variance calculated successfully!");
-  };
+  // const handleCalculateVariance = () => {
+  //   const updatedData = workflowList.map((item) => {
+  //     if (item.priceBookValue && item.quotation) {
+  //       const priceBookValue = parseFloat(item.priceBookValue);
+  //       const quotation = parseFloat(item.quotation);
+  //       item.variance = (quotation - priceBookValue).toFixed(2);
+  //     } else {
+  //       item.variance = "";
+  //     }
+  //     return item;
+  //   });
+  //   setWorkflowList(updatedData);
+  //   toast.success("Variance calculated successfully!");
+  // };
 
   return (
     <div style={{ marginTop: "30px", marginLeft: "15px", marginRight: "15px" }}>
@@ -168,15 +158,13 @@ const OverallCostingPage = () => {
       </div>
 
       {/* Second Grid (Workflow) */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px", marginBottom: "20px" }}>
         <NeptuneAgGrid
-          refId="quote-review"
+          refId="overall-costing"
           data={workflowList}
           dataprops={overallCostingGridColumn(
-            handleApprove,
-            handleReject,
-            handleRemarksChange,
-            toggleNonStandard
+            handleApproveOrReject,
+            handleRemarksChange
           )}
           paginated={false}
           itemsPerPage={10}
@@ -186,7 +174,7 @@ const OverallCostingPage = () => {
       </div>
 
       {/* Calculate Variance Button */}
-      <div style={{ position: "fixed", bottom: "90px", left: "20px" }}>
+      {/* <div style={{ position: "fixed", left: "20px" }}>
         <button
           onClick={handleCalculateVariance}
           style={{
@@ -201,10 +189,10 @@ const OverallCostingPage = () => {
         >
           Calculate Variance
         </button>
-      </div>
+      </div> */}
 
       {/* Update Button */}
-      <div style={{ position: "fixed", bottom: "90px", left: "180px" }}>
+      {/* <div style={{ position: "fixed", left: "180px" }}>
         <button
           onClick={() => toast.success("Update clicked successfully!")}
           disabled={!isUpdateEnabled}
@@ -220,7 +208,7 @@ const OverallCostingPage = () => {
         >
           Update
         </button>
-      </div>
+      </div> */}
 
       <ToastContainer />
     </div>

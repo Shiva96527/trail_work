@@ -33,6 +33,7 @@ const QuoteSubmitPage = () => {
   const [surveyResponse, setSurveyResponse] = useState(null);
   const [implementationResponse, setImplementationResponse] = useState(null);
   const [nonStandardResponse, setNonStandardResponse] = useState();
+  const [edData, setEdData] = useState();
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -44,6 +45,7 @@ const QuoteSubmitPage = () => {
 
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setEdData(quoteDetail?.quoteCreationResponse);
     setSurveyResponse(quoteDetail?.surveyResponse);
     setImplementationResponse(quoteDetail?.implementationResponse);
     setNonStandardResponse(quoteDetail?.nonStandardResponse);
@@ -272,20 +274,22 @@ const QuoteSubmitPage = () => {
               }}
             >
               Survey Details
-              <Button
-                color="primary"
-                style={{
-                  marginLeft: "10px",
-                  backgroundColor: "#007bff",
-                }}
-                onClick={toggleExcelModal}
-              >
-                <FontAwesomeIcon
-                  icon={faCloudUploadAlt}
-                  style={{ marginRight: "8px" }}
-                />
-                Upload
-              </Button>
+              {edData?.statusCode === 3 ? (
+                <Button
+                  color="primary"
+                  style={{
+                    marginLeft: "10px",
+                    backgroundColor: "#007bff",
+                  }}
+                  onClick={toggleExcelModal}
+                >
+                  <FontAwesomeIcon
+                    icon={faCloudUploadAlt}
+                    style={{ marginRight: "8px" }}
+                  />
+                  Upload
+                </Button>
+              ) : null}
             </div>
           }
           gridOptions={{
@@ -329,20 +333,22 @@ const QuoteSubmitPage = () => {
                 >
                   <span>
                     Implementation Costing Details{" "}
-                    <Button
-                      color="primary"
-                      style={{
-                        marginLeft: "10px",
-                        backgroundColor: "#007bff",
-                      }}
-                      onClick={toggleExcelModal}
-                    >
-                      <FontAwesomeIcon
-                        icon={faCloudUploadAlt}
-                        style={{ marginRight: "8px" }}
-                      />
-                      Upload
-                    </Button>
+                    {edData?.statusCode === 4 ? (
+                      <Button
+                        color="primary"
+                        style={{
+                          marginLeft: "10px",
+                          backgroundColor: "#007bff",
+                        }}
+                        onClick={toggleExcelModal}
+                      >
+                        <FontAwesomeIcon
+                          icon={faCloudUploadAlt}
+                          style={{ marginRight: "8px" }}
+                        />
+                        Upload
+                      </Button>
+                    ) : null}
                   </span>
                   <div
                     style={{
@@ -402,6 +408,22 @@ const QuoteSubmitPage = () => {
                   }}
                 >
                   Non-Standard Quotation
+                  {edData?.statusCode === 6 || edData?.statusCode === 4 ? (
+                    <Button
+                      color="primary"
+                      style={{
+                        marginLeft: "10px",
+                        backgroundColor: "#007bff",
+                      }}
+                      onClick={toggleExcelModal}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCloudUploadAlt}
+                        style={{ marginRight: "8px" }}
+                      />
+                      Upload
+                    </Button>
+                  ) : null}
                 </div>
               }
               gridOptions={{
