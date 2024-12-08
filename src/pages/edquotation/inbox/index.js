@@ -26,7 +26,12 @@ import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
-import { getDigitalEDQuoteGrid } from "../../../services/ed-service";
+import {
+  getDigitalEDQuoteGrid,
+  bulkUploadDigitalEDQuote,
+} from "../../../services/ed-service";
+import { getWorkbook, populateGrid } from "./config/helper";
+import { columnsToFetch } from "./config/columns";
 
 const TableComponent = () => {
   const navigate = useNavigate();
@@ -77,10 +82,12 @@ const TableComponent = () => {
           fixCasNumber: row.fixCasNumber,
           fixCdsNumber: row.fixCdsNumber,
           businessCaseNumber: row.businessCaseNumber,
-          serviceOrderNumber: row.serviceOrderNumber,
           status: row.status,
           department: row.department,
           vendor: row.vendor,
+          createdDate: row.createdDate,
+          createdBy: row.createdBy,
+          digitalizeQuoteId: row.digitalizeQuoteId,
         },
       });
     }
@@ -116,21 +123,6 @@ const TableComponent = () => {
     window.location.href = "/sample_template.xls";
   };
 
-  const convertFileToBytes = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result;
-        const byteArray = new Uint8Array(arrayBuffer);
-        resolve(byteArray);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
   const handleSubmit = async () => {
     if (fileUploaded.length === 0) {
       toast.error("Please upload at least one Excel file!");
@@ -138,33 +130,25 @@ const TableComponent = () => {
     }
 
     setLoading(true);
-
+    const workbook = await getWorkbook(fileUploaded);
+    const rowData = populateGrid(workbook, columnsToFetch);
+    const payload = {
+      LoginUIID: sessionStorage.getItem("uiid"),
+      digitalizeBulkRequest: rowData,
+    };
     try {
-      console.log("Uploaded Files:", fileUploaded);
-
-      const fileBytesArray = await Promise.all(
-        fileUploaded.map((file) => convertFileToBytes(file))
-      );
-
-      console.log("Converted Byte Arrays:", fileBytesArray);
-
-      const payload = fileBytesArray.map((bytes, index) => ({
-        fileName: fileUploaded[index].name,
-        fileBytes: bytes,
-      }));
-
-      console.log("Payload with bytes:", payload);
-
-      setTimeout(() => {
-        setLoading(false);
-        toast.success("File uploaded successfully!");
-        setFileUploaded([]);
-        setExcelModal(false);
-      }, 2000);
-    } catch (error) {
+      const {
+        data: { statusCode, statusMessage },
+      } = await bulkUploadDigitalEDQuote(payload);
+      if (statusCode === 200) {
+        toast.success(statusMessage);
+      } else {
+        toast.info(statusMessage);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    } finally {
       setLoading(false);
-      toast.error("Failed to process files. Please try again.");
-      console.error("Error processing files:", error);
     }
   };
 

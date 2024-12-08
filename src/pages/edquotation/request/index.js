@@ -54,13 +54,13 @@ const Request = () => {
       assignee: edData.assignee,
       department: edData.department,
       opportunityID: edData.opportunityID,
-      serviceOrderNumber: edData.serviceOrderNumber,
       fixCDS: edData.fixCDS,
       businessCaseNumber: edData.businessCaseNumber,
       srfNumber: edData.srfNumber,
       status: edData.status,
       createdDate: edData.createdDate,
       vendor: edData.vendor,
+      digitalizeQuoteId: edData.digitalizeQuoteId,
     };
 
     try {

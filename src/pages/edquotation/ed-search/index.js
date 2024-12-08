@@ -176,17 +176,6 @@ const EdSearch = () => {
                 </Col>
                 <Col md={3}>
                   <FormGroup>
-                    <Label for="serviceOrderNumber">Service Order #</Label>
-                    <Input
-                      name="serviceOrderNumber"
-                      id="serviceOrderNumber"
-                      value={state?.serviceOrderNumber}
-                      onChange={handleChange}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col md={3}>
-                  <FormGroup>
                     <Label for="fixCds">Fix CDS #</Label>
                     <Input
                       name="fixCds"

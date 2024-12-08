@@ -35,7 +35,7 @@ export const searchDigitalEDQuote = (payload) => {
 export const bulkUploadDigitalEDQuote = (payload) => {
   return onSrfApiCall({
     method: "POST",
-    url: "/DigitalizeQuote/uploadfile",
+    url: "/DigitalizeQuote/DigitalizeQuoteBulkCreation",
     data: payload,
   });
 };

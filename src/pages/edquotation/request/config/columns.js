@@ -7,23 +7,22 @@ const columns = [
     { label: "Opportunity ID", key: "opportunityID" },
   ],
   [
-    { label: "Service Order #", key: "serviceOrderNumber" },
     { label: "FIXCDS #", key: "fixCdsNumber" },
+    { label: "FIXCAS #", key: "fixCasNumber" },
     { label: "Business Case #", key: "businessCaseNumber" },
     { label: "SRF #", key: "srfNumber" },
   ],
   [
-    { label: "FIXCAS #", key: "fixCasNumber" },
     { label: "Status", key: "status" },
     { label: "Created Date", key: "createdDate" },
     { label: "Created By", key: "createdBy" },
+    { label: "Group", key: "group" },
   ],
   [
     {
       label: "Vendor Assignment",
       key: "vendor",
     },
-    { label: "Group", key: "group" },
   ],
 ];
 
