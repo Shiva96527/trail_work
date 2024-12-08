@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -74,7 +74,6 @@ const Request = () => {
     try {
       // Call the updateDigitalEDQuote API
       const response = await updateDigitalEDQuote(payload);
-
       if (response.statusCode === 200) {
         toast.success("Data updated successfully!");
         // Optionally navigate after successful update
@@ -164,7 +163,7 @@ const Request = () => {
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={edData?.status !== "Vendor Assignment"}
+                              disabled={edData?.statusCode !== 1}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -203,23 +202,25 @@ const Request = () => {
                 ))}
 
                 {/* Place the "Submit to Vendor" button inside AccordionBody */}
-                <div style={{ textAlign: "left", marginTop: "30px" }}>
-                  <Button
-                    color="primary"
-                    onClick={handleSave}
-                    style={{
-                      padding: "10px 20px",
-                      width: "160px",
-                      fontSize: "16px",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: "none",
-                    }}
-                    disabled={edData?.status !== "Vendor Assignment"}
-                  >
-                    Submit to vendor
-                  </Button>
-                </div>
+                {edData?.statusCode === 1 ? (
+                  <div style={{ textAlign: "left", marginTop: "30px" }}>
+                    <Button
+                      color="primary"
+                      onClick={handleSave}
+                      style={{
+                        padding: "10px 20px",
+                        width: "160px",
+                        fontSize: "16px",
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                      }}
+                      disabled={edData?.statusCode !== 1}
+                    >
+                      Submit to vendor
+                    </Button>
+                  </div>
+                ) : null}
               </AccordionBody>
             </AccordionItem>
           </Accordion>
