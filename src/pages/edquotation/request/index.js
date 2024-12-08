@@ -18,21 +18,30 @@ import {
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
+import { getDigitalQuoteDetail } from "../helper";
+import { useSelector } from "react-redux";
 
 const Request = () => {
-  const { state } = useLocation();
   const navigate = useNavigate();
-  console.log("field,value", state);
-  const [edData, setEdData] = useState(state || {});
-  const [isUpdated, setIsUpdated] = useState(false);
+  const [edData, setEdData] = useState();
   const [open, setOpen] = useState("1");
+  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
   // Hardcoded vendor options, or this could come from edData or elsewhere
   const vendorOptions = ["NEC", "Vendor1", "Vendor2", "Vendor3"];
 
   useEffect(() => {
-    if (!state) toast.error("No ED data found!");
-  }, [state]);
+    getQuoteDetail(digitalizeQuoteId);
+  }, []);
+
+  useEffect(() => {
+    getQuoteDetail(digitalizeQuoteId);
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async () => {
+    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setEdData(quoteDetail?.quoteCreationResponse);
+  };
 
   const handleInputChange = (field, value) => {
     setEdData({
@@ -46,7 +55,7 @@ const Request = () => {
       toast.error("Please complete all required fields!");
       return;
     }
-
+    console.log("are u runing");
     // Prepare payload
     const payload = {
       loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
@@ -69,7 +78,6 @@ const Request = () => {
 
       if (response.statusCode === 200) {
         toast.success("Data updated successfully!");
-        setIsUpdated(true);
         // Optionally navigate after successful update
         navigate("/neptune/edquotation/inbox");
       } else {
@@ -107,7 +115,7 @@ const Request = () => {
       <Card style={{ border: "none" }}>
         <CardBody style={{ padding: "0" }}>
           {/* Accordion for all labels */}
-          <Accordion open={open} toggle={toggleAccordion}>
+          <Accordion open={"1"}>
             <AccordionItem>
               <AccordionHeader targetId="1">
                 <strong>Quotation Number</strong>
@@ -115,6 +123,11 @@ const Request = () => {
                 {edData?.quoteNumber && (
                   <Badge color="success" style={{ marginLeft: "15px" }}>
                     {edData?.quoteNumber}
+                  </Badge>
+                )}
+                {edData?.status && (
+                  <Badge color="primary" style={{ marginLeft: "15px" }}>
+                    {edData?.status}
                   </Badge>
                 )}
               </AccordionHeader>
@@ -134,27 +147,9 @@ const Request = () => {
                             <Input
                               name={column.key}
                               id={column.key}
-                              value={edData[column.key] || ""}
+                              value={(edData && edData[column.key]) || ""}
                               onClick={handleSRFNumberClick}
-                              readOnly
-                              style={{
-                                fontSize: "13px", // Ensures font size is aligned with other inputs
-                                padding: "8px", // Ensures padding is consistent
-                                color: "#007bff", // Link color
-                                textDecoration: "underline", // Underline the link
-                                border: "1px solid #ccc", // Keep consistent with other inputs
-                                cursor: "pointer", // Makes it clear the input is clickable
-                                textAlign: "left", // Aligns content to the left, like other inputs
-                              }}
-                            />
-                          ) : column.key === "serviceOrderNumber" ? (
-                            // Service Order Number - Displaying as a clickable input field
-                            <Input
-                              name={column.key}
-                              id={column.key}
-                              value={edData[column.key] || ""}
-                              onClick={handleServiceOrderNumberClick}
-                              readOnly
+                              disabled={true}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -171,10 +166,11 @@ const Request = () => {
                               type="select"
                               name={column.key}
                               id={column.key}
-                              value={edData[column.key] || ""}
+                              value={(edData && edData[column.key]) || ""}
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
+                              disabled={edData.status !== "Vendor Assignment"}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -193,10 +189,11 @@ const Request = () => {
                             <Input
                               name={column.key}
                               id={column.key}
-                              value={edData[column.key] || ""}
+                              value={(edData && edData[column.key]) || ""}
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
+                              disabled={true}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -222,6 +219,7 @@ const Request = () => {
                       outline: "none",
                       boxShadow: "none",
                     }}
+                    disabled={edData.status !== "Vendor Assignment"}
                   >
                     Submit to vendor
                   </Button>
@@ -229,37 +227,6 @@ const Request = () => {
               </AccordionBody>
             </AccordionItem>
           </Accordion>
-
-          {/* Display Updated Data */}
-          {isUpdated && (
-            <div
-              style={{
-                marginTop: "40px",
-                textAlign: "center",
-                padding: "20px",
-                border: "2px solid #ddd",
-                borderRadius: "8px",
-                width: "80%",
-                margin: "40px auto",
-                backgroundColor: "#f9f9f9",
-                minHeight: "50px",
-              }}
-            >
-              <h5>Updated Record</h5>
-              <p
-                style={{
-                  textAlign: "left",
-                  fontSize: "12px",
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {Object.entries(edData)
-                  .filter(([key, value]) => value)
-                  .map(([key, value]) => `${key}: ${value}`)
-                  .join(" | ")}
-              </p>
-            </div>
-          )}
         </CardBody>
       </Card>
     </div>

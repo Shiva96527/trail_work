@@ -9,24 +9,58 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Spinner,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudUploadAlt,
   faDownload,
-  faSave,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { columns } from "./config/columns";
+import { columns, columnsToFetch } from "./config/columns";
 import { toggleNonStandard as toggleNonStandardAction } from "../../../redux/slices/globalSlice.js";
+import { toast } from "react-toastify";
+import { getWorkbook, populateGrid } from "./config/helper.js";
+import {
+  bulkUploadDigitalMM,
+  getDigitalQuoteById,
+} from "../../../services/ed-service.js";
+import { useDropzone } from "react-dropzone";
 
 const QuoteSubmitPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
   const [gridState, setGridState] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const navigate = useNavigate();
+  const [fileUploaded, setFileUploaded] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [excelModal, setExcelModal] = useState(false);
+
+  useEffect(() => {
+    // getDigitalEDQuoteGrid(17);
+  }, []);
+
+  const getDigitalEDQuoteGrid = async (digitalizeQuoteId) => {
+    const payload = {
+      LoginUIID: sessionStorage.getItem("uiid"),
+      digitalizeQuoteId,
+    };
+    try {
+      const {
+        data: { statusCode, statusMessage },
+      } = await getDigitalQuoteById(payload);
+      if (statusCode === 200) {
+        toast.success(statusMessage);
+      } else {
+        toast.info(statusMessage);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Get toggle state from Redux
   const toggleNonStandard = useSelector(
@@ -109,9 +143,79 @@ const QuoteSubmitPage = () => {
     setModalOpen(false); // Close the modal
   };
 
+  const downloadTemplate = () => {
+    window.location.href = "/mm_template.xlsx";
+  };
+
+  const handleSubmit = async () => {
+    if (fileUploaded.length === 0) {
+      toast.error("Please upload at least one Excel file!");
+      return;
+    }
+
+    setLoading(true);
+    const workbook = await getWorkbook(fileUploaded);
+    const rowData = populateGrid(workbook, columnsToFetch);
+    const payload = {
+      LoginUIID: sessionStorage.getItem("uiid"),
+      digitalizeRequestWireframeUploadRequest: rowData,
+      type: "Survey",
+      digitalizeQuoteId: 17,
+    };
+    try {
+      const {
+        data: { statusCode, statusMessage },
+      } = await bulkUploadDigitalMM(payload);
+      console.log("statusCode", statusCode, statusCode === 200, statusMessage);
+      if (statusCode === 200) {
+        toast.success(statusMessage);
+      } else {
+        toast.info(statusMessage);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+      toggleExcelModal();
+      getDigitalEDQuoteGrid(17);
+    }
+  };
+
+  const deleteFile = (file) => {
+    setFileUploaded((prevFiles) => prevFiles.filter((f) => f !== file));
+  };
+
+  const onDrop = (acceptedFiles, rejectedFiles) => {
+    if (rejectedFiles.length > 0) {
+      toast.error(
+        "Some files were rejected. Please upload valid Excel files (.xls or .xlsx)."
+      );
+    }
+    // Explicitly filter out any non-Excel files
+    const validFiles = acceptedFiles.filter(
+      (file) => file.name.endsWith(".xls") || file.name.endsWith(".xlsx")
+    );
+    if (validFiles.length > 0) {
+      setFileUploaded((prev) => [...prev, ...validFiles]);
+    } else {
+      toast.error("Only Excel files are allowed!");
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: ".xls,.xlsx", // Ensure only .xls and .xlsx files are accepted
+    onDropRejected: () =>
+      toast.error("Invalid file type! Only Excel files are allowed."),
+  });
+
+  const toggleExcelModal = () => {
+    setExcelModal(!excelModal);
+  };
+
   return (
     <div>
-      <Form className="my-4">
+      {/* <Form className="my-4">
         <Row className="row-cols-lg-auto g-3 align-items-center m-1">
           <Input
             type="text"
@@ -139,6 +243,7 @@ const QuoteSubmitPage = () => {
               display: "flex",
               justifyContent: "space-between",
               width: "79%",
+              marginLeft: "10px"
             }}
           >
             <div style={{ display: "flex" }}>
@@ -148,6 +253,7 @@ const QuoteSubmitPage = () => {
                   marginRight: "10px",
                   backgroundColor: "#007bff",
                 }}
+                onClick={downloadTemplate}
               >
                 <FontAwesomeIcon
                   icon={faDownload}
@@ -158,9 +264,9 @@ const QuoteSubmitPage = () => {
               <Button
                 color="primary"
                 style={{
-                  marginRight: "10px",
                   backgroundColor: "#007bff",
                 }}
+                onClick={toggleExcelModal}
               >
                 <FontAwesomeIcon
                   icon={faCloudUploadAlt}
@@ -171,7 +277,7 @@ const QuoteSubmitPage = () => {
             </div>
           </div>
         </Row>
-      </Form>
+      </Form> */}
 
       <div style={{ position: "relative", margin: "20px" }}>
         {/* First Table - Quotation Details */}
@@ -189,6 +295,20 @@ const QuoteSubmitPage = () => {
               }}
             >
               Survey Details
+              <Button
+                color="primary"
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "#007bff",
+                }}
+                onClick={toggleExcelModal}
+              >
+                <FontAwesomeIcon
+                  icon={faCloudUploadAlt}
+                  style={{ marginRight: "8px" }}
+                />
+                Upload
+              </Button>
             </div>
           }
           gridOptions={{
@@ -319,6 +439,83 @@ const QuoteSubmitPage = () => {
           Submit
         </Button>
       </div>
+
+      <Modal isOpen={excelModal} toggle={toggleExcelModal}>
+        <ModalHeader toggle={toggleExcelModal}>
+          <span style={{ flex: 1, textAlign: "center" }}>Bulk Upload</span>
+          <Button
+            color="link"
+            onClick={downloadTemplate}
+            style={{ padding: "0", color: "#293897" }}
+          >
+            <FontAwesomeIcon
+              icon={faDownload}
+              style={{ fontSize: "18px", marginLeft: "300px" }}
+            />
+          </Button>
+        </ModalHeader>
+        <ModalBody>
+          <div
+            {...getRootProps()}
+            style={{
+              textAlign: "center",
+              border: "2px dashed #ddd",
+              padding: "20px",
+              cursor: "pointer",
+              marginBottom: "20px",
+              position: "relative",
+            }}
+          >
+            <input
+              {...getInputProps()}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0,
+              }}
+            />
+            <FontAwesomeIcon
+              icon={faCloudUploadAlt}
+              style={{ fontSize: "30px", color: "#293897" }}
+            />
+            <p>Click or drag files here to upload</p>
+          </div>
+          <ul>
+            {fileUploaded.map((file, index) => (
+              <li
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                {file.name}
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  style={{ color: "red", cursor: "pointer" }}
+                  onClick={() => deleteFile(file)}
+                />
+              </li>
+            ))}
+          </ul>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="secondary"
+            onClick={toggleExcelModal}
+            style={{ width: "20%" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            color="primary"
+            onClick={handleSubmit}
+            style={{ width: "20%" }}
+          >
+            {loading ? <Spinner size="sm" color="light" /> : "Submit"}
+          </Button>
+        </ModalFooter>
+      </Modal>
 
       {/* Confirmation Modal */}
       <Modal isOpen={modalOpen} toggle={handleModalCancel}>

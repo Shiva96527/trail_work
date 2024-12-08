@@ -15,7 +15,7 @@ export const inboxColumns = (handleAssignment) => [
           fontSize={"14px"}
           data-toggle="tooltip"
           title="Update ED"
-          onClick={() => handleAssignment(v?.data, "others")} // Reassign action
+          onClick={() => handleAssignment(v?.data)} // Reassign action
         />
       </>
     ),
@@ -29,7 +29,7 @@ export const inboxColumns = (handleAssignment) => [
       <span
         className="link-style"
         style={{ cursor: "pointer" }}
-        onClick={() => handleAssignment(v?.data, "others")}
+        onClick={() => handleAssignment(v?.data)}
       >
         {v.value}
       </span>

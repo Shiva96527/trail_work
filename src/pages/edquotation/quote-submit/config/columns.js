@@ -89,3 +89,10 @@ export const columns = [
     ),
   },
 ];
+
+export const columnsToFetch = {
+  A: "oa",
+  B: "mmNumber",
+  C: "qty",
+  D: "plantCode"
+};

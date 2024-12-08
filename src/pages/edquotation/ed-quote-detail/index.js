@@ -17,6 +17,8 @@ import EDQuoteWorkflow from "../workflow/index";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
 import { toast } from "react-toastify";
 import EmailLogs from "../email-logs";
+import { useSelector } from "react-redux";
+import { getDigitalQuoteDetail } from "../helper";
 
 //new to add two more component for mail and workflow
 const tabConfig = {
@@ -43,18 +45,23 @@ const tabConfig = {
 };
 
 export default function QuoteDetailPage() {
-  const { state } = useLocation();
+  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const navigate = useNavigate(); // Initialize navigate
-  const [currentActiveTab, setCurrentActiveTab] = useState(1);
+  const [currentActiveTab, setCurrentActiveTab] = useState("1");
+  const [quoteDetail, setQuoteDetail] = useState(null);
 
   useEffect(() => {
     constructTabs();
   }, []);
 
   useEffect(() => {
-    console.log("state", state);
-    if (!state) toast.error("No ED data found!");
-  }, [state]);
+    getQuoteDetail(digitalizeQuoteId);
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async () => {
+    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setQuoteDetail(quoteDetail?.quoteCreationResponse);
+  };
 
   const toggle = (tab) => {
     if (currentActiveTab !== tab) setCurrentActiveTab(tab);
@@ -86,7 +93,7 @@ export default function QuoteDetailPage() {
       <Card style={{ border: "none", marginTop: "10px" }}>
         {" "}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {state?.quoteNumber || "Loading..."}
+          {quoteDetail?.quoteNumber || "Loading..."}
         </CardTitle>
         <CardBody style={{ padding: "0" }}>
           <Button

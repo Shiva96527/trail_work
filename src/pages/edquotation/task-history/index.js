@@ -130,10 +130,6 @@ const TableComponent = () => {
       toast.error("Invalid file type! Only Excel files are allowed."),
   });
 
-  const downloadTemplate = () => {
-    window.location.href = "/sample_template.xls";
-  };
-
   const convertFileToBytes = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

@@ -101,7 +101,7 @@ export const approutes = (isAuth) => {
         { path: "/neptune/vendor/management", element: <VendorManagement /> },
         { path: "/neptune/ed/search", element: <EdSearch /> },
         {
-          path: "/neptune/edquotation/detail/:edNumber",
+          path: "/neptune/edquotation/detail",
           element: <QuoteDetailPage />,
         },
       ],

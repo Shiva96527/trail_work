@@ -39,3 +39,19 @@ export const bulkUploadDigitalEDQuote = (payload) => {
     data: payload,
   });
 };
+
+export const bulkUploadDigitalMM = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteQuotationDetailsUpload",
+    data: payload,
+  });
+};
+
+export const getDigitalQuoteById = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteByID",
+    data: payload,
+  });
+};

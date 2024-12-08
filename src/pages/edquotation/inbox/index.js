@@ -32,9 +32,13 @@ import {
 } from "../../../services/ed-service";
 import { getWorkbook, populateGrid } from "./config/helper";
 import { columnsToFetch } from "./config/columns";
+import { setDigitalizeQuoteId } from "../../../redux/slices/globalSlice";
+import { useDispatch } from "react-redux";
 
 const TableComponent = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [excelModal, setExcelModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
@@ -67,30 +71,13 @@ const TableComponent = () => {
     setExcelModal(!excelModal);
   };
 
-  const handleAssignment = (row, actionType) => {
-    console.log("Action type:", actionType, "for row:", row);
+  const handleAssignment = (row) => {
+    dispatch(
+      setDigitalizeQuoteId({ digitalizeQuoteId: row.digitalizeQuoteId })
+    );
 
     // Navigate to the update page when clicking on action icons
-    if (actionType === "others" || actionType === "move") {
-      navigate(`/neptune/edquotation/detail/${row.srfNumber}`, {
-        state: {
-          group: row.group,
-          quoteNumber: row.quoteNumber,
-          srfNumber: row.srfNumber,
-          assignee: row.assignee,
-          opportunityID: row.opportunityID,
-          fixCasNumber: row.fixCasNumber,
-          fixCdsNumber: row.fixCdsNumber,
-          businessCaseNumber: row.businessCaseNumber,
-          status: row.status,
-          department: row.department,
-          vendor: row.vendor,
-          createdDate: row.createdDate,
-          createdBy: row.createdBy,
-          digitalizeQuoteId: row.digitalizeQuoteId,
-        },
-      });
-    }
+    navigate('/neptune/edquotation/detail');
   };
 
   const columns = inboxColumns(handleAssignment);
@@ -120,7 +107,7 @@ const TableComponent = () => {
   });
 
   const downloadTemplate = () => {
-    window.location.href = "/sample_template.xls";
+    window.location.href = "/bulk_creation_template.xlsx";
   };
 
   const handleSubmit = async () => {

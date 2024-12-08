@@ -5,6 +5,7 @@ const initialState = {
   srfDropdownOptions: {},
   menuItems: [],
   toggleNonStandard: true,
+  digitalizeQuoteId: null,
 };
 
 const { reducer, actions } = createSlice({
@@ -53,6 +54,10 @@ const { reducer, actions } = createSlice({
       console.log("Toggling Non-Standard Quotation");
       state.toggleNonStandard = !state.toggleNonStandard; // Toggle the state
     },
+
+    setDigitalizeQuoteId: (state, action) => {
+      state.digitalizeQuoteId = action?.payload?.digitalizeQuoteId;
+    },
   },
 });
 
@@ -61,6 +66,7 @@ export const {
   setSrfDropdownOptions,
   setMenuItems,
   toggleNonStandard,
+  setDigitalizeQuoteId,
 } = actions;
 
 export default reducer;
