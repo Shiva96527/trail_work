@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
-  Input,
-  Form,
-  Row,
   Modal,
   ModalHeader,
   ModalBody,
@@ -22,44 +19,34 @@ import { columns, columnsToFetch } from "./config/columns";
 import { toggleNonStandard as toggleNonStandardAction } from "../../../redux/slices/globalSlice.js";
 import { toast } from "react-toastify";
 import { getWorkbook, populateGrid } from "./config/helper.js";
-import {
-  bulkUploadDigitalMM,
-  getDigitalQuoteById,
-} from "../../../services/ed-service.js";
+import { bulkUploadDigitalMM } from "../../../services/ed-service.js";
 import { useDropzone } from "react-dropzone";
+import { getDigitalQuoteDetail } from "../helper";
 
 const QuoteSubmitPage = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
-  const [gridState, setGridState] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
   const [loading, setLoading] = useState(false);
   const [excelModal, setExcelModal] = useState(false);
+  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  const [surveyResponse, setSurveyResponse] = useState(null);
+  const [implementationResponse, setImplementationResponse] = useState(null);
+  const [nonStandardResponse, setNonStandardResponse] = useState();
 
   useEffect(() => {
-    // getDigitalEDQuoteGrid(17);
+    getQuoteDetail(digitalizeQuoteId);
   }, []);
 
-  const getDigitalEDQuoteGrid = async (digitalizeQuoteId) => {
-    const payload = {
-      LoginUIID: sessionStorage.getItem("uiid"),
-      digitalizeQuoteId,
-    };
-    try {
-      const {
-        data: { statusCode, statusMessage },
-      } = await getDigitalQuoteById(payload);
-      if (statusCode === 200) {
-        toast.success(statusMessage);
-      } else {
-        toast.info(statusMessage);
-      }
-    } catch (e) {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    getQuoteDetail(digitalizeQuoteId);
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async () => {
+    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setSurveyResponse(quoteDetail?.surveyResponse);
+    setImplementationResponse(quoteDetail?.implementationResponse);
+    setNonStandardResponse(quoteDetail?.nonStandardResponse);
   };
 
   // Get toggle state from Redux
@@ -120,16 +107,6 @@ const QuoteSubmitPage = () => {
     },
   };
 
-  // Retrieve grid state from localStorage on component mount
-  useEffect(() => {
-    const savedState = localStorage.getItem("gridState");
-    if (savedState) {
-      setGridState(JSON.parse(savedState));
-    }
-  }, []);
-
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
   // Open the confirmation modal
   const handleToggleConfirmation = () => setModalOpen(true);
 
@@ -177,7 +154,7 @@ const QuoteSubmitPage = () => {
     } finally {
       setLoading(false);
       toggleExcelModal();
-      getDigitalEDQuoteGrid(17);
+      getQuoteDetail();
     }
   };
 
@@ -350,7 +327,23 @@ const QuoteSubmitPage = () => {
                     color: "black",
                   }}
                 >
-                  <span>Implementation Costing Details</span>
+                  <span>
+                    Implementation Costing Details{" "}
+                    <Button
+                      color="primary"
+                      style={{
+                        marginLeft: "10px",
+                        backgroundColor: "#007bff",
+                      }}
+                      onClick={toggleExcelModal}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCloudUploadAlt}
+                        style={{ marginRight: "8px" }}
+                      />
+                      Upload
+                    </Button>
+                  </span>
                   <div
                     style={{
                       ...toggleStyles.container,

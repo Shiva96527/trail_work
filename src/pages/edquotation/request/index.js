@@ -24,7 +24,6 @@ import { useSelector } from "react-redux";
 const Request = () => {
   const navigate = useNavigate();
   const [edData, setEdData] = useState();
-  const [open, setOpen] = useState("1");
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
   // Hardcoded vendor options, or this could come from edData or elsewhere
@@ -89,18 +88,9 @@ const Request = () => {
     }
   };
 
-  const toggleAccordion = (id) => {
-    setOpen(open === id ? null : id);
-  };
-
   const handleSRFNumberClick = () => {
     // Navigate to the SRF platform page
     navigate(`/neptune/srf/srfinbox`);
-  };
-
-  const handleServiceOrderNumberClick = () => {
-    // Navigate to the Service Order platform page
-    navigate(`/neptune/general/usergroupmapping`);
   };
 
   return (
@@ -147,7 +137,9 @@ const Request = () => {
                             <Input
                               name={column.key}
                               id={column.key}
-                              value={(edData && edData[column.key]) || ""}
+                              defaultValue={
+                                (edData && edData[column.key]) || ""
+                              }
                               onClick={handleSRFNumberClick}
                               disabled={true}
                               style={{
@@ -166,11 +158,13 @@ const Request = () => {
                               type="select"
                               name={column.key}
                               id={column.key}
-                              value={(edData && edData[column.key]) || ""}
+                              defaultValue={
+                                (edData && edData[column.key]) || ""
+                              }
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={edData.status !== "Vendor Assignment"}
+                              disabled={edData?.status !== "Vendor Assignment"}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -189,7 +183,9 @@ const Request = () => {
                             <Input
                               name={column.key}
                               id={column.key}
-                              value={(edData && edData[column.key]) || ""}
+                              defaultValue={
+                                (edData && edData[column.key]) || ""
+                              }
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
@@ -219,7 +215,7 @@ const Request = () => {
                       outline: "none",
                       boxShadow: "none",
                     }}
-                    disabled={edData.status !== "Vendor Assignment"}
+                    disabled={edData?.status !== "Vendor Assignment"}
                   >
                     Submit to vendor
                   </Button>
