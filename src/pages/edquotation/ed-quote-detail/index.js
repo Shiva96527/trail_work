@@ -12,10 +12,9 @@ import {
 } from "reactstrap";
 import Request from "../request";
 import QuoteSubmitPage from "../../edquotation/quote-submit";
-import QuoteReviewPage from "../../edquotation/quote-review";
+import OverallCostingPage from "../../edquotation/overall-costing";
 import EDQuoteWorkflow from "../workflow/index";
-import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import EmailLogs from "../email-logs";
 import { useSelector } from "react-redux";
 import { getDigitalQuoteDetail } from "../helper";
@@ -32,7 +31,7 @@ const tabConfig = {
   },
   3: {
     title: "Overall Costing",
-    component: <QuoteReviewPage />,
+    component: <OverallCostingPage />,
   },
   4: {
     title: "Workflow",

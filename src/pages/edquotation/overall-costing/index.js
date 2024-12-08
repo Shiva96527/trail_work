@@ -3,47 +3,35 @@ import NeptuneAgGrid from "../../../components/ag-grid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleNonStandard as toggleNonStandardAction } from "../../../redux/slices/globalSlice.js";
-import { workflowColumns } from "./config/columns.js";
-// Columns for Total Info Grid
-const totalInfoColumns = [
-  {
-    headerName: "Label",
-    field: "label",
-    sortable: true,
-    filter: true,
-    width: 300,
-  },
-  {
-    headerName: "Value",
-    field: "value",
-    sortable: true,
-    filter: true,
-    width: 1100,
-  },
-];
+import {
+  totalInfoColumns,
+  overallCostingGridColumn,
+} from "./config/columns.js";
+import { getDigitalQuoteDetail } from "../helper";
 
-const QuoteReviewPage = () => {
-  const [totalInfo, setTotalInfo] = useState([
-    { label: "Total Quotation (RM)", value: "1,489.36" },
-    {
-      label: "Total SRF Cost (RM)",
-      value: "*not visible for vendor view*",
-      style: { color: "gray" },
-    },
-    {
-      label: "Balance in SRF (RM)",
-      value: "*not visible for vendor view*",
-      style: { color: "gray" },
-    },
-  ]);
+// [
+//   { label: "Total Quotation", value: "1,489.36" },
+//   {
+//     label: "Total SRF Cost",
+//     value: "*not visible for vendor view*",
+//     style: { color: "gray" },
+//   },
+//   {
+//     label: "Balance in SRF",
+//     value: "*not visible for vendor view*",
+//     style: { color: "gray" },
+//   },
+// ]
+
+const OverallCostingPage = () => {
+  const [totalInfo, setTotalInfo] = useState([]);
 
   const [workflowList, setWorkflowList] = useState([
     {
       breakdown: "Survey",
-      priceBookValue: "*not visible for vendor view*",
+      priceBookValue: "12",
       quotation: "1,489.36",
-      variance: "*not visible for vendor view*",
+      variance: "1345",
       remarks: "",
       isRejected: false,
     },
@@ -67,10 +55,37 @@ const QuoteReviewPage = () => {
 
   const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
 
-  // Get the value of toggleNonStandard from the global state
-  const toggleNonStandard = useSelector(
-    (state) => state.globalSlice.toggleNonStandard
+  const { toggleNonStandard, digitalizeQuoteId } = useSelector(
+    (state) => state?.globalSlice
   );
+
+  useEffect(() => {
+    getQuoteDetail(digitalizeQuoteId);
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async () => {
+    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
+    // setWorkflowList(quoteDetail?.overallCostingGridList);
+  };
+
+  const constructSummaryTable = ({
+    balanceInSRFRM,
+    totalQuotationRM,
+    totalSRFCostRM,
+  }) => {
+    return [
+      { label: "Total Quotation", value: totalQuotationRM },
+      {
+        label: "Total SRF Cost",
+        value: totalSRFCostRM,
+      },
+      {
+        label: "Balance in SRF",
+        value: balanceInSRFRM,
+      },
+    ];
+  };
 
   const handleApprove = useCallback(
     (params) => {
@@ -157,7 +172,7 @@ const QuoteReviewPage = () => {
         <NeptuneAgGrid
           refId="quote-review"
           data={workflowList}
-          dataprops={workflowColumns(
+          dataprops={overallCostingGridColumn(
             handleApprove,
             handleReject,
             handleRemarksChange,
@@ -212,4 +227,4 @@ const QuoteReviewPage = () => {
   );
 };
 
-export default QuoteReviewPage;
+export default OverallCostingPage;

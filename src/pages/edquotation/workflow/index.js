@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import workflow_columns from "./config/column";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { getDigitalQuoteDetail } from "../helper";
@@ -18,11 +18,6 @@ export default function EdQuotationWorkFlow() {
 
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    console.log(
-      "quoteDetail,quoteDetail.mailLog",
-      quoteDetail,
-      quoteDetail.mailLog
-    );
     setWorkflowList(quoteDetail?.workFlowResponse);
   };
 

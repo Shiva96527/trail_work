@@ -1,13 +1,13 @@
 export const totalInfoColumns = [
   {
-    headerName: "Label",
+    headerName: "Title",
     field: "label",
     sortable: true,
     filter: true,
     width: 300,
   },
   {
-    headerName: "Value",
+    headerName: "Value (RM)",
     field: "value",
     sortable: true,
     filter: true,
@@ -15,7 +15,8 @@ export const totalInfoColumns = [
   },
 ];
 
-export const workflowColumns = (
+
+export const overallCostingGridColumn = (
   handleApprove,
   handleReject,
   handleRemarksChange,

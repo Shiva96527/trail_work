@@ -28,7 +28,7 @@ import MyGroup from "../pages/edquotation/my-group";
 import CreateEd from "../pages/edquotation/create-ed";
 import Request from "../pages/edquotation/request";
 import QuoteSubmitPage from "../pages/edquotation/quote-submit";
-import QuoteReviewPage from "../pages/edquotation/quote-review";
+import OverallCostingPage from "../pages/edquotation/overall-costing";
 import VendorManagement from "../pages/admin/vendor-management";
 import EdSearch from "../pages/edquotation/ed-search";
 import QuoteDetailPage from "../pages/edquotation/ed-quote-detail";
@@ -95,8 +95,8 @@ export const approutes = (isAuth) => {
           element: <QuoteSubmitPage />,
         },
         {
-          path: "/neptune/edquotation/quotereview",
-          element: <QuoteReviewPage />,
+          path: "/neptune/edquotation/overall-costing",
+          element: <OverallCostingPage />,
         },
         { path: "/neptune/vendor/management", element: <VendorManagement /> },
         { path: "/neptune/ed/search", element: <EdSearch /> },
