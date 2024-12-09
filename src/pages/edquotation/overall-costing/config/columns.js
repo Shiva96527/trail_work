@@ -112,7 +112,7 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      console.log('params', params)
+      console.log("params", params);
       return (
         <input
           type="text"
@@ -138,7 +138,7 @@ export const overallCostingGridColumn = (
           onClick={() => handleApproveOrReject(params, "approve")}
           style={{
             backgroundColor: "#28a745", // Green
-            color: "black",
+            color: "white",
             border: "none",
             borderRadius: "10px",
             padding: "6px 12px",
@@ -153,7 +153,7 @@ export const overallCostingGridColumn = (
           onClick={() => handleApproveOrReject(params, "reject")}
           style={{
             backgroundColor: "#dc3545", // Red
-            color: "black",
+            color: "white",
             border: "none",
             borderRadius: "10px",
             padding: "6px 12px",
