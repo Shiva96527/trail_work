@@ -146,7 +146,6 @@ const EdSearch = () => {
                     <Label for="department">Department</Label>
                     <DropdownList
                       data={[
-                        "NETWORK ROLLOUT",
                         "Planner",
                         "Engineering",
                         "Account Manager",
@@ -211,7 +210,6 @@ const EdSearch = () => {
                     <Label for="status">Status</Label>
                     <DropdownList
                       data={[
-                        "Vendor Assignmnet",
                         "Draft",
                         "Submitted",
                         "Assigned",
