@@ -89,6 +89,14 @@ export const srfSaveWorkflowHTTP = (payload) => {
     })
 }
 
+export const SrfWMCPQCostUpdateAPI = (payload) => {
+    return onSrfApiCall({
+        method: 'POST',
+        url: '/CPQService/CPQ/WMCPQCostUpdate',
+        data: payload
+    })
+}
+
 export const getAllGroupMappingHTTP = (payload) => {
     return onSrfApiCall({
         method: 'POST',

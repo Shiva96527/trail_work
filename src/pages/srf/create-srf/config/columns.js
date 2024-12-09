@@ -15,6 +15,7 @@ export const workflow_columns = [
 
 export const neptune_log_columns = [
     { headerName: 'Channel Reference ID', field: 'SRFChannelReferenceId', minWidth: 400 },
+    { headerName: 'URL', field: 'URL', minWidth: 250 },
     { headerName: 'Parameters', field: 'Parameters', minWidth: 250 },
     { headerName: 'Response', field: 'Response', minWidth: 250 },
     { headerName: 'Host Name', field: 'HostName', minWidth: 250 },

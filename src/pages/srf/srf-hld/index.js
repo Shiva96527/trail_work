@@ -3,7 +3,7 @@ import { additional_info_columns, email_log_columns, financial_info_columns, rev
 import { cpqlog_columns } from "../srf-search-view/config/columns";
 import { useEffect, useRef, useState } from "react";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { getSrfByIdHTTP, getSrfHLDsHTTP, getSrfMailLogsHTTP, srfDeleteAttachmentHTTP, srfSaveWorkflowHTTP, srfUploadAttachmentHTTP, updateSrfWorkflowHTTP } from "../../../services/srf-service";
+import { getSrfByIdHTTP, getSrfHLDsHTTP, getSrfMailLogsHTTP, srfDeleteAttachmentHTTP, srfSaveWorkflowHTTP, srfUploadAttachmentHTTP, updateSrfWorkflowHTTP,SrfWMCPQCostUpdateAPI } from "../../../services/srf-service";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import SrfFinancialModal from "./financial-modal";
@@ -53,7 +53,8 @@ const SRFHLD = () => {
             TechnicalRiskAssessment: '',
             Timelines: '',
             hldFile: null,
-            financialFile: null
+            financialFile: null,
+            Remarks:''
         }
     })
 
@@ -149,7 +150,7 @@ const SRFHLD = () => {
             const { data: { data: resultData, statusCode, statusMessage } } = await getSrfByIdHTTP(payload);
             if (statusCode === 200) {
                 const { IsChannel, StatusName, ServiceType, WFStatusCode, AssignedTo } = resultData?.srfActionWorkFlowResponse || {};
-                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = resultData?.srfCreateInfoResponse;
+                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = resultData?.srfCreateInfoResponse;
                 const attachments = { hldFile: null, financialFile: null };
                 resultData?.SRFAttachments?.forEach(f => {
                     const { ColumnName } = f;
@@ -164,6 +165,7 @@ const SRFHLD = () => {
                 setValue('HighLevelSolution', HighLevelSolution);
                 setValue('TechnicalRiskAssessment', TechnicalRiskAssessment);
                 setValue('Timelines', Timelines);
+                setValue('Remarks', Remarks);
                 setValue('hldFile', attachments?.hldFile || null);
                 setValue('financialFile', attachments?.financialFile || null);
                 //setAdditionalInfo({ ...additionalInfo, ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines, hldFile: attachments?.hldFile ? attachments?.hldFile : null, financialFile: attachments?.financialFile ? attachments?.financialFile : null });
@@ -299,7 +301,7 @@ const SRFHLD = () => {
     }
 
     const workFlowSave = async (data, action) => {
-        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = data;
+        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = data;
         const payload = {
             ExecutiveSummary,
             HighLevelSolution,
@@ -307,12 +309,14 @@ const SRFHLD = () => {
             SRFNumber: localState?.SRFNumber,
             TechnicalRiskAssessment,
             Timelines,
+            Remarks,
             WorkflowId: localState?.WorkflowId,
             srfCreateInfoResponse: {
                 ExecutiveSummary,
                 HighLevelSolution,
                 TechnicalRiskAssessment,
-                Timelines
+                Timelines,
+                Remarks
             },
             srfLLDCatalogueResponse: ''
         };
@@ -329,6 +333,39 @@ const SRFHLD = () => {
         try {
             const { data: { statusCode, statusMessage } } = await srfSaveWorkflowHTTP(payload);
             if (statusCode === 200) {
+                toast.success(statusMessage);
+                if (action !== 'Save Additional Info') {
+                    navigate(-1);
+                }
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
+    }
+
+    const cpqCostRejectHandler = async (data, action) => {
+        
+        
+        if (action === 'Reject to CPQ' || action === 'Reject to MPN') {
+            if (!rejectRemarks) {
+                setRemarksError('Please enter remarks');
+                return;
+            }        }
+      
+        const payload = {           
+            Action: action,
+            WorkflowId: localState?.WorkflowId,
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
+            SRFReferenceNumber: localState?.SRFNumber,
+            IntegrationID: localState?.IntegrationID,
+            SRF_UserID: sessionStorage.getItem('uiid'),
+            rejectremarks: rejectRemarks
+        };
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
                 toast.success(statusMessage);
                 if (action !== 'Save Additional Info') {
                     navigate(-1);
@@ -407,11 +444,53 @@ const SRFHLD = () => {
             if (result.isConfirmed) {
                 if (action === 'Submit for Review') {
                     handleSubmit((data) => workFlowSave(data, action))();
-                } else {
+                }
+                if (action === 'Not Involved') {
+                    debugger;
+                        var remarks=getValues('Remarks')
+                        if(remarks===undefined||remarks===null||remarks==='')
+                        {
+                            toast.error('Please enter remarks');
+                            return;
+                        }
+                        workFlowSave({ ...getValues() }, action);
+                }
+                if (action === 'Update Cost and Close SRF') {
+                    cpqUpdateCostandCloseSRFHandler({ ...getValues() }, action);
+                }
+                if (action === 'Manual Update Cost and Close SRF') {
+                    workFlowSave({ ...getValues() }, 'Update Cost and Close SRF');
+                }
+                 else {
                     workFlowSave({ ...getValues() }, action);
                 }
             }
         })
+    }
+
+    const cpqUpdateCostandCloseSRFHandler = async (data, action) => {
+        
+        debugger;
+        const payload = {           
+            Action: action,
+            WorkflowId: localState?.WorkflowId,
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
+            SRFReferenceNumber: localState?.SRFNumber,
+            IntegrationID: localState?.IntegrationID,
+            SRF_UserID: sessionStorage.getItem('uiid'),
+            rejectremarks: rejectRemarks
+        };
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
+                toast.success(statusMessage);
+                navigate(-1);
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
     }
 
     const handleDownloadFile = (data) => {
@@ -609,6 +688,18 @@ const SRFHLD = () => {
                                                             }
                                                         </FormGroup>
                                                     </Col>
+                                                    <Col md={6}>
+                                                        <FormInput
+                                                            label="Remarks"
+                                                            name="Remarks"
+                                                            type="textarea"
+                                                            rows={4}
+                                                            disabled={hideActions}
+                                                            rules={{ required: 'Remarks is required' }}
+                                                            control={control}
+                                                            errors={errors}
+                                                        />
+                                                    </Col>
                                                 </Row>
                                             </> :
                                                 <Row>
@@ -644,14 +735,14 @@ const SRFHLD = () => {
                                                 }
                                                 {
                                                     srfDetails?.StatusName === "HLD" && srfDetails?.IsChannel === 'Neptune' &&
-                                                    <Button color="primary" onClick={() => handleCustomSubmit('Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
+                                                    <Button color="primary" onClick={() => handleCustomSubmit('Manual Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
                                                 }
                                             </div>}
                                         </form>
                                     </fieldset>
                                 </AccordionBody>
                             </AccordionItem>
-                            {(WFStatusCode === 4 && srfDetails?.StatusName === 'HLD' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
+                            {/* {(WFStatusCode === 4 && srfDetails?.StatusName === 'HLD' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
                                 <AccordionHeader targetId="4"><strong>Reject SRF</strong></AccordionHeader>
                                 <AccordionBody accordionId="4">
                                     <Row>
@@ -673,12 +764,43 @@ const SRFHLD = () => {
                                     {location.pathname.includes('inbox') &&
                                         <div>
                                             {
-                                                <Button color="danger" onClick={() => workFlowSave(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
+                                                <Button color="danger" onClick={() => cpqCostRejectHandler(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
+                                            }
+                                        </div>}
+                                </AccordionBody>
+                            </AccordionItem> : null} */}
+                             {((WFStatusCode===4 ||WFStatusCode===3) && (srfDetails?.StatusName==='HLD'||srfDetails?.StatusName==='HLD (Pending)') && srfDetails?.IsChannel === 'CPQ' && (location.pathname.includes('inbox')||location.pathname.includes('outbox'))) ? <AccordionItem>
+                            {/* {([3,4].includes(WFStatusCode) && ['HLD','HLD (Pending)'].includes(srfDetails?.StatusName) && srfDetails?.IsChannel === 'CPQ' && ['inbox','outbox'].includes(location.pathname) )? <AccordionItem> */}
+                                <AccordionHeader targetId="4"><strong>Reject SRF</strong></AccordionHeader>
+                                <AccordionBody accordionId="4">
+                                    <Row>
+                                        <Col md={12}>
+                                            <FormGroup>
+                                                <Label for="Remarks">Remarks<span className="required">*</span></Label>
+                                                <Input
+                                                    type="textarea"
+                                                    rows={4}
+                                                    id="Remarks"
+                                                    // disabled={!location.pathname.includes('inbox')}
+                                                   // disabled={!['inbox','outbox'].includes(location.pathname)}
+                                                    value={rejectRemarks}
+                                                    onChange={(e) => setRejectRemarks(e.target.value)}
+                                                />
+                                                {remarksError && <span className="required">{remarksError}</span>}
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                    {(location.pathname.includes('inbox')||location.pathname.includes('outbox')) &&
+                                        <div>
+                                            {
+                                                <Button color="danger" onClick={() => cpqCostRejectHandler(getValues(), 'Reject to CPQ')}>Reject to CPQ</Button>
                                             }
                                         </div>}
                                 </AccordionBody>
                             </AccordionItem> : null}
-                            {(WFStatusCode === 3 && srfDetails?.StatusName === 'HLD Cost Pending' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
+
+                            {/* Reject option only for Reviewer */}
+                            {/* {(WFStatusCode === 3 && srfDetails?.StatusName === 'HLD Cost Pending' && srfDetails?.IsChannel === 'CPQ' && location.pathname.includes('inbox')) ? <AccordionItem>
                                 <AccordionHeader targetId="5"><strong>Reject SRF</strong></AccordionHeader>
                                 <AccordionBody accordionId="5">
                                     <Row>
@@ -705,7 +827,7 @@ const SRFHLD = () => {
                                             }&nbsp;
                                         </div>}
                                 </AccordionBody>
-                            </AccordionItem> : null}
+                            </AccordionItem> : null} */}
                             <AccordionItem>
                                 <AccordionHeader targetId="6"><strong>Workflow</strong></AccordionHeader>
                                 <AccordionBody accordionId="6">

@@ -9,7 +9,7 @@ export const group_columns = (handleConfigModal, handleAssignment) => {
                 return <>
                     <FontAwesomeIcon icon={faUser} className="fa-cursor" fontSize={"14px"} data-toggle="tooltip" title="Assign to me" onClick={() => handleAssignment(v?.data, 'me')} />&nbsp;&nbsp;&nbsp;&nbsp;
                     <FontAwesomeIcon icon={faUserFriends} className="fa-cursor" fontSize={"14px"} data-toggle="tooltip" title="Assign to others" onClick={() => handleAssignment(v?.data, 'others')} />&nbsp;&nbsp;&nbsp;&nbsp;
-                    {v?.data?.GroupNameCountFlag && v?.data?.SRFWorkFlowStatus === 'Submitted' && <FontAwesomeIcon icon={faExchangeAlt} fontSize={"14px"} className="fa-cursor" data-toggle="tooltip" title="Reassign Gatekeeper" onClick={() => handleAssignment(v?.data, 'reassign')} />}
+                    {v?.data?.GroupNameCountFlag==='true' && v?.data?.SRFWorkFlowStatus === 'Submitted' && <FontAwesomeIcon icon={faExchangeAlt} fontSize={"14px"} className="fa-cursor" data-toggle="tooltip" title="Reassign Gatekeeper" onClick={() => handleAssignment(v?.data, 'reassign')} />}
                     {/* <FontAwesomeIcon icon={faExchangeAlt} fontSize={"14px"} className="fa-cursor" data-toggle="tooltip" title="Reassign Gatekeeper" onClick={() => handleAssignment(v?.data, 'reassign')} /> */}
                 </>
             }
