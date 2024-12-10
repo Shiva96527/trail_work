@@ -1,31 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getDigitalQuoteDetail } from "../helper";
+import { digitalizeQuoteOverallCostingApprovalReject } from "../../../services/ed-service.js";
 import {
   totalInfoColumns,
   overallCostingGridColumn,
 } from "./config/columns.js";
-import { getDigitalQuoteDetail } from "../helper";
 
-// [
-//   { label: "Total Quotation", value: "1,489.36" },
-//   {
-//     label: "Total SRF Cost",
-//     value: "*not visible for vendor view*",
-//     style: { color: "gray" },
-//   },
-//   {
-//     label: "Balance in SRF",
-//     value: "*not visible for vendor view*",
-//     style: { color: "gray" },
-//   },
-// ]
+let surveyResponse, implementationResponse, nonStandardResponse;
 
 const OverallCostingPage = () => {
   const [totalInfo, setTotalInfo] = useState([]);
-
+  const [remarksWarning, setRemarksWarning] = useState({});
   const [workflowList, setWorkflowList] = useState([
     {
       breakdown: "Survey",
@@ -44,7 +33,7 @@ const OverallCostingPage = () => {
       isRejected: false,
     },
     {
-      breakdown: "Non-Standard Quotation",
+      breakdown: "Non Standard",
       priceBookValue: "",
       quotation: "",
       variance: "",
@@ -52,8 +41,6 @@ const OverallCostingPage = () => {
       isRejected: false,
     },
   ]);
-
-  const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
@@ -64,7 +51,6 @@ const OverallCostingPage = () => {
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
-    // setWorkflowList(quoteDetail?.overallCostingGridList);
   };
 
   const constructSummaryTable = (quotationSummary) => {
@@ -72,75 +58,109 @@ const OverallCostingPage = () => {
       quotationSummary || {};
     return [
       { label: "Total Quotation", value: totalQuotationRM },
-      {
-        label: "Total SRF Cost",
-        value: totalSRFCostRM,
-      },
-      {
-        label: "Balance in SRF",
-        value: balanceInSRFRM,
-      },
+      { label: "Total SRF Cost", value: totalSRFCostRM },
+      { label: "Balance in SRF", value: balanceInSRFRM },
     ];
   };
 
-  const handleApproveOrReject = useCallback(
-    (params, action) => {
-      //action is approve / reject
-      const updatedData = [...workflowList];
-      console.log("updatedData", updatedData);
-      const rowIndex = params.node.rowIndex;
-      updatedData[rowIndex] = {
-        ...updatedData[rowIndex],
-        isRejected: false,
-        remarks: "",
-      };
-      setWorkflowList(updatedData);
-      // validateBeforeUpdate(updatedData);
-      toast.success(`Approved: ${params.data.breakdown}`);
-    },
-    [workflowList]
-  );
+  const handleApproveOrReject = async (params, action) => {
+    const rowIndex = params.node.rowIndex;
+    const rowData = workflowList[rowIndex];
 
-  const handleRemarksChange = useCallback(
-    (e, params) => {
-      const rowIndex = params.node.rowIndex;
-      if (rowIndex === 0) {
-      } else if (rowIndex === 1) {
+    // Check if rejecting and remarks are empty
+    if (action === "reject" && rowData.remarks.trim() === "") {
+      setRemarksWarning((prev) => ({
+        ...prev,
+        [rowIndex]: true, // Set warning for the current row
+      }));
+      //return; // Prevent API call if remarks are empty
+    } else {
+      setRemarksWarning((prev) => ({
+        ...prev,
+        [rowIndex]: false, // Hide warning for the current row
+      }));
+    }
+    // If remarks are entered, hide the warning
+
+    // Prepare remarks based on the breakdown type
+    let remarks = "";
+    if (rowIndex === 0) {
+      remarks = surveyResponse; // Use surveyResponse for Survey
+    } else if (rowIndex === 1) {
+      remarks = implementationResponse; // Use implementationResponse for Implementation
+    } else if (rowIndex === 2) {
+      remarks = nonStandardResponse; // Use nonStandardResponse for Non Standard
+    }
+
+    // Check for remarks again (after hiding the warning)
+    if (action === "reject" || action === "approve") {
+      if (remarks === "") {
+        setRemarksWarning((prev) => ({
+          ...prev,
+          [rowIndex]: true, // Show warning if remarks are still empty
+        }));
       } else {
+        setRemarksWarning((prev) => ({
+          ...prev,
+          [rowIndex]: false, // Hide warning for the current row
+        }));
       }
-      const updatedData = [...workflowList];
-      updatedData[rowIndex] = {
-        ...updatedData[rowIndex],
-        remarks: e.target.value,
+      //   //return; // Prevent API call if remarks are still empty
+
+      // Prepare the payload for the API call
+      const payload = {
+        digitalizeQuoteId: digitalizeQuoteId,
+        type: rowData.breakdown,
+        remarks: remarks, // Use the correct remarks
+        loginUIID: sessionStorage.getItem("uiid"), // Update with actual login ID
       };
-      console.log("updatedData", updatedData);
-      // setWorkflowList(updatedData);
-      // validateBeforeUpdate(updatedData); // Revalidate after remarks change
-    },
-    [workflowList]
-  );
 
-  // const validateBeforeUpdate = useCallback((updatedData) => {
-  //   const hasEmptyRemarks = updatedData.some(
-  //     (item) => item.isRejected && !item.remarks.trim()
-  //   );
-  //   setIsUpdateEnabled(!hasEmptyRemarks); // Disable if any rejected row has empty remarks
-  // }, []);
+      try {
+        const response = await digitalizeQuoteOverallCostingApprovalReject(
+          payload
+        );
 
-  // const handleCalculateVariance = () => {
-  //   const updatedData = workflowList.map((item) => {
-  //     if (item.priceBookValue && item.quotation) {
-  //       const priceBookValue = parseFloat(item.priceBookValue);
-  //       const quotation = parseFloat(item.quotation);
-  //       item.variance = (quotation - priceBookValue).toFixed(2);
-  //     } else {
-  //       item.variance = "";
-  //     }
-  //     return item;
-  //   });
-  //   setWorkflowList(updatedData);
-  //   toast.success("Variance calculated successfully!");
-  // };
+        if (response?.status === 200) {
+          toast.success(
+            `${action.charAt(0).toUpperCase() + action.slice(1)}d: ${
+              rowData.breakdown
+            }`
+          );
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error in approval/rejection API call", error);
+        toast.error("Error in approval/rejection. Please try again.");
+      }
+    }
+  };
+
+  const handleRemarksChange = (e, params) => {
+    const rowIndex = params.node.rowIndex;
+
+    // Update the appropriate remark variable based on rowIndex
+    if (rowIndex === 0) {
+      surveyResponse = e.target.value;
+    } else if (rowIndex === 1) {
+      implementationResponse = e.target.value;
+    } else {
+      nonStandardResponse = e.target.value;
+    }
+
+    // // Update the workflowList state to reflect the changed remarks
+    // const updatedWorkflowList = [...workflowList];
+    // updatedWorkflowList[rowIndex].remarks = e.target.value;
+    // setWorkflowList(updatedWorkflowList);
+
+    // If remarks are entered, remove the warning for the current row
+    if (e.target.value.trim() !== "") {
+      setRemarksWarning((prev) => ({
+        ...prev,
+        [rowIndex]: false, // Remove warning when remarks are entered
+      }));
+    }
+  };
 
   return (
     <div style={{ marginTop: "30px", marginLeft: "15px", marginRight: "15px" }}>
@@ -164,7 +184,8 @@ const OverallCostingPage = () => {
           data={workflowList}
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
-            handleRemarksChange
+            handleRemarksChange,
+            remarksWarning
           )}
           paginated={false}
           itemsPerPage={10}
@@ -172,43 +193,6 @@ const OverallCostingPage = () => {
           exportable={false}
         />
       </div>
-
-      {/* Calculate Variance Button */}
-      {/* <div style={{ position: "fixed", left: "20px" }}>
-        <button
-          onClick={handleCalculateVariance}
-          style={{
-            padding: "7px 14px",
-            backgroundColor: "#293897",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontSize: "14px",
-          }}
-        >
-          Calculate Variance
-        </button>
-      </div> */}
-
-      {/* Update Button */}
-      {/* <div style={{ position: "fixed", left: "180px" }}>
-        <button
-          onClick={() => toast.success("Update clicked successfully!")}
-          disabled={!isUpdateEnabled}
-          style={{
-            padding: "7px 14px",
-            backgroundColor: "#293897",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: isUpdateEnabled ? "pointer" : "not-allowed",
-            fontSize: "14px",
-          }}
-        >
-          Update
-        </button>
-      </div> */}
 
       <ToastContainer />
     </div>

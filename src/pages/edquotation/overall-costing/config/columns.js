@@ -19,7 +19,9 @@ export const totalInfoColumns = [
 
 export const overallCostingGridColumn = (
   handleApproveOrReject,
-  handleRemarksChange
+  handleRemarksChange,
+  remarksWarning,
+  setRemarksWarning
 ) => [
   {
     headerName: "Breakdown",
@@ -112,19 +114,46 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      console.log('params', params)
+      const rowData = params.data;
+      //  const rowIndex = params.node.rowIndex;
+      const isWarningVisible = remarksWarning[params.node.rowIndex] || false; // Check if warning should be shown
+
       return (
-        <input
-          type="text"
-          onChange={(e) => handleRemarksChange(e, params)}
-          placeholder="Approval/Rejection Remarks"
-          style={{
-            padding: "5px",
-            border: "1px solid #ddd",
-            borderRadius: "5px",
-            width: "100%",
-          }}
-        />
+        <div style={{ position: "relative" }}>
+          <input
+            type="text"
+            defaultValue={rowData.remarks}
+            placeholder="Approval/Rejection Remarks"
+            onBlur={(e) => {
+              // Call handleRemarksChange when input changes
+              handleRemarksChange(e, params); // Update the remarks value
+              // Clear the warning after entering remarks
+
+              // setRemarksWarning((prev) => ({
+              //   ...prev,
+              //   [rowIndex]: false, // Set warning to false for this row after input
+              // }));
+            }}
+            style={{
+              width: "100%",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "4px",
+            }}
+          />
+          {/* Display the warning below the input field */}
+          {isWarningVisible && (
+            <div
+              style={{
+                color: "red",
+                fontSize: "12px",
+                marginTop: "4px", // Ensure it's below the input box
+              }}
+            >
+              Please enter remarks before rejecting.
+            </div>
+          )}
+        </div>
       );
     },
     width: 250,
