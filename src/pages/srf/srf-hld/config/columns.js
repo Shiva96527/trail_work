@@ -119,6 +119,7 @@ export const additional_info_columns = (handleDownloadFile) => [
     { headerName: 'High Level Solution', field: 'HighLevelSolution', minWidth: 250 },
     { headerName: 'Technical Risk Assessment', field: 'TechnicalRiskAssessment', minWidth: 250 },
     { headerName: 'Timelines', field: 'Timelines', minWidth: 250 },
+    { headerName: 'Remarks', field: 'Remarks', minWidth: 250 },
     {
         headerName: 'HLD File Upload', field: 'HLDFileUpload', width: 250, suppressSizeToFit: true, cellRenderer: (v) => {
             return <span className="link-style" onClick={() => {
