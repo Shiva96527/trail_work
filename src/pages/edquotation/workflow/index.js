@@ -9,18 +9,19 @@ export default function EdQuotationWorkFlow() {
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, []);
+    if (digitalizeQuoteId) {
+      const fetchQuoteDetail = async () => {
+        try {
+          const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+          setWorkflowList(quoteDetail?.workFlowResponse); // Ensure a fallback to an empty array
+        } catch (error) {
+          console.error("Error fetching workflow data:", error);
+        }
+      };
 
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+      fetchQuoteDetail();
+    }
   }, [digitalizeQuoteId]);
-
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setWorkflowList(quoteDetail?.workFlowResponse);
-  };
-
   return (
     <div
       style={{

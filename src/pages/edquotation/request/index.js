@@ -30,16 +30,18 @@ const Request = () => {
   const vendorOptions = ["NEC", "Vendor1", "Vendor2", "Vendor3"];
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, []);
+    if (digitalizeQuoteId) {
+      getQuoteDetail(digitalizeQuoteId);
+    }
+  }, [digitalizeQuoteId]); // Single useEffect for API call when digitalizeQuoteId changes
 
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, [digitalizeQuoteId]);
-
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setEdData(quoteDetail?.quoteCreationResponse);
+  const getQuoteDetail = async (id) => {
+    try {
+      const quoteDetail = await getDigitalQuoteDetail(id);
+      setEdData(quoteDetail?.quoteCreationResponse);
+    } catch (error) {
+      console.error("Error fetching quote detail:", error);
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -54,7 +56,6 @@ const Request = () => {
       toast.error("Please complete all required fields!");
       return;
     }
-    console.log("are u runing");
     // Prepare payload
     const payload = {
       loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
@@ -72,11 +73,9 @@ const Request = () => {
     };
 
     try {
-      // Call the updateDigitalEDQuote API
       const response = await updateDigitalEDQuote(payload);
       if (response.statusCode === 200) {
         toast.success("Data updated successfully!");
-        // Optionally navigate after successful update
         navigate("/neptune/edquotation/inbox");
       } else {
         toast.error(response.statusMessage || "Failed to update the record.");
@@ -88,7 +87,6 @@ const Request = () => {
   };
 
   const handleSRFNumberClick = () => {
-    // Navigate to the SRF platform page
     navigate(`/neptune/srf/srfinbox`);
   };
 
@@ -103,12 +101,10 @@ const Request = () => {
     >
       <Card style={{ border: "none" }}>
         <CardBody style={{ padding: "0" }}>
-          {/* Accordion for all labels */}
           <Accordion open={"1"}>
             <AccordionItem>
               <AccordionHeader targetId="1">
                 <strong>Quotation Number</strong>
-                {/* Green badge with quote number */}
                 {edData?.quoteNumber && (
                   <Badge color="success" style={{ marginLeft: "15px" }}>
                     {edData?.quoteNumber}
@@ -121,7 +117,6 @@ const Request = () => {
                 )}
               </AccordionHeader>
               <AccordionBody accordionId="1">
-                {/* Loop through columns and render inputs */}
                 {columns.map((columnGroup, index) => (
                   <Row
                     key={index}
@@ -132,45 +127,38 @@ const Request = () => {
                         <FormGroup>
                           <Label for={column.key}>{column.label}</Label>
                           {column.key === "srfNumber" ? (
-                            // Keep the SRF Number as an Input box, but add a clickable link behavior
                             <Input
                               name={column.key}
                               id={column.key}
-                              defaultValue={
-                                (edData && edData[column.key]) || ""
-                              }
+                              defaultValue={edData && edData[column.key]}
                               onClick={handleSRFNumberClick}
                               disabled={true}
                               style={{
-                                fontSize: "13px", // Ensures font size is aligned with other inputs
-                                padding: "8px", // Ensures padding is consistent
-                                color: "#007bff", // Link color
-                                textDecoration: "underline", // Underline the link
-                                border: "1px solid #ccc", // Keep consistent with other inputs
-                                cursor: "pointer", // Makes it clear the input is clickable
-                                textAlign: "left", // Aligns content to the left, like other inputs
+                                fontSize: "13px",
+                                padding: "8px",
+                                color: "#007bff",
+                                textDecoration: "underline",
+                                border: "1px solid #ccc",
+                                cursor: "pointer",
+                                textAlign: "left",
                               }}
                             />
                           ) : column.key === "vendor" ? (
-                            // Vendor Assignment as Dropdown using vendorOptions
                             <Input
                               type="select"
                               name={column.key}
                               id={column.key}
-                              defaultValue={
-                                (edData && edData[column.key]) || ""
-                              }
+                              defaultValue={edData && edData[column.key]}
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
                               disabled={edData?.statusCode !== 1}
                               style={{
-                                fontSize: "13px", // Ensures font size is aligned with other inputs
-                                padding: "8px", // Ensures padding is consistent
+                                fontSize: "13px",
+                                padding: "8px",
                               }}
                             >
                               <option value="">Select Vendor</option>
-                              {/* Dynamically populate vendor options */}
                               {vendorOptions.map((vendor, index) => (
                                 <option key={index} value={vendor}>
                                   {vendor}
@@ -178,20 +166,17 @@ const Request = () => {
                               ))}
                             </Input>
                           ) : (
-                            // Default Input for other fields
                             <Input
                               name={column.key}
                               id={column.key}
-                              defaultValue={
-                                (edData && edData[column.key]) || ""
-                              }
+                              defaultValue={edData && edData[column.key]}
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
                               disabled={true}
                               style={{
-                                fontSize: "13px", // Ensures font size is aligned with other inputs
-                                padding: "8px", // Ensures padding is consistent
+                                fontSize: "13px",
+                                padding: "8px",
                               }}
                             />
                           )}
@@ -200,8 +185,6 @@ const Request = () => {
                     ))}
                   </Row>
                 ))}
-
-                {/* Place the "Submit to Vendor" button inside AccordionBody */}
                 {edData?.statusCode === 1 ? (
                   <div style={{ textAlign: "left", marginTop: "30px" }}>
                     <Button
@@ -215,7 +198,6 @@ const Request = () => {
                         outline: "none",
                         boxShadow: "none",
                       }}
-                      disabled={edData?.statusCode !== 1}
                     >
                       Submit to vendor
                     </Button>

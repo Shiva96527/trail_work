@@ -14,12 +14,11 @@ import Request from "../request";
 import QuoteSubmitPage from "../../edquotation/quote-submit";
 import OverallCostingPage from "../../edquotation/overall-costing";
 import EDQuoteWorkflow from "../workflow/index";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import EmailLogs from "../email-logs";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDigitalQuoteDetail } from "../helper";
 
-//new to add two more component for mail and workflow
 const tabConfig = {
   1: {
     title: "Request",
@@ -38,20 +37,17 @@ const tabConfig = {
     component: <EDQuoteWorkflow />,
   },
   5: {
-    title: "Email logs ",
+    title: "Email logs",
     component: <EmailLogs />,
   },
 };
 
 export default function QuoteDetailPage() {
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [currentActiveTab, setCurrentActiveTab] = useState("1");
   const [quoteDetail, setQuoteDetail] = useState(null);
-
-  useEffect(() => {
-    constructTabs();
-  }, []);
+  const [renderedTabs, setRenderedTabs] = useState(["1"]); // Track rendered tabs
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -63,7 +59,12 @@ export default function QuoteDetailPage() {
   };
 
   const toggle = (tab) => {
-    if (currentActiveTab !== tab) setCurrentActiveTab(tab);
+    if (currentActiveTab !== tab) {
+      setCurrentActiveTab(tab);
+      if (!renderedTabs.includes(tab)) {
+        setRenderedTabs([...renderedTabs, tab]); // Add the tab to the rendered list
+      }
+    }
   };
 
   const constructTabs = () => {
@@ -74,15 +75,18 @@ export default function QuoteDetailPage() {
         <NavItem key={key}>
           <NavLink
             className={Number(key) === Number(currentActiveTab) ? "active" : ""}
-            onClick={() => {
-              toggle(key);
-            }}
+            onClick={() => toggle(key)}
           >
             {value.title}
           </NavLink>
         </NavItem>
       );
-      tempTabPane.push(<TabPane tabId={key}>{value.component}</TabPane>);
+      tempTabPane.push(
+        <TabPane tabId={key} key={key}>
+          {renderedTabs.includes(key) && value.component}{" "}
+          {/* Render only visited tabs */}
+        </TabPane>
+      );
     }
     return { tempNavItems, tempTabPane };
   };
@@ -90,23 +94,22 @@ export default function QuoteDetailPage() {
   return (
     <>
       <Card style={{ border: "none", marginTop: "10px" }}>
-        {" "}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {quoteDetail?.quoteNumber || "Loading..."}
         </CardTitle>
         <CardBody style={{ padding: "0" }}>
           <Button
             color="primary"
-            onClick={() => navigate(-1)} // Go back to the previous page
+            onClick={() => navigate(-1)}
             style={{
-              position: "absolute", // Positioning the button
+              position: "absolute",
               top: "20px",
               right: "20px",
               padding: "10px 20px",
               fontSize: "16px",
-              border: "none", // Removed border
+              border: "none",
               outline: "none",
-              boxShadow: "none", // Removed box-shadow
+              boxShadow: "none",
             }}
           >
             Back

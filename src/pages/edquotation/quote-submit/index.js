@@ -36,19 +36,22 @@ const QuoteSubmitPage = () => {
   const [edData, setEdData] = useState();
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, []);
-
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    if (digitalizeQuoteId) {
+      getQuoteDetail(digitalizeQuoteId);
+    }
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setEdData(quoteDetail?.quoteCreationResponse);
-    setSurveyResponse(quoteDetail?.surveyResponse);
-    setImplementationResponse(quoteDetail?.implementationResponse);
-    setNonStandardResponse(quoteDetail?.nonStandardResponse);
+  const getQuoteDetail = async (id) => {
+    try {
+      const quoteDetail = await getDigitalQuoteDetail(id);
+      setEdData(quoteDetail?.quoteCreationResponse);
+      setSurveyResponse(quoteDetail?.surveyResponse);
+      setImplementationResponse(quoteDetail?.implementationResponse);
+      setNonStandardResponse(quoteDetail?.nonStandardResponse);
+    } catch (error) {
+      toast.error("Failed to fetch quote details. Please try again.");
+      console.error("Error fetching quote details:", error);
+    }
   };
 
   // Get toggle state from Redux

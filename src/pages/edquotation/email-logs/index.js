@@ -10,15 +10,13 @@ export default function EmailLogs() {
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, []);
-
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    if (digitalizeQuoteId) {
+      getQuoteDetail(digitalizeQuoteId);
+    }
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+  const getQuoteDetail = async (id) => {
+    const quoteDetail = await getDigitalQuoteDetail(id);
     console.log(
       "quoteDetail,quoteDetail.mailLog",
       quoteDetail,
