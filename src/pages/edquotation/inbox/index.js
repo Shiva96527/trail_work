@@ -77,7 +77,9 @@ const TableComponent = () => {
     );
 
     // Navigate to the update page when clicking on action icons
-    navigate('/neptune/edquotation/detail');
+    navigate("/neptune/edquotation/detail", {
+      state: { quoteNumber: row.quoteNumber },
+    });
   };
 
   const columns = inboxColumns(handleAssignment);

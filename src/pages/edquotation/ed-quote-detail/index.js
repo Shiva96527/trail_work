@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Nav,
   NavItem,
@@ -10,14 +10,12 @@ import {
   Button,
   CardBody,
 } from "reactstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import Request from "../request";
 import QuoteSubmitPage from "../../edquotation/quote-submit";
 import OverallCostingPage from "../../edquotation/overall-costing";
 import EDQuoteWorkflow from "../workflow/index";
 import EmailLogs from "../email-logs";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getDigitalQuoteDetail } from "../helper";
 
 const tabConfig = {
   1: {
@@ -43,20 +41,12 @@ const tabConfig = {
 };
 
 export default function QuoteDetailPage() {
-  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  const location = useLocation();
   const navigate = useNavigate();
+  const { quoteNumber } = location.state || {};
+
   const [currentActiveTab, setCurrentActiveTab] = useState("1");
-  const [quoteDetail, setQuoteDetail] = useState(null);
   const [renderedTabs, setRenderedTabs] = useState(["1"]); // Track rendered tabs
-
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, [digitalizeQuoteId]);
-
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setQuoteDetail(quoteDetail?.quoteCreationResponse);
-  };
 
   const toggle = (tab) => {
     if (currentActiveTab !== tab) {
@@ -95,7 +85,7 @@ export default function QuoteDetailPage() {
     <>
       <Card style={{ border: "none", marginTop: "10px" }}>
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {quoteDetail?.quoteNumber || "Loading..."}
+          {quoteNumber || "No Quote Number Provided"}
         </CardTitle>
         <CardBody style={{ padding: "0" }}>
           <Button
