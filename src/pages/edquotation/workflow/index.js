@@ -24,9 +24,9 @@ export default function EdQuotationWorkFlow() {
   return (
     <div
       style={{
-        marginTop: "30px",
-        marginLeft: "15px",
-        marginRight: "15px",
+        marginTop: "16px",
+        marginLeft: "27px",
+        marginRight: "27px",
       }}
     >
       <NeptuneAgGrid
@@ -35,8 +35,8 @@ export default function EdQuotationWorkFlow() {
         dataprops={workflow_columns}
         paginated={false}
         itemsPerPage={10}
-        searchable={false}
-        exportable={false}
+        searchable={true}
+        exportable={true}
       />
     </div>
   );
