@@ -21,7 +21,7 @@ export const columns = [
   },
   {
     headerName: "MM#",
-    field: "mmNumber",
+    field: "mmNo",
     minWidth: 120,
     cellRenderer: (params) => (
       <input
@@ -44,7 +44,7 @@ export const columns = [
   },
   {
     headerName: "Quantity",
-    field: "quantity",
+    field: "qty",
     minWidth: 150,
     cellRenderer: (params) => (
       <input
@@ -62,7 +62,7 @@ export const columns = [
   },
   {
     headerName: "Unit Price",
-    field: "unitPrice",
+    field: "price",
     minWidth: 180,
   },
   {
@@ -92,7 +92,7 @@ export const columns = [
 
 export const columnsToFetch = {
   A: "oa",
-  B: "mmNumber",
+  B: "mmNo",
   C: "qty",
-  D: "plantCode"
+  D: "plantCode",
 };

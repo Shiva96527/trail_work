@@ -4,7 +4,7 @@ const initialState = {
   userInfo: null,
   srfDropdownOptions: {},
   menuItems: [],
-  toggleNonStandard: true,
+  toggleNonStandard: false,
   digitalizeQuoteId: null,
 };
 

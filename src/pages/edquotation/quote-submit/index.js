@@ -56,18 +56,6 @@ const QuoteSubmitPage = () => {
     (state) => state.globalSlice.toggleNonStandard
   );
 
-  // Sample data for the grids (to display default rows with inputs and buttons)
-  const gridData = [
-    {
-      mmNumber: "56003817",
-      description: "SURVEY,DESIGN,PM",
-      quantity: 1.0,
-      unitPrice: "1,489.36",
-      totalPrice: "1.489.36",
-      plantCode: "FN57",
-    },
-  ];
-
   // Inline styles for the custom toggle
   const toggleStyles = {
     container: {
@@ -188,8 +176,9 @@ const QuoteSubmitPage = () => {
       toast.error("Invalid file type! Only Excel files are allowed."),
   });
 
-  const toggleExcelModal = () => {
+  const toggleExcelModal = (uploadType) => {
     setExcelModal(!excelModal);
+    
   };
 
   return (
@@ -261,7 +250,7 @@ const QuoteSubmitPage = () => {
       <div style={{ position: "relative", margin: "20px" }}>
         {/* First Table - Quotation Details */}
         <NeptuneAgGrid
-          data={gridData} // Use gridData as the data for the grid
+          data={surveyResponse} // Use gridData as the data for the grid
           dataprops={columns} // Pass column definitions for Quotation Details
           topActionButtons={
             <div
@@ -281,7 +270,7 @@ const QuoteSubmitPage = () => {
                     marginLeft: "10px",
                     backgroundColor: "#007bff",
                   }}
-                  onClick={toggleExcelModal}
+                  onClick={() => toggleExcelModal("survey")}
                 >
                   <FontAwesomeIcon
                     icon={faCloudUploadAlt}
@@ -318,7 +307,7 @@ const QuoteSubmitPage = () => {
           }}
         >
           <NeptuneAgGrid
-            data={gridData} // Use gridData as the data for the grid
+            data={implementationResponse} // Use gridData as the data for the grid
             dataprops={columns} // Pass column definitions for Implementation Costing
             topActionButtons={
               <>
@@ -340,7 +329,7 @@ const QuoteSubmitPage = () => {
                           marginLeft: "10px",
                           backgroundColor: "#007bff",
                         }}
-                        onClick={toggleExcelModal}
+                        onClick={() => toggleExcelModal("implementation")}
                       >
                         <FontAwesomeIcon
                           icon={faCloudUploadAlt}
@@ -395,7 +384,7 @@ const QuoteSubmitPage = () => {
             }}
           >
             <NeptuneAgGrid
-              data={gridData} // Use gridData as the data for the grid
+              data={nonStandardResponse} // Use gridData as the data for the grid
               dataprops={columns} // Pass column definitions for Non-Standard Quotation
               topActionButtons={
                 <div
@@ -415,7 +404,7 @@ const QuoteSubmitPage = () => {
                         marginLeft: "10px",
                         backgroundColor: "#007bff",
                       }}
-                      onClick={toggleExcelModal}
+                      onClick={() => toggleExcelModal("nonstandard")}
                     >
                       <FontAwesomeIcon
                         icon={faCloudUploadAlt}

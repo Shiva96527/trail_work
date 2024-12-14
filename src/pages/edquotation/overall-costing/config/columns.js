@@ -112,7 +112,6 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      console.log("params", params);
       return (
         <input
           type="text"
