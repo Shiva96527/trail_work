@@ -212,7 +212,7 @@ const EdSearch = () => {
                     <Label for="status">Status</Label>
                     <DropdownList
                       data={[
-                        "Vendor Assignmnet",
+                        "Vendor Assignment",
                         "Draft",
                         "Submitted",
                         "Assigned",
