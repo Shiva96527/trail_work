@@ -112,7 +112,7 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      return params.showApproveRejectButton === "Yes" ? (
+      return params?.data?.showApproveRejectButton === "Yes" ? (
         <input
           type="text"
           onChange={(e) => handleRemarksChange(e, params)}
@@ -132,7 +132,8 @@ export const overallCostingGridColumn = (
     headerName: "Actions",
     field: "action",
     cellRenderer: (params) => {
-      return params.showApproveRejectButton === "Yes" ? (
+      console.log("]", params);
+      return params?.data?.showApproveRejectButton === "Yes" ? (
         <div>
           <button
             onClick={() => handleApproveOrReject(params, "approve")}
