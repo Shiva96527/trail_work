@@ -1,6 +1,6 @@
 // Create schema based on the provided fields and columns.
 const createEdSchema = {
-  assignee: { required: false },
+  assignee: { required: true },
   opportunityID: { required: true },
   fixCasNumber: { required: false },
   fixCdsNumber: { required: false },

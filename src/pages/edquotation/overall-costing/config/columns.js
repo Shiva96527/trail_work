@@ -23,14 +23,14 @@ export const overallCostingGridColumn = (
 ) => [
   {
     headerName: "Breakdown",
-    field: "breakdown",
+    field: "breakDown",
     sortable: true,
     filter: true,
     width: 200,
   },
   {
     headerName: "Price Book Value (RM)",
-    field: "priceBookValue",
+    field: "priceBookValueRM",
     sortable: true,
     filter: true,
     width: 250,
@@ -64,7 +64,7 @@ export const overallCostingGridColumn = (
   },
   {
     headerName: "Quotation (RM)",
-    field: "quotation",
+    field: "quatationRM",
     sortable: true,
     filter: true,
     width: 250,
@@ -89,7 +89,7 @@ export const overallCostingGridColumn = (
   },
   {
     headerName: "Variance (RM)",
-    field: "variance",
+    field: "varianceRM",
     sortable: true,
     filter: true,
     width: 250,
@@ -112,7 +112,7 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      return (
+      return params.showApproveRejectButton === "Yes" ? (
         <input
           type="text"
           onChange={(e) => handleRemarksChange(e, params)}
@@ -124,46 +124,48 @@ export const overallCostingGridColumn = (
             width: "100%",
           }}
         />
-      );
+      ) : null;
     },
     width: 250,
   },
   {
     headerName: "Actions",
-    field: "actions",
-    cellRenderer: (params) => (
-      <div>
-        <button
-          onClick={() => handleApproveOrReject(params, "approve")}
-          style={{
-            backgroundColor: "#28a745", // Green
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            padding: "6px 12px",
-            cursor: "pointer",
-            fontSize: "12px",
-            marginRight: "5px",
-          }}
-        >
-          Approve
-        </button>
-        <button
-          onClick={() => handleApproveOrReject(params, "reject")}
-          style={{
-            backgroundColor: "#dc3545", // Red
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            padding: "6px 12px",
-            cursor: "pointer",
-            fontSize: "12px",
-          }}
-        >
-          Reject
-        </button>
-      </div>
-    ),
+    field: "action",
+    cellRenderer: (params) => {
+      return params.showApproveRejectButton === "Yes" ? (
+        <div>
+          <button
+            onClick={() => handleApproveOrReject(params, "approve")}
+            style={{
+              backgroundColor: "#28a745", // Green
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              padding: "6px 12px",
+              cursor: "pointer",
+              fontSize: "12px",
+              marginRight: "5px",
+            }}
+          >
+            Approve
+          </button>
+          <button
+            onClick={() => handleApproveOrReject(params, "reject")}
+            style={{
+              backgroundColor: "#dc3545", // Red
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              padding: "6px 12px",
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
+          >
+            Reject
+          </button>
+        </div>
+      ) : null;
+    },
     width: 200,
   },
 ];

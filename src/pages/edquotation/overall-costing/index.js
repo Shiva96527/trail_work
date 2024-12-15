@@ -9,20 +9,6 @@ import {
 } from "./config/columns.js";
 import { getDigitalQuoteDetail } from "../helper";
 
-// [
-//   { label: "Total Quotation", value: "1,489.36" },
-//   {
-//     label: "Total SRF Cost",
-//     value: "*not visible for vendor view*",
-//     style: { color: "gray" },
-//   },
-//   {
-//     label: "Balance in SRF",
-//     value: "*not visible for vendor view*",
-//     style: { color: "gray" },
-//   },
-// ]
-
 const OverallCostingPage = () => {
   const [totalInfo, setTotalInfo] = useState([]);
 
@@ -64,7 +50,9 @@ const OverallCostingPage = () => {
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
-    // setWorkflowList(quoteDetail?.overallCostingGridList);
+    setWorkflowList(
+      constructBreakdownGridData(quoteDetail?.overallCostingGridList)
+    );
   };
 
   const constructSummaryTable = (quotationSummary) => {
@@ -81,6 +69,12 @@ const OverallCostingPage = () => {
         value: balanceInSRFRM,
       },
     ];
+  };
+
+  const constructBreakdownGridData = (breakdownData) => {
+    return breakdownData.map((item) => {
+      return item;
+    });
   };
 
   const handleApproveOrReject = useCallback(

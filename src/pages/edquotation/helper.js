@@ -10,7 +10,6 @@ export const getDigitalQuoteDetail = async (digitalizeQuoteId) => {
       data: { data: resultData, statusCode },
     } = await getDigitalQuoteById(payload);
     if (statusCode === 200) {
-      console.log("resultData", resultData);
       return resultData;
     }
   } catch (e) {

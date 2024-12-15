@@ -20,17 +20,17 @@ import columns from "./config/columns";
 import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
 import { getDigitalQuoteDetail } from "../helper";
 import { useSelector } from "react-redux";
+import { getDropdownByTypeHTTP } from "../../../services/global-service";
 
 const Request = () => {
   const navigate = useNavigate();
   const [edData, setEdData] = useState();
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
-
-  // Hardcoded vendor options, or this could come from edData or elsewhere
-  const vendorOptions = ["NEC", "Vendor1", "Vendor2", "Vendor3"];
+  const [vendorDropDownList, setVendorDropDownList] = useState([]);
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    getDropdownValues();
   }, []);
 
   useEffect(() => {
@@ -38,8 +38,58 @@ const Request = () => {
   }, [digitalizeQuoteId]);
 
   const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setEdData(quoteDetail?.quoteCreationResponse);
+    try {
+      const data = await getDigitalQuoteDetail(digitalizeQuoteId);
+      setEdData(data?.quoteCreationResponse);
+      console.log("first", data?.quoteCreationResponse);
+      if (data?.statusCode !== 200) {
+        toast.info(data?.statusMessage);
+        setDisableStatus(data?.quoteCreationResponse);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const setDisableStatus = (quote) => {
+    if (quote.statusCode === 1) {
+      setDisable(false);
+      return;
+    } else if (
+      (quote.statusCode === 2 || quote.statusCode === 3) &&
+      quote.enableVendorAssignment === "Yes"
+    ) {
+      setDisable(false);
+      return;
+    } else {
+      setDisable(true);
+    }
+  };
+
+  const getDropdownValues = async () => {
+    try {
+      const {
+        data: { data: resultData, statusCode, statusMessage },
+      } = await getDropdownByTypeHTTP({
+        DropDownType: "EDVendorName",
+        LoginUIID: sessionStorage.getItem("uiid"),
+      });
+      if (statusCode === 200) {
+        const dropdowns = resultData?.reduce((acc, data) => {
+          acc[data?.DropDownType] = {
+            DDId: data?.DDId,
+            dropdownType: data?.DropDownType,
+            dropdownValue: data?.DropDownValue?.split(","),
+          };
+          return acc;
+        }, {});
+        setVendorDropDownList(dropdowns?.EDVendorName?.dropdownValue);
+      } else {
+        toast.error(statusMessage);
+      }
+    } catch (e) {
+      toast.error("System error.");
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -50,11 +100,14 @@ const Request = () => {
   };
 
   const handleSave = async () => {
-    if (!edData.srfNumber) {
-      toast.error("Please complete all required fields!");
+    if (!edData.vendor) {
+      toast.error("Please complete vendor assignment!");
       return;
     }
-    console.log("are u runing");
+    const type =
+      edData.enableVendorAssignment === "Yes" && edData.statusCode === 2
+        ? "vendorupdate"
+        : "vendorsubmit";
     // Prepare payload
     const payload = {
       loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
@@ -69,17 +122,19 @@ const Request = () => {
       createdDate: edData.createdDate,
       vendor: edData.vendor,
       digitalizeQuoteId: edData.digitalizeQuoteId,
+      type,
     };
-
     try {
       // Call the updateDigitalEDQuote API
-      const response = await updateDigitalEDQuote(payload);
-      if (response.statusCode === 200) {
-        toast.success("Data updated successfully!");
-        // Optionally navigate after successful update
+      const data = await updateDigitalEDQuote(payload);
+      const {
+        data: { statusCode, statusMessage },
+      } = data;
+      if (statusCode == 200) {
+        toast.success(statusMessage);
         navigate("/neptune/edquotation/inbox");
       } else {
-        toast.error(response.statusMessage || "Failed to update the record.");
+        toast.error(statusMessage || "Failed to update the record.");
       }
     } catch (error) {
       toast.error("An error occurred while updating the data.");
@@ -88,6 +143,7 @@ const Request = () => {
   };
 
   const handleSRFNumberClick = () => {
+    console.log("clicked");
     // Navigate to the SRF platform page
     navigate(`/neptune/srf/srfinbox`);
   };
@@ -104,7 +160,7 @@ const Request = () => {
       <Card style={{ border: "none" }}>
         <CardBody style={{ padding: "0" }}>
           {/* Accordion for all labels */}
-          <Accordion open={"1"}>
+          <Accordion open={"1"} toggle={() => {}}>
             <AccordionItem>
               <AccordionHeader targetId="1">
                 <strong>Quotation Number</strong>
@@ -152,7 +208,7 @@ const Request = () => {
                               }}
                             />
                           ) : column.key === "vendor" ? (
-                            // Vendor Assignment as Dropdown using vendorOptions
+                            // Vendor Assignment as Dropdown using vendorDropDownList
                             <Input
                               type="select"
                               name={column.key}
@@ -160,10 +216,11 @@ const Request = () => {
                               defaultValue={
                                 (edData && edData[column.key]) || ""
                               }
+                              value={edData && edData[column.key]}
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={edData?.statusCode !== 1}
+                              disabled={disable}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -171,7 +228,7 @@ const Request = () => {
                             >
                               <option value="">Select Vendor</option>
                               {/* Dynamically populate vendor options */}
-                              {vendorOptions.map((vendor, index) => (
+                              {vendorDropDownList.map((vendor, index) => (
                                 <option key={index} value={vendor}>
                                   {vendor}
                                 </option>
@@ -202,7 +259,7 @@ const Request = () => {
                 ))}
 
                 {/* Place the "Submit to Vendor" button inside AccordionBody */}
-                {edData?.statusCode === 1 ? (
+                {!disable ? (
                   <div style={{ textAlign: "left", marginTop: "30px" }}>
                     <Button
                       color="primary"
@@ -215,9 +272,9 @@ const Request = () => {
                         outline: "none",
                         boxShadow: "none",
                       }}
-                      disabled={edData?.statusCode !== 1}
+                      disabled={disable}
                     >
-                      Submit to vendor
+                      Submit to Vendor
                     </Button>
                   </div>
                 ) : null}
