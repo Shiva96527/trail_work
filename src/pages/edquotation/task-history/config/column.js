@@ -9,10 +9,6 @@ const workflow_columns = [
   { headerName: "Comments", field: "remarks" },
   { headerName: "Created By", field: "createdBy" },
   { headerName: "Created Date", field: "createdDate" },
-  { headerName: "Approved By", field: "approvedBy" },
-  { headerName: "Approved Date", field: "approvedDate" },
-  { headerName: "Rejected By", field: "rejectedBy" },
-  { headerName: "Rejected Date", field: "rejectedDate" },
   { headerName: "Action By", field: "actionBy" },
   { headerName: "Action Date", field: "actionDate" },
 ];

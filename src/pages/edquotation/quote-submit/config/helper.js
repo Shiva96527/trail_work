@@ -1,4 +1,5 @@
 import XLSX from "xlsx";
+import { Button } from "reactstrap";
 
 export const getWorkbook = async (fileList) => {
   // no file has been selected
@@ -41,4 +42,27 @@ export const populateGrid = (workbook, columns) => {
     rowIndex++;
   }
   return rowData;
+};
+
+export const submitButton = (onClickHandler, type, disabled) => {
+  console.log('disabled', disabled)
+  return (
+    <div style={{ textAlign: "left", marginTop: "30px" }}>
+      <Button
+        onClick={() => onClickHandler(type)}
+        color="primary"
+        disabled={disabled}
+        style={{
+          padding: "10px 20px",
+          width: "250px",
+          fontSize: "16px",
+          border: "none",
+          outline: "none",
+          boxShadow: "none",
+        }}
+      >
+        Submit for Approval
+      </Button>
+    </div>
+  );
 };

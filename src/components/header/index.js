@@ -228,7 +228,7 @@ const NeptuneHeader = () => {
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <DropdownItem onClick={() => navigate('/neptune/edquotation/inbox')}>
-                                        Inbox
+                                        ED Inbox
                                     </DropdownItem>
                                     <DropdownItem onClick={() => navigate('/neptune/edquotation/mygroup')}>
                                         My Group

@@ -23,7 +23,6 @@ const initialState = {
   assignee: "",
   department: "",
   opportunityID: "",
-  serviceOrderNumber: "",
   fixCDS: "",
   businessCaseNumber: "",
   srfNumber: "",
@@ -110,7 +109,6 @@ const EdSearch = () => {
         SRFWorkFlowStatus: data?.SRFWorkFlowStatus,
       },
     });
-    //navigate('/neptune/srf/srfinbox/view', { state: { IntegrationID: data?.IntegrationID, SRFNumber: data?.SRFNumber } })
   };
 
   return (
@@ -173,17 +171,9 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-                <Col md={3}>
-                  <FormGroup>
-                    <Label for="serviceOrderNumber">Service Order #</Label>
-                    <Input
-                      name="serviceOrderNumber"
-                      id="serviceOrderNumber"
-                      value={state?.serviceOrderNumber}
-                      onChange={handleChange}
-                    />
-                  </FormGroup>
-                </Col>
+              </Row>
+
+              <Row>
                 <Col md={3}>
                   <FormGroup>
                     <Label for="fixCDS">Fix CDS #</Label>
@@ -217,14 +207,12 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-              </Row>
-              <Row>
                 <Col md={3}>
                   <FormGroup>
                     <Label for="status">Status</Label>
                     <DropdownList
                       data={[
-                        "Vendor Assignmnet",
+                        "Vendor Assignment",
                         "Draft",
                         "Submitted",
                         "Assigned",
@@ -249,6 +237,9 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
+              </Row>
+
+              <Row>
                 <Col md={3}>
                   <FormGroup>
                     <Label for="requestor">{`Requester(Maxis Id)`}</Label>
@@ -260,41 +251,40 @@ const EdSearch = () => {
                     />
                   </FormGroup>
                 </Col>
-                <Row>
-                  <Col md={3}>
-                    <FormGroup>
-                      <Label>Submitted Start Date</Label>
-                      <DatePicker
-                        defaultValue={null} // No initial date selected
-                        value={
-                          state?.startDate ? new Date(state?.startDate) : null
-                        } // Convert string to Date
-                        onChange={(date) => {
-                          const formattedDate = date
-                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
-                            : "";
-                          setState({ ...state, startDate: formattedDate });
-                        }}
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col md={3}>
-                    <FormGroup>
-                      <Label>Submitted End Date</Label>
-                      <DatePicker
-                        defaultValue={null} // No initial date selected
-                        value={state?.endDate ? new Date(state?.endDate) : null} // Convert string to Date
-                        onChange={(date) => {
-                          const formattedDate = date
-                            ? format(new Date(date), "dd-MMM-yyyy") // Format to "25-Nov-2024"
-                            : "";
-                          setState({ ...state, endDate: formattedDate });
-                        }}
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
+                <Col md={3}>
+                  <FormGroup>
+                    <Label>Submitted Start Date</Label>
+                    <DatePicker
+                      defaultValue={null}
+                      value={
+                        state?.startDate ? new Date(state?.startDate) : null
+                      }
+                      onChange={(date) => {
+                        const formattedDate = date
+                          ? format(new Date(date), "dd-MMM-yyyy")
+                          : "";
+                        setState({ ...state, startDate: formattedDate });
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md={3}>
+                  <FormGroup>
+                    <Label>Submitted End Date</Label>
+                    <DatePicker
+                      defaultValue={null}
+                      value={state?.endDate ? new Date(state?.endDate) : null}
+                      onChange={(date) => {
+                        const formattedDate = date
+                          ? format(new Date(date), "dd-MMM-yyyy")
+                          : "";
+                        setState({ ...state, endDate: formattedDate });
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
               </Row>
+
               <div>
                 <Button
                   color="primary"

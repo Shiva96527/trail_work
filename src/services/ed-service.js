@@ -55,3 +55,12 @@ export const getDigitalQuoteById = (payload) => {
     data: payload,
   });
 };
+
+
+export const postDigitalizeQuoteSubmitForApprovalorReject = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteSubmitForApprovalorReject",
+    data: payload,
+  });
+};

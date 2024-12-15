@@ -11,10 +11,6 @@ export default function EmailLogs() {
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
-  }, []);
-
-  useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
   }, [digitalizeQuoteId]);
 
   const getQuoteDetail = async () => {

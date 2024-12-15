@@ -4,23 +4,6 @@ import { statusMap } from "../../../shared/config"; // Update the path as needed
 
 export const inboxColumns = (handleAssignment) => [
   {
-    field: "assign",
-    headerName: "Action",
-    minWidth: 150,
-    cellRenderer: (v) => (
-      <>
-        <FontAwesomeIcon
-          icon={faUserFriends}
-          className="fa-cursor"
-          fontSize={"14px"}
-          data-toggle="tooltip"
-          title="Update ED"
-          onClick={() => handleAssignment(v?.data)} // Reassign action
-        />
-      </>
-    ),
-  },
-  {
     field: "quoteNumber",
     headerName: "Quote #",
     minWidth: 250,
