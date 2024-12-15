@@ -47,8 +47,6 @@ const OverallCostingPage = () => {
     },
   ]);
 
-  const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
-
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   // const [surveyData, setSurveyData] = useState(null);
 
