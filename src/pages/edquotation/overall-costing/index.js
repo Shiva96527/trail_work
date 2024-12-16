@@ -1,15 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import NeptuneAgGrid from "../../../components/ag-grid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   totalInfoColumns,
   overallCostingGridColumn,
 } from "./config/columns.js";
 import { getDigitalQuoteDetail } from "../helper";
+import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
+import { useNavigate } from "react-router-dom";
+
+var surveyData = {};
+var implementationData = {};
+var nonStandardData = {};
 
 const OverallCostingPage = () => {
+  const navigate = useNavigate();
+
   const [totalInfo, setTotalInfo] = useState([]);
 
   const [workflowList, setWorkflowList] = useState([
@@ -39,9 +47,8 @@ const OverallCostingPage = () => {
     },
   ]);
 
-  const [isUpdateEnabled, setIsUpdateEnabled] = useState(true);
-
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  // const [surveyData, setSurveyData] = useState(null);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -77,42 +84,76 @@ const OverallCostingPage = () => {
     });
   };
 
-  const handleApproveOrReject = useCallback(
-    (params, action) => {
-      //action is approve / reject
-      const updatedData = [...workflowList];
-      console.log("updatedData", updatedData);
-      const rowIndex = params.node.rowIndex;
-      updatedData[rowIndex] = {
-        ...updatedData[rowIndex],
-        isRejected: false,
-        remarks: "",
-      };
-      setWorkflowList(updatedData);
-      // validateBeforeUpdate(updatedData);
-      toast.success(`Approved: ${params.data.breakdown}`);
-    },
-    [workflowList]
-  );
-
-  const handleRemarksChange = useCallback(
-    (e, params) => {
-      const rowIndex = params.node.rowIndex;
-      if (rowIndex === 0) {
-      } else if (rowIndex === 1) {
+  const handleApproveOrReject = async (params, action) => {
+    const rowIndex = params.node.rowIndex;
+    let remarks = "";
+    let type = "";
+    if (rowIndex === 0) {
+      if (action !== "approve" && !surveyData.remarks) {
+        toast.error("Remarks must!!!");
+        return;
       } else {
+        remarks = surveyData.remarks;
+        type = "Survey";
       }
-      const updatedData = [...workflowList];
-      updatedData[rowIndex] = {
-        ...updatedData[rowIndex],
-        remarks: e.target.value,
+    } else if (rowIndex === 1) {
+      if (action !== "approve" && !implementationData.remarks) {
+        toast.error("Remarks must!!!");
+        return;
+      } else {
+        remarks = implementationData.remarks;
+        type = "Implementation";
+      }
+    } else {
+      if (action !== "approve" && !nonStandardData.remarks) {
+        toast.error("Remarks must!!!");
+        return;
+      } else {
+        remarks = nonStandardData.remarks;
+        type = "NonStandard";
+      }
+    }
+    const payload = {
+      LoginUIID: sessionStorage.getItem("uiid"),
+      remarks,
+      type,
+      action,
+      digitalizeQuoteId,
+    };
+    try {
+      const {
+        data: { statusCode, statusMessage },
+      } = await postDigitalizeQuoteOverallCostingApprovalorReject(payload);
+      if (statusCode === 200) {
+        toast.success(statusMessage);
+        navigate("/neptune/edquotation/inbox");
+      } else {
+        toast.error(statusMessage);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleRemarksChange = (e, params) => {
+    const rowIndex = params.node.rowIndex;
+    if (rowIndex === 0) {
+      surveyData = {
+        ...params?.data,
+        remarks: e?.target?.value,
       };
-      console.log("updatedData", updatedData);
-      // setWorkflowList(updatedData);
-      // validateBeforeUpdate(updatedData); // Revalidate after remarks change
-    },
-    [workflowList]
-  );
+    } else if (rowIndex === 1) {
+      implementationData = {
+        ...params?.data,
+        remarks: e?.target?.value,
+      };
+    } else {
+      nonStandardData = {
+        ...params?.data,
+        remarks: e?.target?.value,
+      };
+    }
+  };
 
   // const validateBeforeUpdate = useCallback((updatedData) => {
   //   const hasEmptyRemarks = updatedData.some(

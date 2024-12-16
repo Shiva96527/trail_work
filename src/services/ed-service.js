@@ -56,11 +56,18 @@ export const getDigitalQuoteById = (payload) => {
   });
 };
 
-
 export const postDigitalizeQuoteSubmitForApprovalorReject = (payload) => {
   return onSrfApiCall({
     method: "POST",
     url: "/DigitalizeQuote/DigitalizeQuoteSubmitForApprovalorReject",
+    data: payload,
+  });
+};
+
+export const postDigitalizeQuoteOverallCostingApprovalorReject = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteOverallCostingApprovalorReject",
     data: payload,
   });
 };

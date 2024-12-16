@@ -25,8 +25,10 @@ import {
 } from "../../../services/ed-service.js";
 import { useDropzone } from "react-dropzone";
 import { getDigitalQuoteDetail } from "../helper";
+import { useNavigate } from "react-router-dom";
 
 const QuoteSubmitPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
@@ -190,7 +192,6 @@ const QuoteSubmitPage = () => {
 
   const handleSubmit = async (type) => {
     let digitalizeRequestWireframeUploadRequest;
-    console.log("type", type);
     if (type === "survey") {
       digitalizeRequestWireframeUploadRequest =
         filteredSurveyResponse?.length > 0
@@ -214,14 +215,13 @@ const QuoteSubmitPage = () => {
       type,
       digitalizeQuoteId,
     };
-    console.log("payload", payload);
     try {
       const {
         data: { statusCode, statusMessage },
       } = await postDigitalizeQuoteSubmitForApprovalorReject(payload);
-      console.log("statusCode", statusCode, statusCode === 200, statusMessage);
       if (statusCode === 200) {
         toast.success(statusMessage);
+        navigate("/neptune/edquotation/inbox");
       } else {
         toast.info(statusMessage);
       }
@@ -329,149 +329,161 @@ const QuoteSubmitPage = () => {
         {/* Always visible - Implementation Costing Details Grid */}
 
         {edData?.statusCode === 4 ? (
-          <div
-            style={{
-              fontSize: "18px",
-              marginTop: "30px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <NeptuneAgGrid
-              data={
-                filteredImplementationResponse?.length > 0
-                  ? filteredImplementationResponse
-                  : implementationResponse
-              } // Use gridData as the data for the grid
-              dataprops={columns(handleAssignment, "implementation")} // Pass column definitions for Quotation Details
-              // dataprops={columns} // Pass column definitions for Implementation Costing
-              topActionButtons={
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center", // Ensure text and toggle are vertically aligned
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      color: "black",
-                    }}
-                  >
-                    <span>
-                      Implementation Costing Details{" "}
-                      {edData?.statusCode === 4 ? (
-                        <Button
-                          color="primary"
-                          style={{
-                            marginLeft: "10px",
-                            backgroundColor: "#007bff",
-                          }}
-                          onClick={() => toggleExcelModal("implementation")}
-                        >
-                          <FontAwesomeIcon
-                            icon={faCloudUploadAlt}
-                            style={{ marginRight: "8px" }}
-                          />
-                          Upload
-                        </Button>
-                      ) : null}
-                    </span>
+          <>
+            <div
+              style={{
+                fontSize: "18px",
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <NeptuneAgGrid
+                data={
+                  filteredImplementationResponse?.length > 0
+                    ? filteredImplementationResponse
+                    : implementationResponse
+                } // Use gridData as the data for the grid
+                dataprops={columns(handleAssignment, "implementation")} // Pass column definitions for Quotation Details
+                // dataprops={columns} // Pass column definitions for Implementation Costing
+                topActionButtons={
+                  <>
                     <div
                       style={{
-                        ...toggleStyles.container,
-                        transform: "scale(0.7)", // Reduce the size of the toggle
-                        marginLeft: "10px", // Add space between the text and the toggle
+                        display: "flex",
+                        alignItems: "center", // Ensure text and toggle are vertically aligned
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        color: "black",
                       }}
-                      onClick={handleToggleConfirmation}
-                      title="Non-Standard Quotation" // Tooltip text
                     >
-                      <input
-                        type="checkbox"
-                        checked={toggleNonStandard}
-                        onChange={(e) => e.stopPropagation()}
-                        style={toggleStyles.input}
-                      />
-                      <div style={toggleStyles.slider}>
-                        <div style={toggleStyles.knob}></div>
+                      <span>
+                        Implementation Costing Details{" "}
+                        {edData?.statusCode === 4 ? (
+                          <Button
+                            color="primary"
+                            style={{
+                              marginLeft: "10px",
+                              backgroundColor: "#007bff",
+                            }}
+                            onClick={() => toggleExcelModal("implementation")}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCloudUploadAlt}
+                              style={{ marginRight: "8px" }}
+                            />
+                            Upload
+                          </Button>
+                        ) : null}
+                      </span>
+                      <div
+                        style={{
+                          ...toggleStyles.container,
+                          transform: "scale(0.7)", // Reduce the size of the toggle
+                          marginLeft: "10px", // Add space between the text and the toggle
+                        }}
+                        onClick={handleToggleConfirmation}
+                        title="Non-Standard Quotation" // Tooltip text
+                      >
+                        <input
+                          type="checkbox"
+                          checked={toggleNonStandard}
+                          onChange={(e) => e.stopPropagation()}
+                          style={toggleStyles.input}
+                        />
+                        <div style={toggleStyles.slider}>
+                          <div style={toggleStyles.knob}></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              }
-              exportable={false}
-              gridOptions={{
-                domLayout: "autoHeight",
-                paginationPageSize: 10,
-                rowHeight: 50,
-                suppressExcelExport: false, // Disable Excel export button
-                suppressCsvExport: false,
-                suppressMenus: true, // Disable CSV export button
-              }}
-            />
-            {submitButton(handleSubmit, "implementation")}
-          </div>
+                  </>
+                }
+                exportable={false}
+                gridOptions={{
+                  domLayout: "autoHeight",
+                  paginationPageSize: 10,
+                  rowHeight: 50,
+                  suppressExcelExport: false, // Disable Excel export button
+                  suppressCsvExport: false,
+                  suppressMenus: true, // Disable CSV export button
+                }}
+              />
+            </div>
+            {submitButton(
+              handleSubmit,
+              "implementation",
+              edData?.statusCode !== 4 ? true : false
+            )}
+          </>
         ) : null}
 
         {/* Render Non-Standard Quotation Grid when the toggle is on */}
         {toggleNonStandard && (
-          <div
-            style={{
-              fontSize: "18px",
-              marginTop: "30px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <NeptuneAgGrid
-              data={
-                filteredNonStandardResponse?.length > 0
-                  ? filteredNonStandardResponse
-                  : nonStandardResponse
-              } // Use gridData as the data for the grid
-              dataprops={columns(handleAssignment, "nonstandard")} // Pass column definitions for Quotation Details
-              // dataprops={columns} // Pass column definitions for Non-Standard Quotation
-              topActionButtons={
-                <div
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "black",
-                    alignItems: "center",
-                    display: "flex",
-                  }}
-                >
-                  Non-Standard Quotation
-                  {edData?.statusCode === 6 || edData?.statusCode === 4 ? (
-                    <Button
-                      color="primary"
-                      style={{
-                        marginLeft: "10px",
-                        backgroundColor: "#007bff",
-                      }}
-                      onClick={() => toggleExcelModal("nonstandard")}
-                    >
-                      <FontAwesomeIcon
-                        icon={faCloudUploadAlt}
-                        style={{ marginRight: "8px" }}
-                      />
-                      Upload
-                    </Button>
-                  ) : null}
-                </div>
-              }
-              exportable={false}
-              gridOptions={{
-                domLayout: "autoHeight",
-                paginationPageSize: 10,
-                rowHeight: 50,
-                suppressExcelExport: false, // Disable Excel export button
-                suppressCsvExport: false,
-                suppressMenus: true, // Disable CSV export button
+          <>
+            <div
+              style={{
+                fontSize: "18px",
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-            />
-            {submitButton(handleSubmit, "nonstandard")}
-          </div>
+            >
+              <NeptuneAgGrid
+                data={
+                  filteredNonStandardResponse?.length > 0
+                    ? filteredNonStandardResponse
+                    : nonStandardResponse
+                } // Use gridData as the data for the grid
+                dataprops={columns(handleAssignment, "nonstandard")} // Pass column definitions for Quotation Details
+                // dataprops={columns} // Pass column definitions for Non-Standard Quotation
+                topActionButtons={
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      color: "black",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Non-Standard Quotation
+                    {edData?.statusCode === 6 || edData?.statusCode === 4 ? (
+                      <Button
+                        color="primary"
+                        style={{
+                          marginLeft: "10px",
+                          backgroundColor: "#007bff",
+                        }}
+                        onClick={() => toggleExcelModal("nonstandard")}
+                      >
+                        <FontAwesomeIcon
+                          icon={faCloudUploadAlt}
+                          style={{ marginRight: "8px" }}
+                        />
+                        Upload
+                      </Button>
+                    ) : null}
+                  </div>
+                }
+                exportable={false}
+                gridOptions={{
+                  domLayout: "autoHeight",
+                  paginationPageSize: 10,
+                  rowHeight: 50,
+                  suppressExcelExport: false, // Disable Excel export button
+                  suppressCsvExport: false,
+                  suppressMenus: true, // Disable CSV export button
+                }}
+              />
+            </div>
+            {submitButton(
+              handleSubmit,
+              "nonstandard",
+              edData?.statusCode !== 4 ? true : false
+            )}
+          </>
         )}
       </div>
 

@@ -45,24 +45,24 @@ export const populateGrid = (workbook, columns) => {
 };
 
 export const submitButton = (onClickHandler, type, disabled) => {
-  console.log('disabled', disabled)
   return (
     <div style={{ textAlign: "left", marginTop: "30px" }}>
-      <Button
-        onClick={() => onClickHandler(type)}
-        color="primary"
-        disabled={disabled}
-        style={{
-          padding: "10px 20px",
-          width: "250px",
-          fontSize: "16px",
-          border: "none",
-          outline: "none",
-          boxShadow: "none",
-        }}
-      >
-        Submit for Approval
-      </Button>
+      {!disabled ? (
+        <Button
+          onClick={() => onClickHandler(type)}
+          color="primary"
+          style={{
+            padding: "10px 20px",
+            width: "250px",
+            fontSize: "16px",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+          }}
+        >
+          Submit for Approval
+        </Button>
+      ) : null}
     </div>
   );
 };
