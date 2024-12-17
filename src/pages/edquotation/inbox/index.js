@@ -43,8 +43,12 @@ const TableComponent = () => {
   const [loading, setLoading] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
   const [gridData, setGridData] = useState([]);
+  const [userIdentification, setUserIdentification] = useState(null);
 
   useEffect(() => {
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
+
     getEDQuoteList();
   }, []);
 
@@ -159,31 +163,35 @@ const TableComponent = () => {
                     <>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ display: "inline-block" }}>
-                          <Button
-                            color="primary"
-                            size="sm"
-                            data-toggle="tooltip"
-                            title="Manual Quote"
-                            onClick={() =>
-                              navigate("/neptune/edquotation/create-ed")
-                            }
-                          >
-                            <FontAwesomeIcon icon={faPlus} />
-                          </Button>
-                          &nbsp;&nbsp;
-                          <Button
-                            color="success"
-                            size="sm"
-                            onClick={toggleExcelModal}
-                            data-toggle="tooltip"
-                            title="Bulk upload"
-                          >
-                            <FontAwesomeIcon
-                              icon={faFileExcel}
-                              style={{ fontSize: "15px" }}
-                            />
-                          </Button>
-                          &nbsp;&nbsp;
+                          {userIdentification !== "vendor" && (
+                            <>
+                              <Button
+                                color="primary"
+                                size="sm"
+                                data-toggle="tooltip"
+                                title="Manual Quote"
+                                onClick={() =>
+                                  navigate("/neptune/edquotation/create-ed")
+                                }
+                              >
+                                <FontAwesomeIcon icon={faPlus} />
+                              </Button>
+                              &nbsp;&nbsp;
+                              <Button
+                                color="success"
+                                size="sm"
+                                onClick={toggleExcelModal}
+                                data-toggle="tooltip"
+                                title="Bulk upload"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileExcel}
+                                  style={{ fontSize: "15px" }}
+                                />
+                              </Button>
+                              &nbsp;&nbsp;
+                            </>
+                          )}
                           <Button
                             color="primary"
                             size="sm"
@@ -218,11 +226,6 @@ const TableComponent = () => {
           <span style={{ flex: 1, textAlign: "center" }}>
             Bulk Quotation Upload
           </span>
-          {/* <Button
-            color="link"
-            onClick={downloadTemplate}
-            style={{ padding: "0", color: "#293897" }}
-          > */}
           <a
             onClick={downloadTemplate}
             rel="noreferrer"
@@ -231,12 +234,6 @@ const TableComponent = () => {
           >
             Download Template
           </a>
-
-          {/* <FontAwesomeIcon
-              icon={faDownload}
-              style={{ fontSize: "18px", marginLeft: "220px" }}
-            /> */}
-          {/* </Button> */}
         </ModalHeader>
         <ModalBody>
           <div
