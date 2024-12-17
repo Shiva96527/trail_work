@@ -226,6 +226,11 @@ const TableComponent = () => {
           <span style={{ flex: 1, textAlign: "center" }}>
             Bulk Quotation Upload
           </span>
+          {/* <Button
+            color="link"
+            onClick={downloadTemplate}
+            style={{ padding: "0", color: "#293897" }}
+          > */}
           <a
             onClick={downloadTemplate}
             rel="noreferrer"
@@ -234,6 +239,12 @@ const TableComponent = () => {
           >
             Download Template
           </a>
+
+          {/* <FontAwesomeIcon
+              icon={faDownload}
+              style={{ fontSize: "18px", marginLeft: "220px" }}
+            /> */}
+          {/* </Button> */}
         </ModalHeader>
         <ModalBody>
           <div
