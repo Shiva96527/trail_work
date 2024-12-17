@@ -58,7 +58,6 @@ const TableComponent = () => {
         data: { data: resultData, statusCode, statusMessage },
       } = await getDigitalEDQuoteGrid(payload);
       if (statusCode === 200) {
-        console.log("resultData", resultData);
         setGridData(resultData);
         toast.success(statusMessage);
       }
@@ -77,7 +76,11 @@ const TableComponent = () => {
     );
 
     // Navigate to the update page when clicking on action icons
-    navigate('/neptune/edquotation/detail');
+    navigate("/neptune/edquotation/detail", {
+      state: {
+        quoteDetail: row,
+      },
+    });
   };
 
   const columns = inboxColumns(handleAssignment);
@@ -210,19 +213,30 @@ const TableComponent = () => {
         </CardBody>
       </Card>
 
-      <Modal isOpen={excelModal} toggle={toggleExcelModal}>
+      <Modal isOpen={excelModal} toggle={toggleExcelModal} fullscreen="lg">
         <ModalHeader toggle={toggleExcelModal}>
-          <span style={{ flex: 1, textAlign: "center" }}>Bulk Upload</span>
-          <Button
+          <span style={{ flex: 1, textAlign: "center" }}>
+            Bulk Quotation Upload
+          </span>
+          {/* <Button
             color="link"
             onClick={downloadTemplate}
             style={{ padding: "0", color: "#293897" }}
+          > */}
+          <a
+            onClick={downloadTemplate}
+            rel="noreferrer"
+            target="_blank"
+            style={{ padding: "0", color: "#293897", marginLeft: "60px" }}
           >
-            <FontAwesomeIcon
+            Download Template
+          </a>
+
+          {/* <FontAwesomeIcon
               icon={faDownload}
-              style={{ fontSize: "18px", marginLeft: "300px" }}
-            />
-          </Button>
+              style={{ fontSize: "18px", marginLeft: "220px" }}
+            /> */}
+          {/* </Button> */}
         </ModalHeader>
         <ModalBody>
           <div

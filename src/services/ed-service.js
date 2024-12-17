@@ -27,7 +27,7 @@ export const updateDigitalEDQuote = (payload) => {
 export const searchDigitalEDQuote = (payload) => {
   return onSrfApiCall({
     method: "POST",
-    url: "/DigitalizeQuote/search",
+    url: "/DigitalizeQuote/DigitalizeQuoteSearch",
     data: payload,
   });
 };
@@ -52,6 +52,22 @@ export const getDigitalQuoteById = (payload) => {
   return onSrfApiCall({
     method: "POST",
     url: "/DigitalizeQuote/DigitalizeQuoteByID",
+    data: payload,
+  });
+};
+
+export const postDigitalizeQuoteSubmitForApprovalorReject = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteSubmitForApprovalorReject",
+    data: payload,
+  });
+};
+
+export const postDigitalizeQuoteOverallCostingApprovalorReject = (payload) => {
+  return onSrfApiCall({
+    method: "POST",
+    url: "/DigitalizeQuote/DigitalizeQuoteOverallCostingApprovalorReject",
     data: payload,
   });
 };

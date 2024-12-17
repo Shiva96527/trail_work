@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons"; // Import faTrash icon
 
-export const columns = [
+export const columns = (handleAssignment, type, statusCode) => [
   {
     field: "assign",
     headerName: "Action",
@@ -14,28 +14,15 @@ export const columns = [
           fontSize={"14px"}
           data-toggle="tooltip"
           title="Update ED"
-          // onClick={() => handleAssignment(v?.data, "others")} // Reassign action
+          onClick={() => handleAssignment(v?.data, type)} // Reassign action
         />
       </>
     ),
   },
   {
     headerName: "MM#",
-    field: "mmNumber",
+    field: "mmNo",
     minWidth: 120,
-    cellRenderer: (params) => (
-      <input
-        type="text"
-        value={params.value}
-        onChange={(e) => params.setValue(e.target.value)}
-        style={{
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "4px",
-        }}
-      />
-    ),
   },
   {
     headerName: "Description",
@@ -44,25 +31,31 @@ export const columns = [
   },
   {
     headerName: "Quantity",
-    field: "quantity",
+    field: "qty",
     minWidth: 150,
-    cellRenderer: (params) => (
-      <input
-        type="number"
-        value={params.value}
-        onChange={(e) => params.setValue(e.target.value)}
-        style={{
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "4px",
-        }}
-      />
-    ),
+    cellRenderer: (params) => {
+      return (type === "survey" && statusCode === 2) ||
+        (type === "implemenation" && statusCode === 4) ||
+        (type === "nonstandard" && statusCode === 6) ? (
+        <input
+          type="number"
+          value={params.value}
+          onChange={(e) => params.setValue(e.target.value)}
+          style={{
+            width: "100%",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            padding: "4px",
+          }}
+        />
+      ) : (
+        <span>{params.value}</span>
+      );
+    },
   },
   {
     headerName: "Unit Price",
-    field: "unitPrice",
+    field: "price",
     minWidth: 180,
   },
   {
@@ -74,25 +67,31 @@ export const columns = [
     headerName: "Plant Code",
     field: "plantCode",
     minWidth: 300,
-    cellRenderer: (params) => (
-      <input
-        type="text"
-        value={params.value}
-        onChange={(e) => params.setValue(e.target.value)}
-        style={{
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "4px",
-        }}
-      />
-    ),
+    cellRenderer: (params) => {
+      return (type === "survey" && statusCode === 2) ||
+        (type === "implemenation" && statusCode === 4) ||
+        (type === "nonstandard" && statusCode === 6) ? (
+        <input
+          type="text"
+          value={params.value}
+          onChange={(e) => params.setValue(e.target.value)}
+          style={{
+            width: "100%",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            padding: "4px",
+          }}
+        />
+      ) : (
+        <span>{params.value}</span>
+      );
+    },
   },
 ];
 
 export const columnsToFetch = {
   A: "oa",
-  B: "mmNumber",
+  B: "mmNo",
   C: "qty",
-  D: "plantCode"
+  D: "plantCode",
 };

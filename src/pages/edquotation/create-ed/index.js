@@ -34,7 +34,6 @@ const CreateEd = () => {
     ...generatedModel,
   });
   const [open, setOpen] = useState("1");
-  const [records, setRecords] = useState([]); // New state to store all submitted records
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
@@ -71,32 +70,22 @@ const CreateEd = () => {
       businessCaseNumber: generatedEdModel.businessCaseNumber,
       srfNumber: generatedEdModel.srfNumber,
     };
-    console.log("payload", payload);
     try {
+      const data = await createDigitalEDQuote(payload);
       const {
-        data: { data: resultData, statusCode, statusMessage },
-      } = await createDigitalEDQuote(payload);
-
+        data: { statusCode, statusMessage },
+      } = data;
       if (statusCode === 200) {
-        toast.success("Record created successfully");
-        if (resultData) {
-          // Append the new record to the existing records array
-          setRecords((prevRecords) => {
-            const updatedRecords = [...prevRecords, { ...generatedEdModel }];
-            navigate("/neptune/edquotation/inbox");
-            console.log("All Records:", updatedRecords);
-            return updatedRecords;
-          });
-        }
+        navigate("/neptune/edquotation/inbox");
+        toast.success(statusMessage);
       } else {
-        toast.error(statusMessage || "No data found");
+        toast.error(statusMessage);
       }
     } catch (e) {
       toast.error("Something went wrong");
     }
 
     setIsLoading(false);
-    setGenerateEdModel({ ...generatedModel });
   };
 
   return (
@@ -151,7 +140,10 @@ const CreateEd = () => {
                     </Col>
                     <Col md={3}>
                       <FormGroup>
-                        <Label for="AssigneeName">Assignee</Label>
+                        <Label for="AssigneeName">
+                          Assignee(Maxis ID)
+                          <span className="required">*</span>
+                        </Label>
                         <Input
                           name="assignee"
                           id="assignee"
@@ -205,27 +197,10 @@ const CreateEd = () => {
                       {isLoading ? (
                         <Spinner size="sm" /> // Display the spinner while loading
                       ) : (
-                        "Submit"
+                        "Submit for Vendor Assignment"
                       )}
                     </Button>
                   </div>
-                  {/* Display the list of submitted records */}
-                  {records.length > 0 && (
-                    <div className="mt-3">
-                      <h4>Submitted Records</h4>
-                      <div>
-                        {records.map((record, index) => (
-                          <div key={index}>
-                            <span>{index + 1}. </span>
-                            SRF #: {record.SRF} | Opportunity ID:{" "}
-                            {record.OpportunityID} | Assignee: {record.Assignee}{" "}
-                            | BC: {record.BC} | FIXCAS: {record.FIXCAS} |
-                            FixCDS: {record.FixCDS}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </AccordionBody>
               </AccordionItem>
             </Accordion>

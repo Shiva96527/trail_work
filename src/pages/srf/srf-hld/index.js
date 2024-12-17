@@ -53,7 +53,8 @@ const SRFHLD = () => {
             TechnicalRiskAssessment: '',
             Timelines: '',
             hldFile: null,
-            financialFile: null
+            financialFile: null,
+            Remarks:''
         }
     })
 
@@ -149,7 +150,7 @@ const SRFHLD = () => {
             const { data: { data: resultData, statusCode, statusMessage } } = await getSrfByIdHTTP(payload);
             if (statusCode === 200) {
                 const { IsChannel, StatusName, ServiceType, WFStatusCode, AssignedTo } = resultData?.srfActionWorkFlowResponse || {};
-                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = resultData?.srfCreateInfoResponse;
+                const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = resultData?.srfCreateInfoResponse;
                 const attachments = { hldFile: null, financialFile: null };
                 resultData?.SRFAttachments?.forEach(f => {
                     const { ColumnName } = f;
@@ -164,6 +165,7 @@ const SRFHLD = () => {
                 setValue('HighLevelSolution', HighLevelSolution);
                 setValue('TechnicalRiskAssessment', TechnicalRiskAssessment);
                 setValue('Timelines', Timelines);
+                setValue('Remarks', Remarks);
                 setValue('hldFile', attachments?.hldFile || null);
                 setValue('financialFile', attachments?.financialFile || null);
                 //setAdditionalInfo({ ...additionalInfo, ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines, hldFile: attachments?.hldFile ? attachments?.hldFile : null, financialFile: attachments?.financialFile ? attachments?.financialFile : null });
@@ -299,7 +301,7 @@ const SRFHLD = () => {
     }
 
     const workFlowSave = async (data, action) => {
-        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines } = data;
+        const { ExecutiveSummary, HighLevelSolution, TechnicalRiskAssessment, Timelines,Remarks } = data;
         const payload = {
             ExecutiveSummary,
             HighLevelSolution,
@@ -307,12 +309,14 @@ const SRFHLD = () => {
             SRFNumber: localState?.SRFNumber,
             TechnicalRiskAssessment,
             Timelines,
+            Remarks,
             WorkflowId: localState?.WorkflowId,
             srfCreateInfoResponse: {
                 ExecutiveSummary,
                 HighLevelSolution,
                 TechnicalRiskAssessment,
-                Timelines
+                Timelines,
+                Remarks
             },
             srfLLDCatalogueResponse: ''
         };
@@ -353,7 +357,7 @@ const SRFHLD = () => {
         const payload = {           
             Action: action,
             WorkflowId: localState?.WorkflowId,
-            ApiKey: "e23aef41-7ac0-41d1-80f9-90e7a08a6a00",
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
             SRFReferenceNumber: localState?.SRFNumber,
             IntegrationID: localState?.IntegrationID,
             SRF_UserID: sessionStorage.getItem('uiid'),
@@ -440,11 +444,53 @@ const SRFHLD = () => {
             if (result.isConfirmed) {
                 if (action === 'Submit for Review') {
                     handleSubmit((data) => workFlowSave(data, action))();
-                } else {
+                }
+                if (action === 'Not Involved') {
+                    debugger;
+                        var remarks=getValues('Remarks')
+                        if(remarks===undefined||remarks===null||remarks==='')
+                        {
+                            toast.error('Please enter remarks');
+                            return;
+                        }
+                        workFlowSave({ ...getValues() }, action);
+                }
+                if (action === 'Update Cost and Close SRF') {
+                    cpqUpdateCostandCloseSRFHandler({ ...getValues() }, action);
+                }
+                if (action === 'Manual Update Cost and Close SRF') {
+                    workFlowSave({ ...getValues() }, 'Update Cost and Close SRF');
+                }
+                 else {
                     workFlowSave({ ...getValues() }, action);
                 }
             }
         })
+    }
+
+    const cpqUpdateCostandCloseSRFHandler = async (data, action) => {
+        
+        debugger;
+        const payload = {           
+            Action: action,
+            WorkflowId: localState?.WorkflowId,
+            ApiKey: "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx",
+            SRFReferenceNumber: localState?.SRFNumber,
+            IntegrationID: localState?.IntegrationID,
+            SRF_UserID: sessionStorage.getItem('uiid'),
+            rejectremarks: rejectRemarks
+        };
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
+                toast.success(statusMessage);
+                navigate(-1);
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
     }
 
     const handleDownloadFile = (data) => {
@@ -642,6 +688,18 @@ const SRFHLD = () => {
                                                             }
                                                         </FormGroup>
                                                     </Col>
+                                                    <Col md={6}>
+                                                        <FormInput
+                                                            label="Remarks"
+                                                            name="Remarks"
+                                                            type="textarea"
+                                                            rows={4}
+                                                            disabled={hideActions}
+                                                            rules={{ required: 'Remarks is required' }}
+                                                            control={control}
+                                                            errors={errors}
+                                                        />
+                                                    </Col>
                                                 </Row>
                                             </> :
                                                 <Row>
@@ -677,7 +735,7 @@ const SRFHLD = () => {
                                                 }
                                                 {
                                                     srfDetails?.StatusName === "HLD" && srfDetails?.IsChannel === 'Neptune' &&
-                                                    <Button color="primary" onClick={() => handleCustomSubmit('Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
+                                                    <Button color="primary" onClick={() => handleCustomSubmit('Manual Update Cost and Close SRF')}>Submit Cost & Close SRF</Button>
                                                 }
                                             </div>}
                                         </form>
