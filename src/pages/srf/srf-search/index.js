@@ -73,6 +73,7 @@ const SrfSearch = () => {
     }
 
     const handleChange = (e) => {
+        debugger;
         const { name, value } = e.target;
         setState({ ...state, [name]: value });
     }
@@ -155,23 +156,33 @@ const SrfSearch = () => {
                                 <Col md={3}>
                                     <FormGroup>
                                         <Label for="status">Status</Label>
-                                        <DropdownList
+                                        {/* <DropdownList
                                             data={["Draft", "Submitted", "Assigned", "SRF Rejected", "SRF Dropped", "HLD", "HLD(MNS/MS)"
                                                 , "LLD Submitted", "LLD Rejected", "LLD Closed", "MPN Submitted", "MPN Assigned", "MPN Rejected"
                                                 , "SRF Rejected(CPQ)", "Closed"]}
                                             value={state?.status}
                                             onChange={(v) => handleChange({ target: { name: 'status', value: v } })}
-                                        />
+                                        /> */}
+                                         <DropdownList
+                                                    data={dropdownOptions?.['Search Panel Status']}
+                                                    value={state?.status}
+                                                    onChange={(v) => handleChange({ target: { name: 'status', value: v } })}
+                                                />
                                     </FormGroup>
                                 </Col>
                                 <Col md={3}>
                                     <FormGroup>
                                         <Label for="groupName">Group Name</Label>
-                                        <DropdownList
+                                        {/* <DropdownList
                                             data={["Planner", "Engineering", "Account Manager", "Presales", "Planner Admin", "Solution Architect"]}
                                             value={state?.group}
                                             onChange={(v) => handleChange({ target: { name: 'group', value: v } })}
-                                        />
+                                        /> */}
+                                        <DropdownList
+                                                    data={dropdownOptions?.['Search Panel SRF HLD Group']}
+                                                    value={state?.group}
+                                                    onChange={(v) => handleChange({ target: { name: 'group', value: v } })}
+                                                />
                                     </FormGroup>
                                 </Col>
                                 <Col md={3}>

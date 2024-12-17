@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { generateSrfHTTP, getSrfByIdHTTP, getSrfMailLogsHTTP, syncGCPHTTP, syncSrfCPQHTTP, updateSrfWorkflowHTTP, uploadMobileGCPHTTP } from "../../../services/srf-service";
+import { generateSrfHTTP, getSrfByIdHTTP, getSrfMailLogsHTTP, syncGCPHTTP, syncSrfCPQHTTP, updateSrfWorkflowHTTP, uploadMobileGCPHTTP,SrfWMCPQCostUpdateAPI } from "../../../services/srf-service";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddressDetailsModal from "./modals/address-details-modal";
 import VASDetailsModal from "./modals/vas-details-modal";
@@ -542,6 +542,26 @@ const InboxSearchView = () => {
             srfFields.TypeofService = srfFields.TypeofService?.join(',');
             payload['srfCreateInfoResponse'] = srfFields;
         }
+        if (action === 'Reject to CPQ') {
+            payload['ApiKey'] = "nssmt3sak4jhyf9bv6sxkv8brbtqwukkfzkx";
+            payload['SRFReferenceNumber'] =state?.SRFNumber || srfDetails?.SRFNumber;
+            payload['SRF_UserID'] = sessionStorage.getItem('uiid');
+            payload['rejectremarks']= remarks ? remarks : manualRemarks;
+       
+        try {
+            const { data: { statusCode, statusMessage } } = await SrfWMCPQCostUpdateAPI(payload);
+            if (statusCode === 200||statusCode === 0||statusCode === "0") {
+                toast.success(statusMessage);
+                navigate(-1);
+            } else {
+                toast.error(statusMessage);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+        }
+    }
+    else{
+
         try {
             const { data: { statusCode, statusMessage } } = await updateSrfWorkflowHTTP(payload);
             if (statusCode === 200) {
@@ -554,6 +574,7 @@ const InboxSearchView = () => {
             toast.error('Something went wrong');
         }
     }
+}
 
     const handleCustomSubmit = (action) => {
         if (action === 'MPN') {
