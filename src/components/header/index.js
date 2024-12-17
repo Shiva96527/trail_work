@@ -233,9 +233,6 @@ const NeptuneHeader = () => {
                                     <DropdownItem onClick={() => navigate('/neptune/edquotation/mygroup')}>
                                         My Group
                                     </DropdownItem>
-                                    <DropdownItem onClick={() => navigate('/neptune/edquotation/taskhistory')}>
-                                        Task History
-                                    </DropdownItem>
                                     <DropdownItem onClick={() => navigate('/neptune/vendor/management')}>
                                         Vendor Management
                                     </DropdownItem>

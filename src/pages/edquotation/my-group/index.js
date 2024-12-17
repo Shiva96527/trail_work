@@ -5,9 +5,12 @@ import { inboxColumns } from "../config/columns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getDigitalEDQuoteGrid } from "../../../services/ed-service";
+import { setDigitalizeQuoteId } from "../../../redux/slices/globalSlice";
+import { useDispatch } from "react-redux";
 
 const TableComponent = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [gridData, setGridData] = useState([]);
 
   useEffect(() => {
@@ -35,14 +38,17 @@ const TableComponent = () => {
     }
   };
 
-  const handleAssignment = (row, actionType) => {
-    if (actionType === "others" || actionType === "move") {
-      navigate(`/neptune/edquotation/update-ed/${row.srfNumber}`, {
-        state: {
-          ...row,
-        },
-      });
-    }
+  const handleAssignment = (row) => {
+    dispatch(
+      setDigitalizeQuoteId({ digitalizeQuoteId: row.digitalizeQuoteId })
+    );
+
+    // Navigate to the update page when clicking on action icons
+    navigate("/neptune/edquotation/detail", {
+      state: {
+        quoteDetail: row,
+      },
+    });
   };
 
   const columns = inboxColumns(handleAssignment);

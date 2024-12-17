@@ -26,6 +26,7 @@ import {
 import { useDropzone } from "react-dropzone";
 import { getDigitalQuoteDetail } from "../helper";
 import { useNavigate } from "react-router-dom";
+import { setToggleNonStandard } from "../../../redux/slices/globalSlice.js";
 
 const QuoteSubmitPage = () => {
   const navigate = useNavigate();
@@ -44,10 +45,11 @@ const QuoteSubmitPage = () => {
   const [filteredNonStandardResponse, setFilteredNonStandardResponse] =
     useState();
   const [edData, setEdData] = useState();
+  const [uploadType, setUploadType] = useState(null);
 
-  // useEffect(() => {
-  //   getQuoteDetail(digitalizeQuoteId);
-  // }, []);
+  useEffect(() => {
+    dispatch(setToggleNonStandard(false)); // Use the action to toggle the state
+  }, []);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -136,7 +138,7 @@ const QuoteSubmitPage = () => {
     const payload = {
       LoginUIID: sessionStorage.getItem("uiid"),
       digitalizeRequestWireframeUploadRequest: rowData,
-      type: "Survey",
+      type: uploadType,
       digitalizeQuoteId,
     };
     try {
@@ -187,11 +189,18 @@ const QuoteSubmitPage = () => {
   });
 
   const toggleExcelModal = (uploadType) => {
+    setUploadType(uploadType);
     setExcelModal(!excelModal);
   };
 
   const handleSubmit = async (type) => {
+    console.log("type", type);
     let digitalizeRequestWireframeUploadRequest;
+    let payload = {
+      LoginUIID: sessionStorage.getItem("uiid"),
+      type,
+      digitalizeQuoteId,
+    };
     if (type === "survey") {
       digitalizeRequestWireframeUploadRequest =
         filteredSurveyResponse?.length > 0
@@ -203,17 +212,19 @@ const QuoteSubmitPage = () => {
         filteredImplementationResponse?.length > 0
           ? filteredImplementationResponse
           : implementationResponse;
+      payload = {
+        ...payload,
+        nonStandardQuotationFlag: toggleNonStandard ? "No" : "Yes",
+      };
     } else {
       digitalizeRequestWireframeUploadRequest =
         filteredNonStandardResponse?.length > 0
           ? filteredNonStandardResponse
           : nonStandardResponse;
     }
-    const payload = {
-      LoginUIID: sessionStorage.getItem("uiid"),
+    payload = {
+      ...payload,
       digitalizeRequestWireframeUploadRequest,
-      type,
-      digitalizeQuoteId,
     };
     try {
       const {
@@ -345,7 +356,11 @@ const QuoteSubmitPage = () => {
                     ? filteredImplementationResponse
                     : implementationResponse
                 } // Use gridData as the data for the grid
-                dataprops={columns(handleAssignment, "implementation")} // Pass column definitions for Quotation Details
+                dataprops={columns(
+                  handleAssignment,
+                  "implementation",
+                  edData?.statusCode
+                )} // Pass column definitions for Quotation Details
                 // dataprops={columns} // Pass column definitions for Implementation Costing
                 topActionButtons={
                   <>
@@ -384,7 +399,7 @@ const QuoteSubmitPage = () => {
                           marginLeft: "10px", // Add space between the text and the toggle
                         }}
                         onClick={handleToggleConfirmation}
-                        title="Non-Standard Quotation" // Tooltip text
+                        title="Required Non-Standard Quotation" // Tooltip text
                       >
                         <input
                           type="checkbox"
@@ -436,7 +451,11 @@ const QuoteSubmitPage = () => {
                     ? filteredNonStandardResponse
                     : nonStandardResponse
                 } // Use gridData as the data for the grid
-                dataprops={columns(handleAssignment, "nonstandard")} // Pass column definitions for Quotation Details
+                dataprops={columns(
+                  handleAssignment,
+                  "nonstandard",
+                  edData?.statusCode
+                )} // Pass column definitions for Quotation Details
                 // dataprops={columns} // Pass column definitions for Non-Standard Quotation
                 topActionButtons={
                   <div

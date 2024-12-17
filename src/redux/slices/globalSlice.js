@@ -51,12 +51,15 @@ const { reducer, actions } = createSlice({
 
     // Corrected toggleNonStandard reducer (no payload needed)
     toggleNonStandard: (state) => {
-      console.log("Toggling Non-Standard Quotation");
       state.toggleNonStandard = !state.toggleNonStandard; // Toggle the state
     },
 
     setDigitalizeQuoteId: (state, action) => {
       state.digitalizeQuoteId = action?.payload?.digitalizeQuoteId;
+    },
+
+    setToggleNonStandard: (state, action) => {
+      state.toggleNonStandard = action?.payload; // Toggle the state
     },
   },
 });
@@ -67,6 +70,7 @@ export const {
   setMenuItems,
   toggleNonStandard,
   setDigitalizeQuoteId,
+  setToggleNonStandard
 } = actions;
 
 export default reducer;

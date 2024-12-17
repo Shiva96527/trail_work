@@ -20,32 +20,7 @@ const OverallCostingPage = () => {
 
   const [totalInfo, setTotalInfo] = useState([]);
 
-  const [workflowList, setWorkflowList] = useState([
-    {
-      breakdown: "Survey",
-      priceBookValue: "12",
-      quotation: "1,489.36",
-      variance: "1345",
-      remarks: "",
-      isRejected: false,
-    },
-    {
-      breakdown: "Implementation",
-      priceBookValue: "",
-      quotation: "",
-      variance: "",
-      remarks: "",
-      isRejected: false,
-    },
-    {
-      breakdown: "Non-Standard Quotation",
-      priceBookValue: "",
-      quotation: "",
-      variance: "",
-      remarks: "",
-      isRejected: false,
-    },
-  ]);
+  const [workflowList, setWorkflowList] = useState([]);
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   // const [surveyData, setSurveyData] = useState(null);
