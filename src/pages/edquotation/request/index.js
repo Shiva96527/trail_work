@@ -209,31 +209,34 @@ const Request = () => {
                             />
                           ) : column.key === "vendor" ? (
                             // Vendor Assignment as Dropdown using vendorDropDownList
-                            <Input
-                              type="select"
-                              name={column.key}
-                              id={column.key}
-                              defaultValue={
-                                (edData && edData[column.key]) || ""
-                              }
-                              value={edData && edData[column.key]}
-                              onChange={(e) =>
-                                handleInputChange(column.key, e.target.value)
-                              }
-                              disabled={disable}
-                              style={{
-                                fontSize: "13px", // Ensures font size is aligned with other inputs
-                                padding: "8px", // Ensures padding is consistent
-                              }}
-                            >
-                              <option value="">Select Vendor</option>
-                              {/* Dynamically populate vendor options */}
-                              {vendorDropDownList.map((vendor, index) => (
-                                <option key={index} value={vendor}>
-                                  {vendor}
-                                </option>
-                              ))}
-                            </Input>
+                            <>
+                              <span style={{ color: "red" }}>*</span>{" "}
+                              <Input
+                                type="select"
+                                name={column.key}
+                                id={column.key}
+                                defaultValue={
+                                  (edData && edData[column.key]) || ""
+                                }
+                                value={edData && edData[column.key]}
+                                onChange={(e) =>
+                                  handleInputChange(column.key, e.target.value)
+                                }
+                                disabled={disable}
+                                style={{
+                                  fontSize: "13px", // Ensures font size is aligned with other inputs
+                                  padding: "8px", // Ensures padding is consistent
+                                }}
+                              >
+                                <option value="">Select Vendor</option>
+                                {/* Dynamically populate vendor options */}
+                                {vendorDropDownList.map((vendor, index) => (
+                                  <option key={index} value={vendor}>
+                                    {vendor}
+                                  </option>
+                                ))}
+                              </Input>
+                            </>
                           ) : (
                             // Default Input for other fields
                             <Input
@@ -272,7 +275,7 @@ const Request = () => {
                         outline: "none",
                         boxShadow: "none",
                       }}
-                      disabled={disable}
+                      disabled={disable || !edData?.vendor}
                     >
                       Submit to Vendor
                     </Button>
