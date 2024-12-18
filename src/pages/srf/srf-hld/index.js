@@ -98,8 +98,6 @@ const SRFHLD = () => {
       hldFile: null,
       financialFile: null,
       Remarks: "",
-      financialFile: null,
-      Remarks: "",
     },
   });
 
@@ -223,7 +221,6 @@ const SRFHLD = () => {
         setValue("HighLevelSolution", HighLevelSolution);
         setValue("TechnicalRiskAssessment", TechnicalRiskAssessment);
         setValue("Timelines", Timelines);
-        setValue("Remarks", Remarks);
         setValue("Remarks", Remarks);
         setValue("hldFile", attachments?.hldFile || null);
         setValue("financialFile", attachments?.financialFile || null);
@@ -403,14 +400,11 @@ const SRFHLD = () => {
       TechnicalRiskAssessment,
       Timelines,
       Remarks,
-      Remarks,
       WorkflowId: localState?.WorkflowId,
       srfCreateInfoResponse: {
         ExecutiveSummary,
         HighLevelSolution,
         TechnicalRiskAssessment,
-        Timelines,
-        Remarks,
         Timelines,
         Remarks,
       },
@@ -936,18 +930,6 @@ const SRFHLD = () => {
                                   </>
                                 )}
                               </FormGroup>
-                            </Col>
-                            <Col md={6}>
-                              <FormInput
-                                label="Remarks"
-                                name="Remarks"
-                                type="textarea"
-                                rows={4}
-                                disabled={hideActions}
-                                rules={{ required: "Remarks is required" }}
-                                control={control}
-                                errors={errors}
-                              />
                             </Col>
                             <Col md={6}>
                               <FormInput
