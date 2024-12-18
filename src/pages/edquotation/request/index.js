@@ -48,6 +48,7 @@ const Request = () => {
       }
     } catch (e) {
       toast.error("Something went wrong");
+      navigate("/neptune/edquotation/inbox");
     }
   };
 
