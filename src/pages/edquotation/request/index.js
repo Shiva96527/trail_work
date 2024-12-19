@@ -22,15 +22,20 @@ import { getDigitalQuoteDetail } from "../helper";
 import { useSelector } from "react-redux";
 import { getDropdownByTypeHTTP } from "../../../services/global-service";
 
+var userInfo = null;
+
 const Request = () => {
   const navigate = useNavigate();
   const [edData, setEdData] = useState();
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [vendorDropDownList, setVendorDropDownList] = useState([]);
   const [disable, setDisable] = useState(false);
+  const [userIdentification, setUserIdentification] = useState(null);
 
   useEffect(() => {
     getDropdownValues();
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
   }, []);
 
   useEffect(() => {
@@ -264,9 +269,8 @@ const Request = () => {
                     ))}
                   </Row>
                 ))}
-
                 {/* Place the "Submit to Vendor" button inside AccordionBody */}
-                {!disable ? (
+                {!disable && userIdentification !== "vendor" ? (
                   <div style={{ textAlign: "left", marginTop: "30px" }}>
                     <Button
                       color="primary"

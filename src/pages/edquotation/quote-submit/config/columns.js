@@ -6,8 +6,10 @@ export const columns = (handleAssignment, type, statusCode) => [
     field: "assign",
     headerName: "Action",
     minWidth: 50,
-    cellRenderer: (v) => (
-      <>
+    cellRenderer: (v) => {
+      return (type === "survey" && statusCode === 2) ||
+        (type === "implementation" && statusCode === 4) ||
+        (type === "nonstandard" && statusCode === 6) ? (
         <FontAwesomeIcon
           icon={faTrash}
           className="fa-cursor"
@@ -16,8 +18,8 @@ export const columns = (handleAssignment, type, statusCode) => [
           title="Update ED"
           onClick={() => handleAssignment(v?.data, type)} // Reassign action
         />
-      </>
-    ),
+      ) : null;
+    },
   },
   {
     headerName: "MM#",
@@ -35,7 +37,7 @@ export const columns = (handleAssignment, type, statusCode) => [
     minWidth: 150,
     cellRenderer: (params) => {
       return (type === "survey" && statusCode === 2) ||
-        (type === "implemenation" && statusCode === 4) ||
+        (type === "implementation" && statusCode === 4) ||
         (type === "nonstandard" && statusCode === 6) ? (
         <input
           type="number"
@@ -69,7 +71,7 @@ export const columns = (handleAssignment, type, statusCode) => [
     minWidth: 300,
     cellRenderer: (params) => {
       return (type === "survey" && statusCode === 2) ||
-        (type === "implemenation" && statusCode === 4) ||
+        (type === "implementation" && statusCode === 4) ||
         (type === "nonstandard" && statusCode === 6) ? (
         <input
           type="text"

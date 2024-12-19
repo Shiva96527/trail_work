@@ -25,7 +25,7 @@ import {
   postDigitalizeQuoteSubmitForApprovalorReject,
 } from "../../../services/ed-service.js";
 import { useDropzone } from "react-dropzone";
-import { getDigitalQuoteDetail } from "../helper";
+import { getDigitalQuoteDetail, isComponentVisible } from "../helper";
 import { useNavigate } from "react-router-dom";
 import { setToggleNonStandard } from "../../../redux/slices/globalSlice.js";
 
@@ -149,7 +149,6 @@ const QuoteSubmitPage = () => {
   };
 
   const handleSubmit = async (type) => {
-    console.log("type", type);
     let digitalizeRequestWireframeUploadRequest;
     let payload = {
       LoginUIID: sessionStorage.getItem("uiid"),
@@ -161,16 +160,11 @@ const QuoteSubmitPage = () => {
         filteredSurveyResponse?.length > 0
           ? filteredSurveyResponse
           : surveyResponse;
-      console.log("first", filteredSurveyResponse, surveyResponse);
     } else if (type === "implementation") {
       digitalizeRequestWireframeUploadRequest =
         filteredImplementationResponse?.length > 0
           ? filteredImplementationResponse
           : implementationResponse;
-      payload = {
-        ...payload,
-        nonStandardQuotationFlag: toggleNonStandard ? "No" : "Yes",
-      };
     } else {
       digitalizeRequestWireframeUploadRequest =
         filteredNonStandardResponse?.length > 0
@@ -227,6 +221,7 @@ const QuoteSubmitPage = () => {
   );
 
   const handleNonStandardChange = (e) => {
+    console.log("e.target.value", e.target.value);
     const value = e.target.value;
     if (value === "Yes") {
       dispatch(setToggleNonStandard(true));
@@ -234,11 +229,13 @@ const QuoteSubmitPage = () => {
       dispatch(setToggleNonStandard(false));
     }
   };
+
   return (
     <div>
       <div style={{ position: "relative", margin: "20px" }}>
         {/* First Table - Quotation Details */}
-        {edData?.statusCode >= 2 ? (
+        {isComponentVisible(edData?.showPanelStatusCodes, "2") ||
+        isComponentVisible(edData?.showPanelStatusCodes, "3") ? (
           <>
             <NeptuneAgGrid
               data={
@@ -305,7 +302,8 @@ const QuoteSubmitPage = () => {
 
         {/* Always visible - Implementation Costing Details Grid */}
 
-        {edData?.statusCode === 4 ? (
+        {isComponentVisible(edData?.showPanelStatusCodes, "4") ||
+        isComponentVisible(edData?.showPanelStatusCodes, "5") ? (
           <>
             <div
               style={{
@@ -380,50 +378,59 @@ const QuoteSubmitPage = () => {
             <div style={{ marginBottom: "20px" }}></div>
           </>
         ) : null}
-        {/* Non-Standard Quotation Section */}
 
-        <div
-          style={{
-            fontSize: "18px",
-            fontWeight: "bold",
-            color: "black",
-            alignItems: "center",
-            display: "flex",
-          }}
-        >
-          <label style={{ marginRight: "10px", fontWeight: "bold" }}>
-            Non-Standard Quotation:
-          </label>
-          <Input
-            type="select"
-            style={{ width: "200px" }}
-            onChange={handleNonStandardChange}
-            value={toggleNonStandard ? "Yes" : "No"}
+        {/* Non-Standard Quotation Section */}
+        {isComponentVisible(edData?.showPanelStatusCodes, "6") ||
+        isComponentVisible(edData?.showPanelStatusCodes, "7") ? (
+          <div
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              color: "black",
+              alignItems: "center",
+              display: "flex",
+            }}
           >
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </Input>
-          {edData?.statusCode === 6 || edData?.statusCode === 4
-            ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
-                <Button
-                  color="primary"
-                  style={{
-                    marginLeft: "10px",
-                    backgroundColor: "#007bff",
-                  }}
-                  onClick={() => toggleExcelModal("nonstandard")}
-                >
-                  <FontAwesomeIcon
-                    icon={faCloudUploadAlt}
-                    style={{ marginRight: "8px" }}
-                  />
-                  Upload
-                </Button>
-              )
-            : null}
-        </div>
+            <label style={{ marginRight: "10px", fontWeight: "bold" }}>
+              Non-Standard Quotation:
+            </label>
+            {nonStandardResponse.length <= 0 ? (
+              <Input
+                type="select"
+                style={{ width: "200px" }}
+                onChange={handleNonStandardChange}
+                value={toggleNonStandard ? "Yes" : "No"}
+              >
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </Input>
+            ) : null}
+
+            {edData?.statusCode === 6 || edData?.statusCode === 4
+              ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
+                  <Button
+                    color="primary"
+                    style={{
+                      marginLeft: "10px",
+                      backgroundColor: "#007bff",
+                    }}
+                    onClick={() => toggleExcelModal("nonstandard")}
+                  >
+                    <FontAwesomeIcon
+                      icon={faCloudUploadAlt}
+                      style={{ marginRight: "8px" }}
+                    />
+                    Upload
+                  </Button>
+                )
+              : null}
+          </div>
+        ) : null}
+
         {/* Render Non-Standard Quotation Grid when the toggle is on */}
-        {toggleNonStandard && (
+        {(toggleNonStandard === "Yes" ||
+          isComponentVisible(edData?.showPanelStatusCodes, "6") ||
+          isComponentVisible(edData?.showPanelStatusCodes, "7")) && (
           <>
             <div
               style={{

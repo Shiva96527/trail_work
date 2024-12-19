@@ -20,10 +20,16 @@ const OverallCostingPage = () => {
 
   const [totalInfo, setTotalInfo] = useState([]);
 
-  const [workflowList, setWorkflowList] = useState([]);
+  const [summaryList, setsummaryList] = useState([]);
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  const [userIdentification, setUserIdentification] = useState(null);
   // const [surveyData, setSurveyData] = useState(null);
+
+  useEffect(()=>{
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
+  },[])
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -32,7 +38,7 @@ const OverallCostingPage = () => {
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
-    setWorkflowList(
+    setsummaryList(
       constructBreakdownGridData(quoteDetail?.overallCostingGridList)
     );
   };
@@ -138,7 +144,7 @@ const OverallCostingPage = () => {
   // }, []);
 
   // const handleCalculateVariance = () => {
-  //   const updatedData = workflowList.map((item) => {
+  //   const updatedData = summaryList.map((item) => {
   //     if (item.priceBookValue && item.quotation) {
   //       const priceBookValue = parseFloat(item.priceBookValue);
   //       const quotation = parseFloat(item.quotation);
@@ -148,7 +154,7 @@ const OverallCostingPage = () => {
   //     }
   //     return item;
   //   });
-  //   setWorkflowList(updatedData);
+  //   setsummaryList(updatedData);
   //   toast.success("Variance calculated successfully!");
   // };
 
@@ -171,10 +177,11 @@ const OverallCostingPage = () => {
       <div style={{ marginTop: "20px", marginBottom: "20px" }}>
         <NeptuneAgGrid
           refId="overall-costing"
-          data={workflowList}
+          data={summaryList}
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
-            handleRemarksChange
+            handleRemarksChange,
+            userIdentification
           )}
           paginated={false}
           itemsPerPage={10}

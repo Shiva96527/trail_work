@@ -23,12 +23,8 @@ import SRFReport from "../pages/reports/srf-report";
 import DropdownConfig from "../pages/admin/dropdown-configuration";
 import UserGroupMapping from "../pages/general/user-group-mapping";
 import EdQuotationInbox from "../pages/edquotation/inbox";
-import TaskHistory from "../pages/edquotation/task-history";
 import MyGroup from "../pages/edquotation/my-group";
 import CreateEd from "../pages/edquotation/create-ed";
-import Request from "../pages/edquotation/request";
-import QuoteSubmitPage from "../pages/edquotation/quote-submit";
-import OverallCostingPage from "../pages/edquotation/overall-costing";
 import VendorManagement from "../pages/admin/vendor-management";
 import EdSearch from "../pages/edquotation/ed-search";
 import Tabs from "../pages/edquotation/tab";
@@ -83,21 +79,8 @@ export const approutes = (isAuth) => {
           element: <UserGroupMapping />,
         },
         { path: "/neptune/edquotation/inbox", element: <EdQuotationInbox /> },
-        { path: "/neptune/edquotation/taskhistory", element: <TaskHistory /> },
         { path: "/neptune/edquotation/mygroup", element: <MyGroup /> },
         { path: "/neptune/edquotation/create-ed", element: <CreateEd /> },
-        {
-          path: "/neptune/edquotation/update-ed/:edNumber",
-          element: <Request />,
-        },
-        {
-          path: "/neptune/edquotation/quotesubmit",
-          element: <QuoteSubmitPage />,
-        },
-        {
-          path: "/neptune/edquotation/overall-costing",
-          element: <OverallCostingPage />,
-        },
         { path: "/neptune/vendor/management", element: <VendorManagement /> },
         { path: "/neptune/ed/search", element: <EdSearch /> },
         {
