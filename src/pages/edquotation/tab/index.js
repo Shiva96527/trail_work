@@ -20,14 +20,86 @@ const OverallCosting = lazy(() => import("../overall-costing"));
 const TaskHistory = lazy(() => import("../task-history"));
 const EmailLogs = lazy(() => import("../email-logs"));
 
+const initialConfig = {
+  1: {
+    title: "Request",
+    component: <Request />,
+  },
+  4: {
+    title: "Workflow",
+    component: <TaskHistory />,
+  },
+  5: {
+    title: "Email logs ",
+    component: <EmailLogs />,
+  },
+};
+
+const tabConfig = {
+  1: {
+    title: "Request",
+    component: <Request />,
+  },
+  2: {
+    title: "Quote details",
+    component: <QuoteSubmit />,
+  },
+  3: {
+    title: "Overall Costing",
+    component: <OverallCosting />,
+  },
+  4: {
+    title: "Workflow",
+    component: <TaskHistory />,
+  },
+  5: {
+    title: "Email logs ",
+    component: <EmailLogs />,
+  },
+};
+
 export default function Tabs() {
   const location = useLocation();
   const navigate = useNavigate(); // Initialize navigate
   const [activeTab, setActiveTab] = useState("1");
   const { quoteDetail } = location.state || {};
+  const [navItems, setNavItems] = useState();
+  const [tabPane, setTabPane] = useState();
+
+  useEffect(() => {
+    constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
+  }, [quoteDetail]);
 
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
+  };
+
+  const constructTabs = (statusCode) => {
+    let tempNavItems = [];
+    let tempTabPane = [];
+    for (const [key, value] of Object.entries(
+      statusCode === 1 ? initialConfig : tabConfig
+    )) {
+      tempNavItems.push(
+        <NavItem key={key}>
+          <NavLink
+            className={classnames({ active: activeTab === key })}
+            onClick={() => toggle(key)}
+          >
+            {value.title}
+          </NavLink>
+        </NavItem>
+      );
+      tempTabPane.push(
+        <TabPane tabId={key}>
+          <Suspense fallback={<div>Loading...</div>}>
+            {activeTab === key && value.component}
+          </Suspense>
+        </TabPane>
+      );
+    }
+    setNavItems(tempNavItems);
+    setTabPane(tempTabPane);
   };
 
   return (
@@ -61,6 +133,7 @@ export default function Tabs() {
           </Button>
         </CardBody>
       </Card>
+
       <Nav tabs style={{ marginTop: "30px" }}>
         <NavItem>
           <NavLink
