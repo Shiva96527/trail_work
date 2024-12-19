@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -18,13 +18,12 @@ import {
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
-import { getDigitalQuoteDetail } from "../helper";
+import { getDigitalQuoteDetail, isActionApplicable } from "../helper";
 import { useSelector } from "react-redux";
 import { getDropdownByTypeHTTP } from "../../../services/global-service";
 
-var userInfo = null;
-
 const Request = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [edData, setEdData] = useState();
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
@@ -46,7 +45,6 @@ const Request = () => {
     try {
       const data = await getDigitalQuoteDetail(digitalizeQuoteId);
       setEdData(data?.quoteCreationResponse);
-      console.log("first", data?.quoteCreationResponse);
       if (data?.statusCode !== 200) {
         toast.info(data?.statusMessage);
         setDisableStatus(data?.quoteCreationResponse);
@@ -149,7 +147,6 @@ const Request = () => {
   };
 
   const handleSRFNumberClick = () => {
-    console.log("clicked");
     // Navigate to the SRF platform page
     navigate(`/neptune/srf/srfinbox`);
   };
@@ -232,7 +229,7 @@ const Request = () => {
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={disable}
+                              disabled={disable || isActionApplicable(location?.pathname)}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -270,7 +267,9 @@ const Request = () => {
                   </Row>
                 ))}
                 {/* Place the "Submit to Vendor" button inside AccordionBody */}
-                {!disable && userIdentification !== "vendor" ? (
+                {!disable &&
+                userIdentification !== "vendor" &&
+                !isActionApplicable(location?.pathname) ? (
                   <div style={{ textAlign: "left", marginTop: "30px" }}>
                     <Button
                       color="primary"
