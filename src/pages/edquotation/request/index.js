@@ -188,6 +188,11 @@ const Request = () => {
                       <Col md={3} key={colIndex}>
                         <FormGroup>
                           <Label for={column.key}>{column.label}</Label>
+                          <Label for={column.key}>
+                            {column.key === "vendor" && (
+                              <span className="required">*</span>
+                            )}
+                          </Label>
                           {column.key === "srfNumber" ? (
                             // Keep the SRF Number as an Input box, but add a clickable link behavior
                             <Input
@@ -210,6 +215,7 @@ const Request = () => {
                             />
                           ) : column.key === "vendor" ? (
                             // Vendor Assignment as Dropdown using vendorDropDownList
+
                             <Input
                               type="select"
                               name={column.key}
@@ -273,7 +279,7 @@ const Request = () => {
                         outline: "none",
                         boxShadow: "none",
                       }}
-                      disabled={disable}
+                      disabled={disable || !edData?.vendor}
                     >
                       Submit to Vendor
                     </Button>
