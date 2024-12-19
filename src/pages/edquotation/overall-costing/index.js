@@ -19,7 +19,6 @@ const OverallCostingPage = () => {
   const navigate = useNavigate();
 
   const [totalInfo, setTotalInfo] = useState([]);
-
   const [summaryList, setsummaryList] = useState([]);
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
@@ -226,8 +225,6 @@ const OverallCostingPage = () => {
           Update
         </button>
       </div> */}
-
-      <ToastContainer />
     </div>
   );
 };
