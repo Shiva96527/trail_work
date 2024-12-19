@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Spinner,
+  Input,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -61,52 +62,6 @@ const QuoteSubmitPage = () => {
     setSurveyResponse(quoteDetail?.surveyResponse);
     setImplementationResponse(quoteDetail?.implementationResponse);
     setNonStandardResponse(quoteDetail?.nonStandardResponse);
-  };
-
-  // Get toggle state from Redux
-  const toggleNonStandard = useSelector(
-    (state) => state.globalSlice.toggleNonStandard
-  );
-
-  // Inline styles for the custom toggle
-  const toggleStyles = {
-    container: {
-      display: "inline-block",
-      width: "50px",
-      height: "25px",
-      position: "relative",
-      cursor: "pointer",
-    },
-    input: {
-      appearance: "none",
-      width: "100%",
-      height: "100%",
-      position: "absolute",
-      top: 0,
-      left: 0,
-      margin: 0,
-      opacity: 0,
-      cursor: "pointer",
-    },
-    slider: {
-      backgroundColor: toggleNonStandard ? "#293897" : "#ccc",
-      borderRadius: "25px",
-      position: "relative",
-      transition: "background-color 0.3s ease",
-      width: "100%",
-      height: "100%",
-    },
-    knob: {
-      content: '""',
-      position: "absolute",
-      top: "2px",
-      left: toggleNonStandard ? "25px" : "2px",
-      width: "21px",
-      height: "21px",
-      backgroundColor: "white",
-      borderRadius: "50%",
-      transition: "transform 0.3s ease, left 0.3s ease",
-    },
   };
 
   // Open the confirmation modal
@@ -267,7 +222,18 @@ const QuoteSubmitPage = () => {
       })
     );
   };
+  const toggleNonStandard = useSelector(
+    (state) => state.globalSlice.toggleNonStandard
+  );
 
+  const handleNonStandardChange = (e) => {
+    const value = e.target.value;
+    if (value === "Yes") {
+      dispatch(setToggleNonStandard(true));
+    } else {
+      dispatch(setToggleNonStandard(false));
+    }
+  };
   return (
     <div>
       <div style={{ position: "relative", margin: "20px" }}>
@@ -392,25 +358,6 @@ const QuoteSubmitPage = () => {
                           </Button>
                         ) : null}
                       </span>
-                      <div
-                        style={{
-                          ...toggleStyles.container,
-                          transform: "scale(0.7)", // Reduce the size of the toggle
-                          marginLeft: "10px", // Add space between the text and the toggle
-                        }}
-                        onClick={handleToggleConfirmation}
-                        title="Required Non-Standard Quotation" // Tooltip text
-                      >
-                        <input
-                          type="checkbox"
-                          checked={toggleNonStandard}
-                          onChange={(e) => e.stopPropagation()}
-                          style={toggleStyles.input}
-                        />
-                        <div style={toggleStyles.slider}>
-                          <div style={toggleStyles.knob}></div>
-                        </div>
-                      </div>
                     </div>
                   </>
                 }
@@ -430,9 +377,51 @@ const QuoteSubmitPage = () => {
               "implementation",
               edData?.statusCode !== 4 ? true : false
             )}
+            <div style={{ marginBottom: "20px" }}></div>
           </>
         ) : null}
+        {/* Non-Standard Quotation Section */}
 
+        <div
+          style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: "black",
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          <label style={{ marginRight: "10px", fontWeight: "bold" }}>
+            Non-Standard Quotation:
+          </label>
+          <Input
+            type="select"
+            style={{ width: "200px" }}
+            onChange={handleNonStandardChange}
+            value={toggleNonStandard ? "Yes" : "No"}
+          >
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </Input>
+          {edData?.statusCode === 6 || edData?.statusCode === 4
+            ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
+                <Button
+                  color="primary"
+                  style={{
+                    marginLeft: "10px",
+                    backgroundColor: "#007bff",
+                  }}
+                  onClick={() => toggleExcelModal("nonstandard")}
+                >
+                  <FontAwesomeIcon
+                    icon={faCloudUploadAlt}
+                    style={{ marginRight: "8px" }}
+                  />
+                  Upload
+                </Button>
+              )
+            : null}
+        </div>
         {/* Render Non-Standard Quotation Grid when the toggle is on */}
         {toggleNonStandard && (
           <>
@@ -457,35 +446,7 @@ const QuoteSubmitPage = () => {
                   edData?.statusCode
                 )} // Pass column definitions for Quotation Details
                 // dataprops={columns} // Pass column definitions for Non-Standard Quotation
-                topActionButtons={
-                  <div
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      color: "black",
-                      alignItems: "center",
-                      display: "flex",
-                    }}
-                  >
-                    Non-Standard Quotation
-                    {edData?.statusCode === 6 || edData?.statusCode === 4 ? (
-                      <Button
-                        color="primary"
-                        style={{
-                          marginLeft: "10px",
-                          backgroundColor: "#007bff",
-                        }}
-                        onClick={() => toggleExcelModal("nonstandard")}
-                      >
-                        <FontAwesomeIcon
-                          icon={faCloudUploadAlt}
-                          style={{ marginRight: "8px" }}
-                        />
-                        Upload
-                      </Button>
-                    ) : null}
-                  </div>
-                }
+
                 exportable={false}
                 gridOptions={{
                   domLayout: "autoHeight",
@@ -587,25 +548,6 @@ const QuoteSubmitPage = () => {
             style={{ width: "20%" }}
           >
             {loading ? <Spinner size="sm" color="light" /> : "Submit"}
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      {/* Confirmation Modal */}
-      <Modal isOpen={modalOpen} toggle={handleModalCancel}>
-        <ModalHeader toggle={handleModalCancel}>
-          {toggleNonStandard ? "Disable" : "Enable"} Non-Standard Quotation
-        </ModalHeader>
-        <ModalBody>
-          Are you sure you want to {toggleNonStandard ? "disable" : "enable"}{" "}
-          the Non-Standard Quotation section?
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={handleModalCancel}>
-            Cancel
-          </Button>
-          <Button color="primary" onClick={handleModalConfirm}>
-            {toggleNonStandard ? "Disable" : "Enable"}
           </Button>
         </ModalFooter>
       </Modal>
