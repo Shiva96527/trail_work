@@ -65,9 +65,11 @@ export default function Tabs() {
   const { quoteDetail } = location.state || {};
   const [navItems, setNavItems] = useState();
   const [tabPane, setTabPane] = useState();
+  const [statusCode, setStatusCode] = useState();
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
+    // setStatusCode(quoteDetail?.quoteCreationResponse?.statusCode);
   }, [quoteDetail]);
 
   const toggle = (tab) => {
@@ -140,7 +142,7 @@ export default function Tabs() {
             className={classnames({ active: activeTab === "1" })}
             onClick={() => toggle("1")}
           >
-            Request
+            Request {statusCode}
           </NavLink>
         </NavItem>
         <NavItem>
