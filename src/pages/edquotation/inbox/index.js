@@ -48,11 +48,10 @@ const TableComponent = () => {
   useEffect(() => {
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-
     getEDQuoteList();
   }, []);
 
-  const getEDQuoteList = async (fromModal = false) => {
+  const getEDQuoteList = async () => {
     const payload = {
       type: "inbox",
       loginUIID: sessionStorage.getItem("uiid"),
@@ -144,6 +143,7 @@ const TableComponent = () => {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
+      getEDQuoteList();
     }
   };
 
