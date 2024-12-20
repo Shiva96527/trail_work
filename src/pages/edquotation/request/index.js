@@ -46,7 +46,6 @@ const Request = () => {
     try {
       const data = await getDigitalQuoteDetail(digitalizeQuoteId);
       setEdData(data?.quoteCreationResponse);
-      console.log("first", data?.quoteCreationResponse);
       if (data?.statusCode !== 200) {
         toast.info(data?.statusMessage);
         setDisableStatus(data?.quoteCreationResponse);
