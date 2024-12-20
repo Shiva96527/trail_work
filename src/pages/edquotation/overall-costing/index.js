@@ -9,7 +9,7 @@ import {
 } from "./config/columns.js";
 import { getDigitalQuoteDetail } from "../helper";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 var surveyData = {};
 var implementationData = {};
@@ -25,10 +25,10 @@ const OverallCostingPage = () => {
   const [userIdentification, setUserIdentification] = useState(null);
   // const [surveyData, setSurveyData] = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-  },[])
+  }, []);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -49,11 +49,11 @@ const OverallCostingPage = () => {
       { label: "Total Quotation", value: totalQuotationRM },
       {
         label: "Total SRF Cost",
-        value: totalSRFCostRM,
+        value: userIdentification !== "vendor" ? totalSRFCostRM : "--",
       },
       {
         label: "Balance in SRF",
-        value: balanceInSRFRM,
+        value: userIdentification !== "vendor" ? balanceInSRFRM : "--",
       },
     ];
   };
@@ -180,7 +180,8 @@ const OverallCostingPage = () => {
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
             handleRemarksChange,
-            userIdentification
+            userIdentification,
+            // !isActionApplicable(location?.pathname)
           )}
           paginated={false}
           itemsPerPage={10}
