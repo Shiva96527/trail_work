@@ -44,24 +44,6 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    // cellRenderer: (params) => {
-    //   return (
-    //     <input
-    //       type="text"
-    //       value={params.value || ""} // Bind the value here
-    //       onChange={(e) => {
-    //         const newValue = e.target.value;
-    //         params.setValue(newValue); // Update the value in the grid
-    //       }}
-    //       style={{
-    //         padding: "5px",
-    //         border: "1px solid #ddd",
-    //         borderRadius: "5px",
-    //         width: "100%",
-    //       }}
-    //     />
-    //   );
-    // },
   },
   {
     headerName: "Variance (RM)",
@@ -98,7 +80,6 @@ export const overallCostingGridColumn = (
     headerName: "Actions",
     field: "action",
     cellRenderer: (params) => {
-      console.log("]", params);
       return params?.data?.showApproveRejectButton === "Yes" &&
         userIdentification !== "vendor" ? (
         <div>

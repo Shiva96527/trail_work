@@ -470,10 +470,28 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {submitButton(
-              handleSubmit,
-              "nonstandard",
-              edData?.statusCode !== 6 ? true : false
+            {!toggleNonStandard ? (
+              <Button
+                onClick={() => handleSubmit("nonstandard")}
+                color="primary"
+                style={{
+                  padding: "10px 20px",
+                  width: "250px",
+                  fontSize: "16px",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                  marginTop: "30px",
+                }}
+              >
+                Update as Not Required
+              </Button>
+            ) : (
+              submitButton(
+                handleSubmit,
+                "nonstandard",
+                edData?.statusCode !== 6 ? true : false
+              )
             )}
           </>
         )}
