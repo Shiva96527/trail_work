@@ -142,7 +142,7 @@ export default function Tabs() {
             className={classnames({ active: activeTab === "1" })}
             onClick={() => toggle("1")}
           >
-            Request {statusCode}
+            Request
           </NavLink>
         </NavItem>
         <NavItem>
