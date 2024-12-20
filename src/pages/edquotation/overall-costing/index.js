@@ -23,12 +23,6 @@ const OverallCostingPage = () => {
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [userIdentification, setUserIdentification] = useState(null);
-  // const [surveyData, setSurveyData] = useState(null);
-
-  useEffect(() => {
-    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-  }, []);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -36,13 +30,20 @@ const OverallCostingPage = () => {
 
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
+    setTotalInfo(
+      constructSummaryTable(
+        quoteDetail?.overallCosting,
+        userInfo?.UserIdentification
+      )
+    );
     setsummaryList(
       constructBreakdownGridData(quoteDetail?.overallCostingGridList)
     );
   };
 
-  const constructSummaryTable = (quotationSummary) => {
+  const constructSummaryTable = (quotationSummary, userIdentification) => {
     const { balanceInSRFRM, totalQuotationRM, totalSRFCostRM } =
       quotationSummary || {};
     return [
@@ -180,7 +181,7 @@ const OverallCostingPage = () => {
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
             handleRemarksChange,
-            userIdentification,
+            userIdentification
             // !isActionApplicable(location?.pathname)
           )}
           paginated={false}
