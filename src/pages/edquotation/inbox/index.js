@@ -136,6 +136,7 @@ const TableComponent = () => {
       } = await bulkUploadDigitalEDQuote(payload);
       if (statusCode === 200) {
         toast.success(statusMessage);
+        toggleExcelModal();
       } else {
         toast.info(statusMessage);
       }
