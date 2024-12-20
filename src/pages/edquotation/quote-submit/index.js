@@ -233,8 +233,6 @@ const QuoteSubmitPage = () => {
   return (
     <div>
       <div style={{ position: "relative", margin: "20px" }}>
-
-        <p>No Actions / data found</p>
         {/* First Table - Quotation Details */}
         {isComponentVisible(edData?.showPanelStatusCodes, "2") ||
         isComponentVisible(edData?.showPanelStatusCodes, "3") ? (
