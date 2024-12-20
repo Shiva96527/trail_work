@@ -170,6 +170,10 @@ const QuoteSubmitPage = () => {
         filteredNonStandardResponse?.length > 0
           ? filteredNonStandardResponse
           : nonStandardResponse;
+      payload = {
+        ...payload,
+        nonStandardQuotationFlag: toggleNonStandard ? "Yes" : "No",
+      };
     }
     payload = {
       ...payload,
@@ -394,7 +398,8 @@ const QuoteSubmitPage = () => {
             <label style={{ marginRight: "10px", fontWeight: "bold" }}>
               Non-Standard Quotation:
             </label>
-            {nonStandardResponse.length <= 0 ? (
+            {nonStandardResponse.length <= 0 &&
+            (edData?.statusCode === 6 || edData?.statusCode === 7) ? (
               <Input
                 type="select"
                 style={{ width: "200px" }}
@@ -468,7 +473,7 @@ const QuoteSubmitPage = () => {
             {submitButton(
               handleSubmit,
               "nonstandard",
-              edData?.statusCode !== 4 ? true : false
+              edData?.statusCode !== 6 ? true : false
             )}
           </>
         )}
