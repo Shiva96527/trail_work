@@ -150,7 +150,15 @@ const Request = () => {
   const handleSRFNumberClick = () => {
     console.log("clicked");
     // Navigate to the SRF platform page
-    navigate(`/neptune/srf/srfinbox`);
+    // navigate(`/neptune/srf/srfinbox`);
+    // navigate("/neptune/srf/srfinbox/view", {
+      // state: {
+      //   IntegrationID: 16117,
+      //   SRFNumber:  edData?.srfNumber,
+      //   GroupName: localState?.GroupName,
+      //   WorkflowId: null,
+      // },
+    // });
   };
 
   return (

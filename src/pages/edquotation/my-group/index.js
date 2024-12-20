@@ -61,14 +61,7 @@ const TableComponent = () => {
           <Row>
             <Col md="12">
               <NeptuneAgGrid
-                topActionButtons={
-                  <>
-                    {/* Bulk Upload Button Removed */}
-                    {/* <Button color="success" size="sm" onClick={toggleExcelModal}>
-                      Bulk Upload
-                    </Button> */}
-                  </>
-                }
+                topActionButtons={<></>}
                 data={gridData} // Use fetched data
                 dataprops={columns}
                 paginated
@@ -80,56 +73,6 @@ const TableComponent = () => {
           </Row>
         </CardBody>
       </Card>
-
-      {/* Bulk Upload Modal Removed */}
-      {/* <Modal isOpen={excelModal} toggle={toggleExcelModal}>
-        <ModalHeader toggle={toggleExcelModal}>Bulk Upload</ModalHeader>
-        <ModalBody>
-          <div
-            {...getRootProps()}
-            style={{
-              textAlign: "center",
-              border: "2px dashed #ddd",
-              padding: "20px",
-              cursor: "pointer",
-            }}
-          >
-            <input {...getInputProps()} />
-            <FontAwesomeIcon
-              icon={faCloudUploadAlt}
-              style={{ fontSize: "30px", color: "#293897" }}
-            />
-            <p>Click or drag files here to upload</p>
-          </div>
-          <ul>
-            {fileUploaded.map((file, index) => (
-              <li
-                key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                {file.name}
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  style={{ color: "red", cursor: "pointer" }}
-                  onClick={() => deleteFile(file)}
-                />
-              </li>
-            ))}
-          </ul>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="secondary"
-            onClick={toggleExcelModal}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-          <Button color="primary" onClick={handleSubmit} disabled={loading}>
-            {loading ? <Spinner size="sm" color="light" /> : "Submit"}
-          </Button>
-        </ModalFooter>
-      </Modal> */}
     </>
   );
 };
