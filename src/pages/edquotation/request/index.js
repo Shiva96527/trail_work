@@ -149,6 +149,7 @@ const Request = () => {
   const handleSRFNumberClick = () => {
     // Navigate to the SRF platform page
     navigate(`/neptune/srf/srfinbox`);
+    // navigate(`/neptune/srf/srfinbox/view`);
   };
 
   return (
