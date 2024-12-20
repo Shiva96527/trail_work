@@ -62,6 +62,9 @@ const QuoteSubmitPage = () => {
     setSurveyResponse(quoteDetail?.surveyResponse);
     setImplementationResponse(quoteDetail?.implementationResponse);
     setNonStandardResponse(quoteDetail?.nonStandardResponse);
+    if (quoteDetail?.nonStandardResponse?.length > 0) {
+      dispatch(setToggleNonStandard(true));
+    }
   };
 
   // Open the confirmation modal
