@@ -65,9 +65,11 @@ export default function Tabs() {
   const { quoteDetail } = location.state || {};
   const [navItems, setNavItems] = useState();
   const [tabPane, setTabPane] = useState();
+  const [statusCode, setStatusCode] = useState();
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
+    // setStatusCode(quoteDetail?.quoteCreationResponse?.statusCode);
   }, [quoteDetail]);
 
   const toggle = (tab) => {

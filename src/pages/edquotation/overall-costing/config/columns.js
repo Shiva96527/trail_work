@@ -36,33 +36,8 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    // cellRenderer: (params) => {
-    //   const { breakdown, priceBookValue } = params.data;
-    //   let value = priceBookValue;
-
-    //   // Logic to handle Non-Standard Quotation row
-    //   if (toggleNonStandard && breakdown === "Non-Standard Quotation") {
-    //     value = "2,000.00"; // Set value to 2000 if Non-Standard Quotation
-    //   }
-
-    //   return (
-    //     <input
-    //       type="text"
-    //       value={value || ""}
-    //       onChange={(e) => {
-    //         const newValue = e.target.value;
-    //         params.setValue(newValue); // Update the value in the grid
-    //       }}
-    //       style={{
-    //         padding: "5px",
-    //         border: "1px solid #ddd",
-    //         borderRadius: "5px",
-    //         width: "100%",
-    //         backgroundColor: "white",
-    //       }}
-    //     />
-    //   );
-    // },
+    cellRenderer: (params) =>
+      userIdentification !== "vendor" ? <span>{params.value}</span> : "--",
   },
   {
     headerName: "Quotation (RM)",
@@ -70,24 +45,6 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    // cellRenderer: (params) => {
-    //   return (
-    //     <input
-    //       type="text"
-    //       value={params.value || ""} // Bind the value here
-    //       onChange={(e) => {
-    //         const newValue = e.target.value;
-    //         params.setValue(newValue); // Update the value in the grid
-    //       }}
-    //       style={{
-    //         padding: "5px",
-    //         border: "1px solid #ddd",
-    //         borderRadius: "5px",
-    //         width: "100%",
-    //       }}
-    //     />
-    //   );
-    // },
   },
   {
     headerName: "Variance (RM)",
@@ -95,20 +52,8 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    // cellRenderer: (params) => {
-    //   return (
-    //     <input
-    //       type="text"
-    //       value=""
-    //       style={{
-    //         padding: "5px",
-    //         border: "1px solid #ddd",
-    //         borderRadius: "5px",
-    //         width: "100%",
-    //       }}
-    //     />
-    //   );
-    // },
+    cellRenderer: (params) =>
+      userIdentification !== "vendor" ? <span>{params.value}</span> : "--",
   },
   {
     headerName: "Remarks",
@@ -128,7 +73,9 @@ export const overallCostingGridColumn = (
             width: "100%",
           }}
         />
-      ) : null;
+      ) : (
+        <span>{params?.data?.remarks}</span>
+      );
     },
     width: 250,
   },

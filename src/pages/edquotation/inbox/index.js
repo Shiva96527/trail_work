@@ -48,11 +48,10 @@ const TableComponent = () => {
   useEffect(() => {
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-
     getEDQuoteList();
   }, []);
 
-  const getEDQuoteList = async (fromModal = false) => {
+  const getEDQuoteList = async () => {
     const payload = {
       type: "inbox",
       loginUIID: sessionStorage.getItem("uiid"),
@@ -63,7 +62,6 @@ const TableComponent = () => {
       } = await getDigitalEDQuoteGrid(payload);
       if (statusCode === 200) {
         setGridData(resultData);
-        toast.success(statusMessage);
       }
     } catch (e) {
       toast.error("Something went wrong");
@@ -123,6 +121,8 @@ const TableComponent = () => {
       return;
     }
 
+    //check headers --
+
     setLoading(true);
     const workbook = await getWorkbook(fileUploaded);
     const rowData = populateGrid(workbook, columnsToFetch);
@@ -136,6 +136,7 @@ const TableComponent = () => {
       } = await bulkUploadDigitalEDQuote(payload);
       if (statusCode === 200) {
         toast.success(statusMessage);
+        toggleExcelModal();
       } else {
         toast.info(statusMessage);
       }
@@ -143,6 +144,7 @@ const TableComponent = () => {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
+      getEDQuoteList();
     }
   };
 

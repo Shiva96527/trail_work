@@ -148,8 +148,11 @@ const Request = () => {
 
   const handleSRFNumberClick = () => {
     // Navigate to the SRF platform page
-    navigate(`/neptune/srf/srfinbox`);
-    // navigate(`/neptune/srf/srfinbox/view`);
+    navigate("/neptune/srf/srfinbox/view", {
+      state: {
+        SRFNumber: edData?.srfNumber,
+      },
+    });
   };
 
   return (
@@ -205,7 +208,6 @@ const Request = () => {
                                 (edData && edData[column.key]) || ""
                               }
                               onClick={handleSRFNumberClick}
-                              disabled={true}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent

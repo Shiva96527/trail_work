@@ -25,8 +25,12 @@ import {
   postDigitalizeQuoteSubmitForApprovalorReject,
 } from "../../../services/ed-service.js";
 import { useDropzone } from "react-dropzone";
-import { getDigitalQuoteDetail, isComponentVisible,isActionApplicable } from "../helper";
-import { useNavigate,useLocation } from "react-router-dom";
+import {
+  getDigitalQuoteDetail,
+  isComponentVisible,
+  isActionApplicable,
+} from "../helper";
+import { useNavigate, useLocation } from "react-router-dom";
 import { setToggleNonStandard } from "../../../redux/slices/globalSlice.js";
 
 const QuoteSubmitPage = () => {
@@ -63,6 +67,9 @@ const QuoteSubmitPage = () => {
     setSurveyResponse(quoteDetail?.surveyResponse);
     setImplementationResponse(quoteDetail?.implementationResponse);
     setNonStandardResponse(quoteDetail?.nonStandardResponse);
+    if (quoteDetail?.nonStandardResponse?.length > 0) {
+      dispatch(setToggleNonStandard(true));
+    }
   };
 
   // Open the confirmation modal
@@ -171,6 +178,10 @@ const QuoteSubmitPage = () => {
         filteredNonStandardResponse?.length > 0
           ? filteredNonStandardResponse
           : nonStandardResponse;
+      payload = {
+        ...payload,
+        nonStandardQuotationFlag: toggleNonStandard ? "Yes" : "No",
+      };
     }
     payload = {
       ...payload,
@@ -234,8 +245,6 @@ const QuoteSubmitPage = () => {
   return (
     <div>
       <div style={{ position: "relative", margin: "20px" }}>
-
-        <p>No Actions / data found</p>
         {/* First Table - Quotation Details */}
         {isComponentVisible(edData?.showPanelStatusCodes, "2") ||
         isComponentVisible(edData?.showPanelStatusCodes, "3") ? (
@@ -262,7 +271,8 @@ const QuoteSubmitPage = () => {
                   }}
                 >
                   Survey Details
-                  {edData?.statusCode === 2 && isActionApplicable(location?.pathname) ? (
+                  {edData?.statusCode === 2 &&
+                  isActionApplicable(location?.pathname) ? (
                     <Button
                       color="primary"
                       style={{
@@ -298,7 +308,9 @@ const QuoteSubmitPage = () => {
             {submitButton(
               handleSubmit,
               "survey",
-              edData?.statusCode !== 2 && isActionApplicable(location?.pathname) ? true : false
+              edData?.statusCode !== 2 && isActionApplicable(location?.pathname)
+                ? true
+                : false
             )}
           </>
         ) : null}
@@ -342,7 +354,8 @@ const QuoteSubmitPage = () => {
                     >
                       <span>
                         Implementation Costing Details{" "}
-                        {edData?.statusCode === 4 && isActionApplicable(location?.pathname)? (
+                        {edData?.statusCode === 4 &&
+                        isActionApplicable(location?.pathname) ? (
                           <Button
                             color="primary"
                             style={{
@@ -376,7 +389,9 @@ const QuoteSubmitPage = () => {
             {submitButton(
               handleSubmit,
               "implementation",
-              edData?.statusCode !== 4 && isActionApplicable(location?.pathname)? true : false
+              edData?.statusCode !== 4 && isActionApplicable(location?.pathname)
+                ? true
+                : false
             )}
             <div style={{ marginBottom: "20px" }}></div>
           </>
@@ -397,7 +412,8 @@ const QuoteSubmitPage = () => {
             <label style={{ marginRight: "10px", fontWeight: "bold" }}>
               Non-Standard Quotation:
             </label>
-            {nonStandardResponse.length <= 0 ? (
+            {nonStandardResponse.length <= 0 &&
+            (edData?.statusCode === 6 || edData?.statusCode === 7) ? (
               <Input
                 type="select"
                 style={{ width: "200px" }}
@@ -409,7 +425,9 @@ const QuoteSubmitPage = () => {
               </Input>
             ) : null}
 
-            {edData?.statusCode === 6 || edData?.statusCode === 4 || isActionApplicable(location?.pathname)
+            {edData?.statusCode === 6 ||
+            edData?.statusCode === 4 ||
+            isActionApplicable(location?.pathname)
               ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
                   <Button
                     color="primary"
@@ -468,10 +486,30 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {submitButton(
-              handleSubmit,
-              "nonstandard",
-              edData?.statusCode !== 4 && isActionApplicable(location?.pathname) ? true : false 
+            {!toggleNonStandard ? (
+              <Button
+                onClick={() => handleSubmit("nonstandard")}
+                color="primary"
+                style={{
+                  padding: "10px 20px",
+                  width: "250px",
+                  fontSize: "16px",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                  marginTop: "30px",
+                }}
+              >
+                Update as Not Required
+              </Button>
+            ) : (
+              submitButton(
+                handleSubmit,
+                "nonstandard",
+                edData?.statusCode !== 6
+                  ? true
+                  : false && isActionApplicable(location?.pathname)
+              )
             )}
           </>
         )}

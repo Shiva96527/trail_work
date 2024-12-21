@@ -24,12 +24,6 @@ const OverallCostingPage = () => {
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [userIdentification, setUserIdentification] = useState(null);
-  // const [surveyData, setSurveyData] = useState(null);
-
-  useEffect(()=>{
-    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-  },[])
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -37,24 +31,31 @@ const OverallCostingPage = () => {
 
   const getQuoteDetail = async () => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setTotalInfo(constructSummaryTable(quoteDetail?.overallCosting));
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
+    setTotalInfo(
+      constructSummaryTable(
+        quoteDetail?.overallCosting,
+        userInfo?.UserIdentification
+      )
+    );
     setsummaryList(
       constructBreakdownGridData(quoteDetail?.overallCostingGridList)
     );
   };
 
-  const constructSummaryTable = (quotationSummary) => {
+  const constructSummaryTable = (quotationSummary, userIdentification) => {
     const { balanceInSRFRM, totalQuotationRM, totalSRFCostRM } =
       quotationSummary || {};
     return [
       { label: "Total Quotation", value: totalQuotationRM },
       {
         label: "Total SRF Cost",
-        value: totalSRFCostRM,
+        value: userIdentification !== "vendor" ? totalSRFCostRM : "--",
       },
       {
         label: "Balance in SRF",
-        value: balanceInSRFRM,
+        value: userIdentification !== "vendor" ? balanceInSRFRM : "--",
       },
     ];
   };
@@ -71,7 +72,7 @@ const OverallCostingPage = () => {
     let type = "";
     if (rowIndex === 0) {
       if (action !== "approve" && !surveyData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = surveyData.remarks;
@@ -79,7 +80,7 @@ const OverallCostingPage = () => {
       }
     } else if (rowIndex === 1) {
       if (action !== "approve" && !implementationData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = implementationData.remarks;
@@ -87,7 +88,7 @@ const OverallCostingPage = () => {
       }
     } else {
       if (action !== "approve" && !nonStandardData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = nonStandardData.remarks;

@@ -91,22 +91,9 @@ const EdSearch = () => {
   };
 
   const handleViewDetails = (data) => {
-    let path = "";
-    if (
-      data?.SRFWorkFlowStatus === "HLD" ||
-      data?.SRFWorkFlowStatus === "HLD Cost Pending"
-    ) {
-      path = "/neptune/srf/inboxhld";
-    } else {
-      path = "/neptune/srf/search/view";
-    }
-    navigate(path, {
+    navigate("/neptune/edquotation/detail", {
       state: {
-        IntegrationID: data?.IntegrationID,
-        SRFNumber: data?.SRFNumber,
-        GroupName: data?.GroupName,
-        WorkflowId: data?.WorkflowId || 0,
-        SRFWorkFlowStatus: data?.SRFWorkFlowStatus,
+        quoteDetail: data,
       },
     });
   };

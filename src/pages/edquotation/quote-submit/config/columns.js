@@ -57,7 +57,7 @@ export const columns = (handleAssignment, type, statusCode) => [
   },
   {
     headerName: "Unit Price",
-    field: "price",
+    field: "unitPrice",
     minWidth: 180,
   },
   {
@@ -94,6 +94,8 @@ export const columns = (handleAssignment, type, statusCode) => [
 export const columnsToFetch = {
   A: "oa",
   B: "mmNo",
-  C: "qty",
-  D: "plantCode",
+  C: "mmDescription",
+  D: "qty",
+  E: "unitPrice",
+  F: "plantCode",
 };
