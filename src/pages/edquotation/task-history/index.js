@@ -5,8 +5,11 @@ import { getDigitalQuoteDetail } from "../helper";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function EdTaskHistory() {
+  const navigate = useNavigate();
   const [workflowList, setWorkflowList] = useState([]);
   const [enableDropButtonFlag, setEnableDropButtonFlag] = useState([]);
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
