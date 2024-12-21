@@ -62,7 +62,6 @@ const TableComponent = () => {
       } = await getDigitalEDQuoteGrid(payload);
       if (statusCode === 200) {
         setGridData(resultData);
-        toast.success(statusMessage);
       }
     } catch (e) {
       toast.error("Something went wrong");
@@ -121,6 +120,8 @@ const TableComponent = () => {
       toast.error("Please upload at least one Excel file!");
       return;
     }
+
+    //check headers --
 
     setLoading(true);
     const workbook = await getWorkbook(fileUploaded);

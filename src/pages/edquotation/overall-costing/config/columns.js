@@ -20,7 +20,8 @@ export const totalInfoColumns = [
 export const overallCostingGridColumn = (
   handleApproveOrReject,
   handleRemarksChange,
-  userIdentification
+  userIdentification,
+  isActionApplicable
 ) => [
   {
     headerName: "Breakdown",
@@ -58,7 +59,9 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      return params?.data?.showApproveRejectButton === "Yes" ? (
+      return params?.data?.showApproveRejectButton === "Yes" &&
+        userIdentification !== "vendor" &&
+        isActionApplicable ? (
         <input
           type="text"
           onChange={(e) => handleRemarksChange(e, params)}
@@ -80,8 +83,10 @@ export const overallCostingGridColumn = (
     headerName: "Actions",
     field: "action",
     cellRenderer: (params) => {
+      console.log("]", params);
       return params?.data?.showApproveRejectButton === "Yes" &&
-        userIdentification !== "vendor" ? (
+        userIdentification !== "vendor" &&
+        isActionApplicable ? (
         <div>
           <button
             onClick={() => handleApproveOrReject(params, "approve")}

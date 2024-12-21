@@ -7,15 +7,16 @@ import {
   totalInfoColumns,
   overallCostingGridColumn,
 } from "./config/columns.js";
-import { getDigitalQuoteDetail } from "../helper";
+import { getDigitalQuoteDetail,isActionApplicable } from "../helper";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 
 var surveyData = {};
 var implementationData = {};
 var nonStandardData = {};
 
 const OverallCostingPage = () => {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [totalInfo, setTotalInfo] = useState([]);
@@ -71,7 +72,7 @@ const OverallCostingPage = () => {
     let type = "";
     if (rowIndex === 0) {
       if (action !== "approve" && !surveyData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = surveyData.remarks;
@@ -79,7 +80,7 @@ const OverallCostingPage = () => {
       }
     } else if (rowIndex === 1) {
       if (action !== "approve" && !implementationData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = implementationData.remarks;
@@ -87,7 +88,7 @@ const OverallCostingPage = () => {
       }
     } else {
       if (action !== "approve" && !nonStandardData.remarks) {
-        toast.error("Remarks must!!!");
+        toast.error("Please enter remarks!!!");
         return;
       } else {
         remarks = nonStandardData.remarks;
@@ -181,8 +182,8 @@ const OverallCostingPage = () => {
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
             handleRemarksChange,
-            userIdentification
-            // !isActionApplicable(location?.pathname)
+            userIdentification,
+            !isActionApplicable(location?.pathname)
           )}
           paginated={false}
           itemsPerPage={10}
