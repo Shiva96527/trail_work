@@ -92,10 +92,10 @@ export const columns = (handleAssignment, type, statusCode) => [
 ];
 
 export const columnsToFetch = {
-  A: "OA",
-  B: "MMNo",
-  C: "MMDescription",
-  D: "Qty",
-  E: "UnitPrice",
-  F: "PlantCode",
+  A: "oa",
+  B: "mmNo",
+  C: "mmDescription",
+  D: "qty",
+  E: "unitPrice",
+  F: "plantCode",
 };

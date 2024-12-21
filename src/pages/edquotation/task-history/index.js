@@ -38,7 +38,8 @@ export default function EdTaskHistory() {
   const handleDrop = async () => {
     const payload = {
       LoginUIID: sessionStorage.getItem("uiid"),
-      type: "drop",
+      type: "Drop Request",
+      action: "Drop",
       digitalizeQuoteId,
     };
     try {
@@ -76,7 +77,7 @@ export default function EdTaskHistory() {
           <>
             {enableDropButtonFlag === "Yes" ? (
               <Button
-                color="primary"
+                color="danger"
                 size="sm"
                 data-toggle="tooltip"
                 title="Drop"
