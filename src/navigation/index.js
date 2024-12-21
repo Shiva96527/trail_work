@@ -87,10 +87,6 @@ export const approutes = (isAuth) => {
           path: "/neptune/edquotation/detail",
           element: <Tabs />,
         },
-        {
-          path: "/neptune/edquotation/mygroup/detail",
-          element: <Tabs />,
-        },
       ],
     },
   ];

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -18,12 +18,13 @@ import {
 import { toast } from "react-toastify";
 import columns from "./config/columns";
 import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
-import { getDigitalQuoteDetail, isActionApplicable } from "../helper";
+import { getDigitalQuoteDetail } from "../helper";
 import { useSelector } from "react-redux";
 import { getDropdownByTypeHTTP } from "../../../services/global-service";
 
+var userInfo = null;
+
 const Request = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [edData, setEdData] = useState();
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
@@ -232,7 +233,7 @@ const Request = () => {
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={disable || isActionApplicable(location?.pathname)}
+                              disabled={disable}
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
@@ -270,9 +271,7 @@ const Request = () => {
                   </Row>
                 ))}
                 {/* Place the "Submit to Vendor" button inside AccordionBody */}
-                {!disable &&
-                userIdentification !== "vendor" &&
-                !isActionApplicable(location?.pathname) ? (
+                {!disable && userIdentification !== "vendor" ? (
                   <div style={{ textAlign: "left", marginTop: "30px" }}>
                     <Button
                       color="primary"
