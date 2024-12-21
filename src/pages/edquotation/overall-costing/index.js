@@ -7,15 +7,16 @@ import {
   totalInfoColumns,
   overallCostingGridColumn,
 } from "./config/columns.js";
-import { getDigitalQuoteDetail } from "../helper";
+import { getDigitalQuoteDetail,isActionApplicable } from "../helper";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 
 var surveyData = {};
 var implementationData = {};
 var nonStandardData = {};
 
 const OverallCostingPage = () => {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [totalInfo, setTotalInfo] = useState([]);
@@ -181,8 +182,8 @@ const OverallCostingPage = () => {
           dataprops={overallCostingGridColumn(
             handleApproveOrReject,
             handleRemarksChange,
-            userIdentification
-            // !isActionApplicable(location?.pathname)
+            userIdentification,
+            !isActionApplicable(location?.pathname)
           )}
           paginated={false}
           itemsPerPage={10}
