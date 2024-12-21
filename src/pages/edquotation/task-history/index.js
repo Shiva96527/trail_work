@@ -21,6 +21,10 @@ export default function EdTaskHistory() {
   const getQuoteDetail = async () => {
     try {
       const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+      console.log(
+        "first",
+        quoteDetail?.quoteCreationResponse?.enableDropButtonFlag
+      );
       setEnableDropButtonFlag(
         quoteDetail?.quoteCreationResponse?.enableDropButtonFlag
       );
@@ -70,7 +74,7 @@ export default function EdTaskHistory() {
         exportable={true}
         topActionButtons={
           <>
-            {enableDropButtonFlag !== "Yes" ? (
+            {enableDropButtonFlag === "Yes" ? (
               <Button
                 color="primary"
                 size="sm"
