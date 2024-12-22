@@ -22,11 +22,5 @@ export const getDigitalQuoteDetail = async (digitalizeQuoteId) => {
 };
 
 export const isComponentVisible = (showPanelStatusCodes, value) => {
-  console.log(
-    "first",
-    showPanelStatusCodes,
-    value,
-    showPanelStatusCodes?.split(",")?.includes(value)
-  );
   return showPanelStatusCodes?.split(",")?.includes(value) || false;
 };

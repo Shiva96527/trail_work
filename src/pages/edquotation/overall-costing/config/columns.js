@@ -58,7 +58,8 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      return params?.data?.showApproveRejectButton === "Yes" ? (
+      return params?.data?.showApproveRejectButton === "Yes" &&
+        userIdentification !== "vendor" ? (
         <input
           type="text"
           onChange={(e) => handleRemarksChange(e, params)}
