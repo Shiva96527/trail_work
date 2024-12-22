@@ -44,7 +44,7 @@ const TableComponent = () => {
     );
 
     // Navigate to the update page when clicking on action icons
-    navigate("/neptune/edquotation/detail", {
+    navigate("/neptune/edquotation/mygroup/detail", {
       state: {
         quoteDetail: row,
       },

@@ -69,6 +69,7 @@ const TableComponent = () => {
   };
 
   const toggleExcelModal = () => {
+    if (excelModal) setFileUploaded([]);
     setExcelModal(!excelModal);
   };
 

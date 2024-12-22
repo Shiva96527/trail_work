@@ -148,6 +148,7 @@ const QuoteSubmitPage = () => {
 
   const toggleExcelModal = (uploadType) => {
     setUploadType(uploadType);
+    if (excelModal) setFileUploaded([]);
     setExcelModal(!excelModal);
   };
 
