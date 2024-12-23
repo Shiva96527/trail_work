@@ -25,12 +25,17 @@ import {
   postDigitalizeQuoteSubmitForApprovalorReject,
 } from "../../../services/ed-service.js";
 import { useDropzone } from "react-dropzone";
-import { getDigitalQuoteDetail, isComponentVisible } from "../helper";
-import { useNavigate } from "react-router-dom";
+import {
+  getDigitalQuoteDetail,
+  isComponentVisible,
+  isActionApplicable,
+} from "../helper";
+import { useNavigate, useLocation } from "react-router-dom";
 import { setToggleNonStandard } from "../../../redux/slices/globalSlice.js";
 
 const QuoteSubmitPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
@@ -267,7 +272,8 @@ const QuoteSubmitPage = () => {
                   }}
                 >
                   Survey Details
-                  {edData?.statusCode === 2 ? (
+                  {edData?.statusCode === 2 &&
+                  !isActionApplicable(location?.pathname) ? (
                     <Button
                       color="primary"
                       style={{
@@ -300,11 +306,13 @@ const QuoteSubmitPage = () => {
                 paddingTop: "0", // Ensure no padding is affecting positioning
               }}
             />
-            {submitButton(
-              handleSubmit,
-              "survey",
-              edData?.statusCode !== 2 ? true : false
-            )}
+            {!isActionApplicable(location?.pathname)
+              ? submitButton(
+                  handleSubmit,
+                  "survey",
+                  edData?.statusCode !== 2 ? true : false
+                )
+              : null}
           </>
         ) : null}
 
@@ -347,7 +355,8 @@ const QuoteSubmitPage = () => {
                     >
                       <span>
                         Implementation Costing Details{" "}
-                        {edData?.statusCode === 4 ? (
+                        {edData?.statusCode === 4 &&
+                        !isActionApplicable(location?.pathname) ? (
                           <Button
                             color="primary"
                             style={{
@@ -378,11 +387,13 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {submitButton(
-              handleSubmit,
-              "implementation",
-              edData?.statusCode !== 4 ? true : false
-            )}
+            {!isActionApplicable(location?.pathname)
+              ? submitButton(
+                  handleSubmit,
+                  "implementation",
+                  edData?.statusCode !== 4 ? true : false
+                )
+              : null}
             <div style={{ marginBottom: "20px" }}></div>
           </>
         ) : null}
@@ -403,7 +414,8 @@ const QuoteSubmitPage = () => {
               Non-Standard Quotation:
             </label>
             {nonStandardResponse.length <= 0 &&
-            (edData?.statusCode === 6 || edData?.statusCode === 7) ? (
+            (edData?.statusCode === 6 || edData?.statusCode === 7) &&
+            !isActionApplicable(location?.pathname) ? (
               <Input
                 type="select"
                 style={{ width: "200px" }}
@@ -415,7 +427,8 @@ const QuoteSubmitPage = () => {
               </Input>
             ) : null}
 
-            {edData?.statusCode === 6 || edData?.statusCode === 4
+            {(edData?.statusCode === 6 || edData?.statusCode === 4) &&
+            !isActionApplicable(location?.pathname)
               ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
                   <Button
                     color="primary"
@@ -474,29 +487,31 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {!toggleNonStandard ? (
-              <Button
-                onClick={() => handleSubmit("nonstandard")}
-                color="primary"
-                style={{
-                  padding: "10px 20px",
-                  width: "250px",
-                  fontSize: "16px",
-                  border: "none",
-                  outline: "none",
-                  boxShadow: "none",
-                  marginTop: "30px",
-                }}
-              >
-                Update as Not Required
-              </Button>
-            ) : (
-              submitButton(
-                handleSubmit,
-                "nonstandard",
-                edData?.statusCode !== 6 ? true : false
+            {!isActionApplicable(location?.pathname) ? (
+              !toggleNonStandard ? (
+                <Button
+                  onClick={() => handleSubmit("nonstandard")}
+                  color="primary"
+                  style={{
+                    padding: "10px 20px",
+                    width: "250px",
+                    fontSize: "16px",
+                    border: "none",
+                    outline: "none",
+                    boxShadow: "none",
+                    marginTop: "30px",
+                  }}
+                >
+                  Update as Not Required
+                </Button>
+              ) : (
+                submitButton(
+                  handleSubmit,
+                  "nonstandard",
+                  edData?.statusCode !== 6 ? true : false
+                )
               )
-            )}
+            ) : null}
           </>
         )}
       </div>

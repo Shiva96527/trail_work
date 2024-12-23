@@ -24,3 +24,7 @@ export const getDigitalQuoteDetail = async (digitalizeQuoteId) => {
 export const isComponentVisible = (showPanelStatusCodes, value) => {
   return showPanelStatusCodes?.split(",")?.includes(value) || false;
 };
+
+export const isActionApplicable = (url) => {
+  return url?.includes("mygroup") || false;
+};
