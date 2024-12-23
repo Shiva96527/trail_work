@@ -72,7 +72,7 @@ const OverallCostingPage = () => {
     let type = "";
     if (rowIndex === 0) {
       if (action !== "approve" && !surveyData.remarks) {
-        toast.error("Please enter remarks!!!");
+        toast.error("Please enter remarks");
         return;
       } else {
         remarks = surveyData.remarks;
@@ -80,7 +80,7 @@ const OverallCostingPage = () => {
       }
     } else if (rowIndex === 1) {
       if (action !== "approve" && !implementationData.remarks) {
-        toast.error("Please enter remarks!!!");
+        toast.error("Please enter remarks");
         return;
       } else {
         remarks = implementationData.remarks;
@@ -88,7 +88,7 @@ const OverallCostingPage = () => {
       }
     } else {
       if (action !== "approve" && !nonStandardData.remarks) {
-        toast.error("Please enter remarks!!!");
+        toast.error("Please enter remarks");
         return;
       } else {
         remarks = nonStandardData.remarks;
