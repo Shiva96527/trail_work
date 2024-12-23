@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function EdTaskHistory() {
@@ -14,6 +15,7 @@ export default function EdTaskHistory() {
   const [workflowList, setWorkflowList] = useState([]);
   const [enableDropButtonFlag, setEnableDropButtonFlag] = useState([]);
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  const [remarks, setRemarks] = useState(null);
 
   useEffect(() => {
     getQuoteDetail(digitalizeQuoteId);
@@ -22,10 +24,6 @@ export default function EdTaskHistory() {
   const getQuoteDetail = async () => {
     try {
       const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-      console.log(
-        "first",
-        quoteDetail?.quoteCreationResponse?.enableDropButtonFlag
-      );
       setEnableDropButtonFlag(
         quoteDetail?.quoteCreationResponse?.enableDropButtonFlag
       );
@@ -36,12 +34,28 @@ export default function EdTaskHistory() {
     }
   };
 
-  const handleDrop = async () => {
+  const handleDrop = () => {
+    Swal.fire({
+      title: "Are you sure to drop quotation?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        postDrop();
+      } else if (result.isDenied) {
+        Swal.fire("Cancelled drop quotation", "", "info");
+      }
+    });
+  };
+
+  const postDrop = async () => {
     const payload = {
       LoginUIID: sessionStorage.getItem("uiid"),
       type: "Drop Request",
       action: "Drop",
       digitalizeQuoteId,
+      remarks,
     };
     try {
       const {
@@ -56,6 +70,10 @@ export default function EdTaskHistory() {
     } catch (e) {
       toast.error("Something went wrong");
     }
+  };
+
+  const handleRemarksChange = (e) => {
+    setRemarks(e?.target?.value);
   };
 
   return (
@@ -78,15 +96,28 @@ export default function EdTaskHistory() {
           <>
             {enableDropButtonFlag === "Yes" &&
             !isActionApplicable(location?.pathname) ? (
-              <Button
-                color="danger"
-                size="sm"
-                data-toggle="tooltip"
-                title="Drop"
-                onClick={handleDrop}
-              >
-                Drop
-              </Button>
+              <>
+                <input
+                  type="text"
+                  onChange={(e) => handleRemarksChange(e)}
+                  placeholder="Drop Remarks"
+                  style={{
+                    padding: "5px",
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                  }}
+                />
+                <Button
+                  color="danger"
+                  size="sm"
+                  data-toggle="tooltip"
+                  title="Drop"
+                  onClick={handleDrop}
+                  style={{ margin: "5px" }}
+                >
+                  Drop
+                </Button>
+              </>
             ) : null}
           </>
         }

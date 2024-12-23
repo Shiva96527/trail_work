@@ -408,6 +408,7 @@ const QuoteSubmitPage = () => {
               color: "black",
               alignItems: "center",
               display: "flex",
+              marginBottom:"8px"
             }}
           >
             <label style={{ marginRight: "10px", fontWeight: "bold" }}>
@@ -457,7 +458,6 @@ const QuoteSubmitPage = () => {
             <div
               style={{
                 fontSize: "18px",
-                marginTop: "30px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -488,7 +488,7 @@ const QuoteSubmitPage = () => {
               />
             </div>
             {!isActionApplicable(location?.pathname) ? (
-              !toggleNonStandard ? (
+              !toggleNonStandard && edData?.statusCode !== 4? (
                 <Button
                   onClick={() => handleSubmit("nonstandard")}
                   color="primary"
