@@ -20,7 +20,8 @@ export const totalInfoColumns = [
 export const overallCostingGridColumn = (
   handleApproveOrReject,
   handleRemarksChange,
-  userIdentification
+  userIdentification,
+  isActionApplicable
 ) => [
   {
     headerName: "Breakdown",
@@ -81,39 +82,41 @@ export const overallCostingGridColumn = (
     headerName: "Actions",
     field: "action",
     cellRenderer: (params) => {
-      return params?.data?.showApproveRejectButton === "Yes" &&
+      return isActionApplicable ? (
+        params?.data?.showApproveRejectButton === "Yes" &&
         userIdentification !== "vendor" ? (
-        <div>
-          <button
-            onClick={() => handleApproveOrReject(params, "approve")}
-            style={{
-              backgroundColor: "#28a745", // Green
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              padding: "6px 12px",
-              cursor: "pointer",
-              fontSize: "12px",
-              marginRight: "5px",
-            }}
-          >
-            Approve
-          </button>
-          <button
-            onClick={() => handleApproveOrReject(params, "reject")}
-            style={{
-              backgroundColor: "#dc3545", // Red
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              padding: "6px 12px",
-              cursor: "pointer",
-              fontSize: "12px",
-            }}
-          >
-            Reject
-          </button>
-        </div>
+          <div>
+            <button
+              onClick={() => handleApproveOrReject(params, "approve")}
+              style={{
+                backgroundColor: "#28a745", // Green
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                padding: "6px 12px",
+                cursor: "pointer",
+                fontSize: "12px",
+                marginRight: "5px",
+              }}
+            >
+              Approve
+            </button>
+            <button
+              onClick={() => handleApproveOrReject(params, "reject")}
+              style={{
+                backgroundColor: "#dc3545", // Red
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                padding: "6px 12px",
+                cursor: "pointer",
+                fontSize: "12px",
+              }}
+            >
+              Reject
+            </button>
+          </div>
+        ) : null
       ) : null;
     },
     width: 200,
