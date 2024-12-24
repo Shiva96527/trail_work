@@ -49,7 +49,17 @@ const QuoteSubmitPage = () => {
   const [filteredImplementationResponse, setFilteredImplementationResponse] =
     useState(null);
   const [filteredNonStandardResponse, setFilteredNonStandardResponse] =
-    useState();
+    useState(null);
+  const [filteredSurveyResponseToggled, setFilteredSurveyResponseToggled] =
+    useState(false);
+  const [
+    filteredImplementationResponseToggled,
+    setFilteredImplementationResponseToggled,
+  ] = useState(false);
+  const [
+    filteredNonStandardResponseToggled,
+    setFilteredNonStandardResponseToggled,
+  ] = useState(false);
   const [edData, setEdData] = useState();
   const [uploadType, setUploadType] = useState(null);
 
@@ -111,6 +121,9 @@ const QuoteSubmitPage = () => {
       console.log("statusCode", statusCode, statusCode === 200, statusMessage);
       if (statusCode === 200) {
         toast.success(statusMessage);
+        setFilteredImplementationResponseToggled(false);
+        setFilteredNonStandardResponseToggled(false);
+        setFilteredSurveyResponseToggled(false);
       } else {
         toast.info(statusMessage);
       }
@@ -206,23 +219,32 @@ const QuoteSubmitPage = () => {
   };
 
   const handleAssignment = (record, type) => {
-    console.log("record,type", record, type);
     let setFilteredResponse = null;
     let response = [];
     switch (type) {
       case "survey":
         setFilteredResponse = setFilteredSurveyResponse;
-        response = surveyResponse;
+        response = filteredSurveyResponseToggled
+          ? filteredSurveyResponse
+          : surveyResponse;
+        setFilteredSurveyResponseToggled(true);
         break;
       case "implementation":
         setFilteredResponse = setFilteredImplementationResponse;
-        response = implementationResponse;
+        response = filteredImplementationResponseToggled
+          ? filteredImplementationResponse
+          : implementationResponse;
+        setFilteredImplementationResponseToggled(true);
         break;
       case "nonstandard":
         setFilteredResponse = setFilteredNonStandardResponse;
-        response = nonStandardResponse;
+        response = filteredNonStandardResponseToggled
+          ? filteredNonStandardResponse
+          : nonStandardResponse;
+        setFilteredNonStandardResponseToggled(true);
         break;
     }
+    console.log("response", response);
     setFilteredResponse(
       response.filter((e) => {
         return e.costDetailsId !== record.costDetailsId;
@@ -252,7 +274,8 @@ const QuoteSubmitPage = () => {
           <>
             <NeptuneAgGrid
               data={
-                filteredSurveyResponse?.length > 0
+                filteredSurveyResponse?.length > 0 ||
+                filteredSurveyResponseToggled
                   ? filteredSurveyResponse
                   : surveyResponse
               } // Use gridData as the data for the grid
@@ -306,7 +329,14 @@ const QuoteSubmitPage = () => {
                 paddingTop: "0", // Ensure no padding is affecting positioning
               }}
             />
-            {!isActionApplicable(location?.pathname)
+            {!isActionApplicable(location?.pathname) &&
+            (filteredSurveyResponseToggled
+              ? filteredSurveyResponse.length > 0
+                ? true
+                : false
+              : surveyResponse.length > 0
+              ? true
+              : false)
               ? submitButton(
                   handleSubmit,
                   "survey",
@@ -332,7 +362,8 @@ const QuoteSubmitPage = () => {
             >
               <NeptuneAgGrid
                 data={
-                  filteredImplementationResponse?.length > 0
+                  filteredImplementationResponse?.length > 0 ||
+                  filteredImplementationResponseToggled
                     ? filteredImplementationResponse
                     : implementationResponse
                 } // Use gridData as the data for the grid
@@ -387,11 +418,21 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {!isActionApplicable(location?.pathname)
+            {!isActionApplicable(location?.pathname) &&
+            (filteredImplementationResponseToggled
+              ? filteredImplementationResponse.length > 0
+                ? true
+                : false
+              : implementationResponse.length > 0
+              ? true
+              : false)
               ? submitButton(
                   handleSubmit,
                   "implementation",
-                  edData?.statusCode !== 4 ? true : false
+                  edData?.statusCode !== 4 &&
+                    (filteredImplementationResponse || implementationResponse)
+                    ? true
+                    : false
                 )
               : null}
             <div style={{ marginBottom: "20px" }}></div>
@@ -408,7 +449,7 @@ const QuoteSubmitPage = () => {
               color: "black",
               alignItems: "center",
               display: "flex",
-              marginBottom:"8px"
+              marginBottom: "8px",
             }}
           >
             <label style={{ marginRight: "10px", fontWeight: "bold" }}>
@@ -465,7 +506,8 @@ const QuoteSubmitPage = () => {
             >
               <NeptuneAgGrid
                 data={
-                  filteredNonStandardResponse?.length > 0
+                  filteredNonStandardResponse?.length > 0 ||
+                  filteredNonStandardResponseToggled
                     ? filteredNonStandardResponse
                     : nonStandardResponse
                 } // Use gridData as the data for the grid
@@ -487,8 +529,15 @@ const QuoteSubmitPage = () => {
                 }}
               />
             </div>
-            {!isActionApplicable(location?.pathname) ? (
-              !toggleNonStandard && edData?.statusCode !== 4? (
+            {!isActionApplicable(location?.pathname) &&
+            (filteredNonStandardResponseToggled
+              ? filteredNonStandardResponse.length > 0
+                ? true
+                : false
+              : nonStandardResponse.length > 0
+              ? true
+              : false) ? (
+              !toggleNonStandard && edData?.statusCode !== 4 ? (
                 <Button
                   onClick={() => handleSubmit("nonstandard")}
                   color="primary"

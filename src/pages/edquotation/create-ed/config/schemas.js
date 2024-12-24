@@ -1,10 +1,10 @@
 // Create schema based on the provided fields and columns.
 const createEdSchema = {
   assignee: { required: true },
-  opportunityID: { required: true },
+  opportunityID: { required: false },
   fixCasNumber: { required: false },
   fixCdsNumber: { required: false },
-  businessCaseNumber: { required: false },
+  businessCaseNumber: { required: true },
   srfNumber: { required: false }, // SRF can be auto-generated, no need to validate
 };
 
