@@ -15,7 +15,7 @@ export const columns = (handleAssignment, type, statusCode) => [
           className="fa-cursor"
           fontSize={"14px"}
           data-toggle="tooltip"
-          title="Update ED"
+          title="Delete row"
           onClick={() => handleAssignment(v?.data, type)} // Reassign action
         />
       ) : null;

@@ -128,7 +128,6 @@ const CreateEd = () => {
                       <FormGroup>
                         <Label for="OpportunityCRMID">
                           {`Opportunity/CRM ID`}
-                          <span className="required">*</span>
                         </Label>
                         <Input
                           name="opportunityID"
@@ -154,7 +153,9 @@ const CreateEd = () => {
                     </Col>
                     <Col md={3}>
                       <FormGroup>
-                        <Label for="BC">BC #</Label>
+                        <Label for="BC">
+                          BC #<span className="required">*</span>
+                        </Label>
                         <Input
                           name="businessCaseNumber"
                           id="businessCaseNumber"
