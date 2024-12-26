@@ -67,10 +67,10 @@ const OverallCostingPage = () => {
   };
 
   const handleApproveOrReject = async (params, action) => {
-    const rowIndex = params.node.rowIndex;
+    const breakDownLabel = params?.node?.data?.breakDown;
     let remarks = "";
     let type = "";
-    if (rowIndex === 0) {
+    if (breakDownLabel?.toLowerCase() === "survey") {
       if (action !== "approve" && !surveyData.remarks) {
         toast.error("Please enter remarks");
         return;
@@ -78,7 +78,7 @@ const OverallCostingPage = () => {
         remarks = surveyData.remarks;
         type = "Survey";
       }
-    } else if (rowIndex === 1) {
+    } else if (breakDownLabel?.toLowerCase() === "implementation") {
       if (action !== "approve" && !implementationData.remarks) {
         toast.error("Please enter remarks");
         return;
@@ -118,13 +118,13 @@ const OverallCostingPage = () => {
   };
 
   const handleRemarksChange = (e, params) => {
-    const rowIndex = params.node.rowIndex;
-    if (rowIndex === 0) {
+    const breakDownLabel = params?.node?.data?.breakDown;
+    if (breakDownLabel?.toLowerCase() === "survey") {
       surveyData = {
         ...params?.data,
         remarks: e?.target?.value,
       };
-    } else if (rowIndex === 1) {
+    } else if (breakDownLabel?.toLowerCase() === "implementation") {
       implementationData = {
         ...params?.data,
         remarks: e?.target?.value,
