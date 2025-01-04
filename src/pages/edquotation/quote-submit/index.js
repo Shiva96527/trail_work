@@ -62,25 +62,57 @@ const QuoteSubmitPage = () => {
   ] = useState(false);
   const [edData, setEdData] = useState();
   const [uploadType, setUploadType] = useState(null);
+  const globalEdData = useSelector((state) => state.globalSlice.globalEdData);
 
+  // Retrieve all data from sessionStorage when the component mounts
   useEffect(() => {
-    dispatch(setToggleNonStandard(false)); // Use the action to toggle the state
+    const savedData = sessionStorage.getItem("quoteData");
+
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+
+      setEdData(parsedData?.edData);
+      setSurveyResponse(parsedData?.surveyResponse);
+      setImplementationResponse(parsedData?.implementationResponse);
+      setNonStandardResponse(parsedData?.nonStandardResponse);
+
+      // Set the toggle for non-standard response if data is available
+      if (parsedData?.nonStandardResponse?.length > 0) {
+        dispatch(setToggleNonStandard(true));
+      } else {
+        dispatch(setToggleNonStandard(false));
+      }
+    }
   }, []);
 
+  // Store all data to sessionStorage whenever any part of the data changes
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, [digitalizeQuoteId]);
+    const dataToStore = {
+      edData,
+      surveyResponse,
+      implementationResponse,
+      nonStandardResponse,
+    };
 
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    setEdData(quoteDetail?.quoteCreationResponse);
-    setSurveyResponse(quoteDetail?.surveyResponse);
-    setImplementationResponse(quoteDetail?.implementationResponse);
-    setNonStandardResponse(quoteDetail?.nonStandardResponse);
-    if (quoteDetail?.nonStandardResponse?.length > 0) {
-      dispatch(setToggleNonStandard(true));
+    // Save the full data object to sessionStorage
+    sessionStorage.setItem("quoteData", JSON.stringify(dataToStore));
+  }, [edData, surveyResponse, implementationResponse, nonStandardResponse]); // Runs whenever any of the states change
+
+  useEffect(() => {
+    if (globalEdData) {
+      setEdData(globalEdData?.quoteCreationResponse);
+      setSurveyResponse(globalEdData?.surveyResponse);
+      setImplementationResponse(globalEdData?.implementationResponse);
+      setNonStandardResponse(globalEdData?.nonStandardResponse);
+
+      // Toggle the non-standard response based on the data
+      if (globalEdData?.nonStandardResponse?.length > 0) {
+        dispatch(setToggleNonStandard(true));
+      } else {
+        dispatch(setToggleNonStandard(false));
+      }
     }
-  };
+  }, [globalEdData]);
 
   // Open the confirmation modal
   const handleToggleConfirmation = () => setModalOpen(true);
@@ -92,7 +124,7 @@ const QuoteSubmitPage = () => {
   const handleModalConfirm = () => {
     // Dispatch the toggle action to Redux store
     dispatch(toggleNonStandardAction()); // Use the action to toggle the state
-    setModalOpen(false); // Close the modal
+    setModalOpen(false);
   };
 
   const downloadTemplate = () => {
@@ -132,7 +164,6 @@ const QuoteSubmitPage = () => {
     } finally {
       setLoading(false);
       toggleExcelModal();
-      getQuoteDetail();
     }
   };
 

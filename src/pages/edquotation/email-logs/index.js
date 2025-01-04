@@ -3,25 +3,24 @@ import NeptuneAgGrid from "../../../components/ag-grid";
 import { Col, Row } from "reactstrap";
 import { email_log_columns } from "./config/columns";
 import { useSelector } from "react-redux";
-import { getDigitalQuoteDetail } from "../helper";
 
 export default function EmailLogs() {
   const [emailList, setEmailList] = useState([]);
-  const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
+  const { globalEdData } = useSelector((state) => state?.globalSlice);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, [digitalizeQuoteId]);
-
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
-    console.log(
-      "quoteDetail,quoteDetail.mailLog",
-      quoteDetail,
-      quoteDetail.mailLog
-    );
-    setEmailList(quoteDetail?.mailLog);
-  };
+    // Check if email log data is already in sessionStorage
+    const storedEmailList = JSON.parse(sessionStorage.getItem("emailList"));
+    if (storedEmailList) {
+      // If data exists in sessionStorage, load it
+      setEmailList(storedEmailList);
+    } else if (globalEdData?.mailLog) {
+      // Otherwise, load it from globalEdData and save it to sessionStorage
+      const mailLog = globalEdData?.mailLog;
+      setEmailList(mailLog);
+      sessionStorage.setItem("emailList", JSON.stringify(mailLog)); // Save data to sessionStorage
+    }
+  }, [globalEdData]);
 
   return (
     <Row className="m-3">

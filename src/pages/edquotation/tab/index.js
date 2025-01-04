@@ -11,9 +11,17 @@ import {
   CardBody,
   Badge,
 } from "reactstrap";
-import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate, useLocation } from "react-router-dom";
 import classnames from "classnames";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleDoubleDown,
+  faAngleDoubleUp,
+  faRefresh,
+} from "@fortawesome/free-solid-svg-icons";
+import { setActiveTab } from "../../../redux/slices/globalSlice.js";
+import { useSelector, useDispatch } from "react-redux";
+//console.log(setActiveTab);
 const Request = lazy(() => import("../request"));
 const QuoteSubmit = lazy(() => import("../quote-submit"));
 const OverallCosting = lazy(() => import("../overall-costing"));
@@ -60,20 +68,35 @@ const tabConfig = {
 
 export default function Tabs() {
   const location = useLocation();
-  const navigate = useNavigate(); // Initialize navigate
-  const [activeTab, setActiveTab] = useState("1");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { quoteDetail } = location.state || {};
   const [navItems, setNavItems] = useState();
   const [tabPane, setTabPane] = useState();
   const [statusCode, setStatusCode] = useState();
+  const activeTab = useSelector((state) => state.globalSlice.activeTab);
+
+  useEffect(() => {
+    // Retrieve the saved tab ID from localStorage or default to "1"
+    const savedTab = localStorage.getItem("activeTab") || "1";
+    dispatch(setActiveTab(savedTab));
+  }, [dispatch]);
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
-    // setStatusCode(quoteDetail?.quoteCreationResponse?.statusCode);
-  }, [quoteDetail]);
+  }, [quoteDetail, activeTab]);
+
+  useEffect(() => {
+    // Save the current activeTab to localStorage
+    if (activeTab) {
+      localStorage.setItem("activeTab", activeTab);
+    }
+  }, [activeTab]);
 
   const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
+    if (activeTab !== tab) {
+      dispatch(setActiveTab(tab)); // Update Redux state
+    }
   };
 
   const constructTabs = (statusCode) => {
@@ -107,33 +130,55 @@ export default function Tabs() {
   return (
     <>
       <Card style={{ border: "none", marginTop: "10px" }}>
-        {" "}
-        <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {quoteDetail?.quoteNumber || "Loading..."}
-          {quoteDetail?.status && (
-            <Badge color="primary" style={{ marginLeft: "15px" }}>
-              {quoteDetail?.status}
-            </Badge>
-          )}
-        </CardTitle>
-        <CardBody style={{ padding: "0" }}>
-          <Button
-            color="primary"
-            onClick={() => navigate(-1)} // Go back to the previous page
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 20px",
+          }}
+        >
+          {/* Quote Number Section */}
+          <CardTitle style={{ margin: 0, textAlign: "center", flex: 1 }}>
+            {quoteDetail?.quoteNumber || "Loading..."}
+            {quoteDetail?.status && (
+              <Badge color="primary" style={{ marginLeft: "15px" }}>
+                {quoteDetail?.status}
+              </Badge>
+            )}
+          </CardTitle>
+
+          {/* Button Section */}
+          <div
             style={{
-              position: "absolute", // Positioning the button
-              top: "20px",
-              right: "20px",
-              padding: "10px 20px",
-              fontSize: "16px",
-              border: "none", // Removed border
-              outline: "none",
-              boxShadow: "none", // Removed box-shadow
+              display: "flex",
+              gap: "10px",
             }}
           >
-            Back
-          </Button>
-        </CardBody>
+            <Button
+              color="primary"
+              onClick={() => {
+                dispatch(setActiveTab("1")); // Reset to default tab
+                localStorage.setItem("activeTab", "1");
+                navigate(-1);
+              }}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => window.location.reload()}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              <FontAwesomeIcon icon={faRefresh} />
+            </Button>
+          </div>
+        </div>
       </Card>
 
       <Nav tabs style={{ marginTop: "30px" }}>

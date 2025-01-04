@@ -11,39 +11,63 @@ import { getDigitalQuoteDetail, isActionApplicable } from "../helper";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
 import { useNavigate, useLocation } from "react-router-dom";
 
-var surveyData = {};
-var implementationData = {};
-var nonStandardData = {};
-
 const OverallCostingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const [totalInfo, setTotalInfo] = useState([]);
-  const [summaryList, setsummaryList] = useState([]);
+  const [summaryList, setSummaryList] = useState([]);
 
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [userIdentification, setUserIdentification] = useState(null);
+  const globalEdData = useSelector((state) => state.globalSlice.globalEdData);
 
+  const [surveyData, setSurveyData] = useState({});
+  const [implementationData, setImplementationData] = useState({});
+  const [nonStandardData, setNonStandardData] = useState({});
+
+  // Retrieve userInfo and state from sessionStorage when the component mounts
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
-  }, [digitalizeQuoteId]);
-
-  const getQuoteDetail = async () => {
-    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
-    setTotalInfo(
-      constructSummaryTable(
-        quoteDetail?.overallCosting,
-        userInfo?.UserIdentification
-      )
-    );
-    setsummaryList(
-      constructBreakdownGridData(quoteDetail?.overallCostingGridList)
-    );
-  };
+    const savedSurveyData =
+      JSON.parse(sessionStorage.getItem("surveyData")) || {};
+    const savedImplementationData =
+      JSON.parse(sessionStorage.getItem("implementationData")) || {};
+    const savedNonStandardData =
+      JSON.parse(sessionStorage.getItem("nonStandardData")) || {};
 
+    setUserIdentification(userInfo?.UserIdentification);
+    setSurveyData(savedSurveyData);
+    setImplementationData(savedImplementationData);
+    setNonStandardData(savedNonStandardData);
+
+    // Check if totalInfo data is saved in sessionStorage
+    const savedTotalInfo = JSON.parse(sessionStorage.getItem("totalInfo"));
+    if (savedTotalInfo) {
+      setTotalInfo(savedTotalInfo); // Load from sessionStorage if available
+    } else {
+      const totalInfoData = constructSummaryTable(
+        globalEdData?.overallCosting,
+        userInfo?.UserIdentification
+      );
+      setTotalInfo(totalInfoData);
+      sessionStorage.setItem("totalInfo", JSON.stringify(totalInfoData));
+    }
+
+    // Handle summary list data and persistence
+    const savedSummaryList = JSON.parse(sessionStorage.getItem("summaryList"));
+    if (savedSummaryList && savedSummaryList.length > 0) {
+      setSummaryList(savedSummaryList); // Load from sessionStorage if available
+    } else {
+      const summaryListData = constructBreakdownGridData(
+        globalEdData?.overallCostingGridList
+      );
+      setSummaryList(summaryListData);
+      sessionStorage.setItem("summaryList", JSON.stringify(summaryListData));
+    }
+  }, [globalEdData]);
+
+  // Construct summary table data for Total Info grid
   const constructSummaryTable = (quotationSummary, userIdentification) => {
     const { balanceInSRFRM, totalQuotationRM, totalSRFCostRM } =
       quotationSummary || {};
@@ -60,10 +84,12 @@ const OverallCostingPage = () => {
     ];
   };
 
+  // Ensure data exists before using .map()
   const constructBreakdownGridData = (breakdownData) => {
-    return breakdownData.map((item) => {
-      return item;
-    });
+    if (breakdownData && Array.isArray(breakdownData)) {
+      return breakdownData.map((item) => item);
+    }
+    return []; // Return an empty array if data is undefined or not an array
   };
 
   const handleApproveOrReject = async (params, action) => {
@@ -119,45 +145,31 @@ const OverallCostingPage = () => {
 
   const handleRemarksChange = (e, params) => {
     const breakDownLabel = params?.node?.data?.breakDown;
+    const value = e?.target?.value;
+
     if (breakDownLabel?.toLowerCase() === "survey") {
-      surveyData = {
-        ...params?.data,
-        remarks: e?.target?.value,
-      };
+      setSurveyData((prevState) => {
+        const updatedData = { ...prevState, remarks: value };
+        sessionStorage.setItem("surveyData", JSON.stringify(updatedData));
+        return updatedData;
+      });
     } else if (breakDownLabel?.toLowerCase() === "implementation") {
-      implementationData = {
-        ...params?.data,
-        remarks: e?.target?.value,
-      };
+      setImplementationData((prevState) => {
+        const updatedData = { ...prevState, remarks: value };
+        sessionStorage.setItem(
+          "implementationData",
+          JSON.stringify(updatedData)
+        );
+        return updatedData;
+      });
     } else {
-      nonStandardData = {
-        ...params?.data,
-        remarks: e?.target?.value,
-      };
+      setNonStandardData((prevState) => {
+        const updatedData = { ...prevState, remarks: value };
+        sessionStorage.setItem("nonStandardData", JSON.stringify(updatedData));
+        return updatedData;
+      });
     }
   };
-
-  // const validateBeforeUpdate = useCallback((updatedData) => {
-  //   const hasEmptyRemarks = updatedData.some(
-  //     (item) => item.isRejected && !item.remarks.trim()
-  //   );
-  //   setIsUpdateEnabled(!hasEmptyRemarks); // Disable if any rejected row has empty remarks
-  // }, []);
-
-  // const handleCalculateVariance = () => {
-  //   const updatedData = summaryList.map((item) => {
-  //     if (item.priceBookValue && item.quotation) {
-  //       const priceBookValue = parseFloat(item.priceBookValue);
-  //       const quotation = parseFloat(item.quotation);
-  //       item.variance = (quotation - priceBookValue).toFixed(2);
-  //     } else {
-  //       item.variance = "";
-  //     }
-  //     return item;
-  //   });
-  //   setsummaryList(updatedData);
-  //   toast.success("Variance calculated successfully!");
-  // };
 
   return (
     <div style={{ marginTop: "30px", marginLeft: "15px", marginRight: "15px" }}>
@@ -191,43 +203,6 @@ const OverallCostingPage = () => {
           exportable={false}
         />
       </div>
-
-      {/* Calculate Variance Button */}
-      {/* <div style={{ position: "fixed", left: "20px" }}>
-        <button
-          onClick={handleCalculateVariance}
-          style={{
-            padding: "7px 14px",
-            backgroundColor: "#293897",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontSize: "14px",
-          }}
-        >
-          Calculate Variance
-        </button>
-      </div> */}
-
-      {/* Update Button */}
-      {/* <div style={{ position: "fixed", left: "180px" }}>
-        <button
-          onClick={() => toast.success("Update clicked successfully!")}
-          disabled={!isUpdateEnabled}
-          style={{
-            padding: "7px 14px",
-            backgroundColor: "#293897",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: isUpdateEnabled ? "pointer" : "not-allowed",
-            fontSize: "14px",
-          }}
-        >
-          Update
-        </button>
-      </div> */}
     </div>
   );
 };
