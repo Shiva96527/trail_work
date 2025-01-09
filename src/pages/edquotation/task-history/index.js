@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import workflow_columns from "./config/column";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { getDigitalQuoteDetail, isActionApplicable } from "../helper";
+import { isActionApplicable } from "../helper";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
@@ -32,14 +32,22 @@ export default function EdTaskHistory() {
       setWorkflowList(workFlowResponse);
       sessionStorage.setItem("workflowList", JSON.stringify(workFlowResponse)); // Save data to sessionStorage
     }
-    // Setting enableDropButtonFlag value and saving it to sessionStorage for persistence
-    const dropButtonFlag =
-      globalEdData?.quoteCreationResponse?.enableDropButtonFlag;
-    setEnableDropButtonFlag(dropButtonFlag);
-    sessionStorage.setItem(
-      "enableDropButtonFlag",
-      JSON.stringify(dropButtonFlag)
-    ); // Persist it
+    // Retrieve enableDropButtonFlag from sessionStorage if it exists
+    const storedEnableDropButtonFlag = JSON.parse(
+      sessionStorage.getItem("enableDropButtonFlag")
+    );
+    if (storedEnableDropButtonFlag !== null) {
+      setEnableDropButtonFlag(storedEnableDropButtonFlag);
+    } else {
+      // If not found, use globalEdData to set and persist it
+      const dropButtonFlag =
+        globalEdData?.quoteCreationResponse?.enableDropButtonFlag;
+      setEnableDropButtonFlag(dropButtonFlag);
+      sessionStorage.setItem(
+        "enableDropButtonFlag",
+        JSON.stringify(dropButtonFlag)
+      );
+    }
   }, [globalEdData]);
 
   const handleDrop = () => {

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import NeptuneAgGrid from "../../../components/ag-grid";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import {
   totalInfoColumns,
   overallCostingGridColumn,
 } from "./config/columns.js";
-import { getDigitalQuoteDetail, isActionApplicable } from "../helper";
+import { isActionApplicable } from "../helper";
 import { postDigitalizeQuoteOverallCostingApprovalorReject } from "../../../services/ed-service.js";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -26,8 +26,8 @@ const OverallCostingPage = () => {
   const [implementationData, setImplementationData] = useState({});
   const [nonStandardData, setNonStandardData] = useState({});
 
-  // Retrieve userInfo and state from sessionStorage when the component mounts
   useEffect(() => {
+    // To restore previously saved user and survey data from sessionStorage
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     const savedSurveyData =
       JSON.parse(sessionStorage.getItem("surveyData")) || {};
@@ -41,7 +41,7 @@ const OverallCostingPage = () => {
     setImplementationData(savedImplementationData);
     setNonStandardData(savedNonStandardData);
 
-    // Check if totalInfo data is saved in sessionStorage
+    // Handle Total Information Data
     const savedTotalInfo = JSON.parse(sessionStorage.getItem("totalInfo"));
     if (savedTotalInfo) {
       setTotalInfo(savedTotalInfo); // Load from sessionStorage if available
@@ -54,7 +54,7 @@ const OverallCostingPage = () => {
       sessionStorage.setItem("totalInfo", JSON.stringify(totalInfoData));
     }
 
-    // Handle summary list data and persistence
+    // Handle Summary List Data
     const savedSummaryList = JSON.parse(sessionStorage.getItem("summaryList"));
     if (savedSummaryList && savedSummaryList.length > 0) {
       setSummaryList(savedSummaryList); // Load from sessionStorage if available
@@ -93,6 +93,9 @@ const OverallCostingPage = () => {
   };
 
   const handleApproveOrReject = async (params, action) => {
+    //Track the remarks you type for each stage (Survey, Implementation, or Non-Standard Tasks).
+    //Update the respective data object in the app's state.
+    //Save the updated data into sessionStorage so it remains available even if the page is refreshed.
     const breakDownLabel = params?.node?.data?.breakDown;
     let remarks = "";
     let type = "";

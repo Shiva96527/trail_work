@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getDropdownByTypeHTTP } from "../../../services/global-service";
 import { setGlobalEdData } from "../../../redux/slices/globalSlice.js";
 
-var userInfo = null;
+//var userInfo = null;
 
 const Request = () => {
   const navigate = useNavigate();
@@ -35,42 +35,52 @@ const Request = () => {
   const [userIdentification, setUserIdentification] = useState(null);
   const [digitalizeQuoteID, setDigitalizeQuoteID] = useState(null);
 
+  //Sync the ID between state and sessionStorage
   useEffect(() => {
+    getDropdownValues();
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification);
+
     const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID");
-    if (!digitalizeQuoteId && storedQuoteId) {
+    if (storedQuoteId && !digitalizeQuoteId) {
       setDigitalizeQuoteID(storedQuoteId);
     } else if (digitalizeQuoteId) {
       sessionStorage.setItem("digitalizeQuoteID", digitalizeQuoteId);
     }
   }, [digitalizeQuoteId]);
 
+  //Fetch quote details when we have an ID
   useEffect(() => {
-    if (digitalizeQuoteID) {
-      getQuoteDetail(digitalizeQuoteID);
-    }
-  }, [digitalizeQuoteID]);
+    const getQuoteDetail = async (quoteId) => {
+      try {
+        const data = await getDigitalQuoteDetail(quoteId);
+        dispatch(setGlobalEdData(data));
+        if (data?.statusCode !== 200) {
+          toast.info(data?.statusMessage);
+          setEdData(data?.quoteCreationResponse);
+          setDisableStatus(data?.quoteCreationResponse);
+        }
+      } catch (e) {
+        toast.error("Something went wrong");
+      }
+    };
 
-  // Set digitalizeQuoteId to sessionStorage when component initializes
+    if (digitalizeQuoteID) {
+      getQuoteDetail(digitalizeQuoteID); // Fetch details for the current quote ID
+    }
+  }, [digitalizeQuoteID, dispatch]);
+
+  // Initialize the ID from sessionStorage and When the app first loads, it initializes the digitalizeQuoteID from sessionStorage
   useEffect(() => {
-    const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID");
+    const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID"); // Check sessionStorage for an ID
     if (storedQuoteId) {
-      setDigitalizeQuoteID(storedQuoteId);
+      setDigitalizeQuoteID(storedQuoteId); // Set it to the app's state
     }
   }, []);
 
-  const getQuoteDetail = async (quoteId) => {
-    try {
-      const data = await getDigitalQuoteDetail(quoteId);
-      dispatch(setGlobalEdData(data));
-      if (data?.statusCode !== 200) {
-        toast.info(data?.statusMessage);
-        setEdData(data?.quoteCreationResponse);
-        setDisableStatus(data?.quoteCreationResponse);
-      }
-    } catch (e) {
-      toast.error("Something went wrong");
-    }
-  };
+  //3rd useEffect ensures that the app remembers the quote ID if the user refreshes the page or returns later during the same session.
+  //1st useEffect keeps digitalizeQuoteID consistent between the app's state and sessionStorage, ensuring no data is lost while the app is running.
+  //2nd useEffect ensures the app always has the latest quote details for the current ID.
 
   const setDisableStatus = (quote) => {
     if (quote.statusCode === 1) {
@@ -151,7 +161,7 @@ const Request = () => {
       const {
         data: { statusCode, statusMessage },
       } = data;
-      if (statusCode == 200) {
+      if (statusCode === 200) {
         toast.success(statusMessage);
         navigate("/neptune/edquotation/inbox");
       } else {
