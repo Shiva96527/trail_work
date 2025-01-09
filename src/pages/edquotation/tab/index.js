@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy, useCallback } from "react";
 import {
   Nav,
   NavItem,
@@ -8,17 +8,12 @@ import {
   Card,
   CardTitle,
   Button,
-  CardBody,
   Badge,
 } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleDoubleDown,
-  faAngleDoubleUp,
-  faRefresh,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { setActiveTab } from "../../../redux/slices/globalSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 //console.log(setActiveTab);
@@ -71,10 +66,56 @@ export default function Tabs() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { quoteDetail } = location.state || {};
+  // eslint-disable-next-line
   const [navItems, setNavItems] = useState();
+  // eslint-disable-next-line
   const [tabPane, setTabPane] = useState();
-  const [statusCode, setStatusCode] = useState();
+  //const [statusCode, setStatusCode] = useState();
   const activeTab = useSelector((state) => state.globalSlice.activeTab);
+
+  //When a component updates, React sometimes rewrites things (like functions) even if nothing has changed.
+  //useCallback is a way to tell React: "Don’t rewrite this function unless you really have to!"
+  //React, don’t create a new version of toggle unless activeTab or dispatch changes
+
+  const toggle = useCallback(
+    (tab) => {
+      if (activeTab !== tab) {
+        dispatch(setActiveTab(tab));
+      }
+    },
+    [activeTab, dispatch]
+  );
+
+  const constructTabs = useCallback(
+    (statusCode) => {
+      let tempNavItems = [];
+      let tempTabPane = [];
+      for (const [key, value] of Object.entries(
+        statusCode === 1 ? initialConfig : tabConfig
+      )) {
+        tempNavItems.push(
+          <NavItem key={key}>
+            <NavLink
+              className={classnames({ active: activeTab === key })}
+              onClick={() => toggle(key)}
+            >
+              {value.title}
+            </NavLink>
+          </NavItem>
+        );
+        tempTabPane.push(
+          <TabPane tabId={key}>
+            <Suspense fallback={<div>Loading...</div>}>
+              {activeTab === key && value.component}
+            </Suspense>
+          </TabPane>
+        );
+      }
+      setNavItems(tempNavItems);
+      setTabPane(tempTabPane);
+    },
+    [activeTab, toggle]
+  );
 
   useEffect(() => {
     // Retrieve the saved tab ID from localStorage or default to "1"
@@ -84,7 +125,7 @@ export default function Tabs() {
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
-  }, [quoteDetail, activeTab]);
+  }, [quoteDetail, activeTab, constructTabs]);
 
   useEffect(() => {
     // Save the current activeTab to localStorage
@@ -92,40 +133,6 @@ export default function Tabs() {
       localStorage.setItem("activeTab", activeTab);
     }
   }, [activeTab]);
-
-  const toggle = (tab) => {
-    if (activeTab !== tab) {
-      dispatch(setActiveTab(tab)); // Update Redux state
-    }
-  };
-
-  const constructTabs = (statusCode) => {
-    let tempNavItems = [];
-    let tempTabPane = [];
-    for (const [key, value] of Object.entries(
-      statusCode === 1 ? initialConfig : tabConfig
-    )) {
-      tempNavItems.push(
-        <NavItem key={key}>
-          <NavLink
-            className={classnames({ active: activeTab === key })}
-            onClick={() => toggle(key)}
-          >
-            {value.title}
-          </NavLink>
-        </NavItem>
-      );
-      tempTabPane.push(
-        <TabPane tabId={key}>
-          <Suspense fallback={<div>Loading...</div>}>
-            {activeTab === key && value.component}
-          </Suspense>
-        </TabPane>
-      );
-    }
-    setNavItems(tempNavItems);
-    setTabPane(tempTabPane);
-  };
 
   return (
     <>
