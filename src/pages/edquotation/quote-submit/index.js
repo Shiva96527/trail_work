@@ -114,6 +114,17 @@ const QuoteSubmitPage = () => {
     }
   }, [globalEdData]);
 
+  const getQuoteDetail = async () => {
+    const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+    setEdData(quoteDetail?.quoteCreationResponse);
+    setSurveyResponse(quoteDetail?.surveyResponse);
+    setImplementationResponse(quoteDetail?.implementationResponse);
+    setNonStandardResponse(quoteDetail?.nonStandardResponse);
+    if (quoteDetail?.nonStandardResponse?.length > 0) {
+      dispatch(setToggleNonStandard(true));
+    }
+  };
+
   // Open the confirmation modal
   const handleToggleConfirmation = () => setModalOpen(true);
 
@@ -164,6 +175,7 @@ const QuoteSubmitPage = () => {
     } finally {
       setLoading(false);
       toggleExcelModal();
+      getQuoteDetail();
     }
   };
 
@@ -500,7 +512,7 @@ const QuoteSubmitPage = () => {
               </Input>
             ) : null}
 
-            {(edData?.statusCode === 6 || edData?.statusCode === 4) &&
+            {(edData?.statusCode === 6 || edData?.statusCode === 7) &&
             !isActionApplicable(location?.pathname)
               ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
                   <Button

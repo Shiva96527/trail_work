@@ -36,6 +36,7 @@ const Request = () => {
   const [digitalizeQuoteID, setDigitalizeQuoteID] = useState(null);
 
   useEffect(() => {
+    getDropdownValues();
     const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID");
     if (!digitalizeQuoteId && storedQuoteId) {
       setDigitalizeQuoteID(storedQuoteId);
