@@ -37,7 +37,7 @@ const QuoteSubmitPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
   const [loading, setLoading] = useState(false);
   const [excelModal, setExcelModal] = useState(false);
@@ -68,10 +68,10 @@ const QuoteSubmitPage = () => {
   }, []);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     setEdData(quoteDetail?.quoteCreationResponse);
     setSurveyResponse(quoteDetail?.surveyResponse);
@@ -83,17 +83,17 @@ const QuoteSubmitPage = () => {
   };
 
   // Open the confirmation modal
-  const handleToggleConfirmation = () => setModalOpen(true);
+  // const handleToggleConfirmation = () => setModalOpen(true);
 
-  // Handle modal cancel
-  const handleModalCancel = () => setModalOpen(false);
+  // // Handle modal cancel
+  // const handleModalCancel = () => setModalOpen(false);
 
-  // Handle modal confirm
-  const handleModalConfirm = () => {
-    // Dispatch the toggle action to Redux store
-    dispatch(toggleNonStandardAction()); // Use the action to toggle the state
-    setModalOpen(false); // Close the modal
-  };
+  // // Handle modal confirm
+  // const handleModalConfirm = () => {
+  //   // Dispatch the toggle action to Redux store
+  //   dispatch(toggleNonStandardAction()); // Use the action to toggle the state
+  //   setModalOpen(false); // Close the modal
+  // };
 
   const downloadTemplate = () => {
     window.location.href = "/mm_template.xlsx";

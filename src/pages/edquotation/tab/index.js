@@ -13,6 +13,8 @@ import {
 } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
 import classnames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 const Request = lazy(() => import("../request"));
 const QuoteSubmit = lazy(() => import("../quote-submit"));
@@ -61,11 +63,16 @@ const tabConfig = {
 export default function Tabs() {
   const location = useLocation();
   const navigate = useNavigate(); // Initialize navigate
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState(
+    sessionStorage.getItem("activeTab") || "1"
+  );
   const { quoteDetail } = location.state || {};
   const [navItems, setNavItems] = useState();
   const [tabPane, setTabPane] = useState();
-  const [statusCode, setStatusCode] = useState();
+
+  useEffect(() => {
+    // sessionStorage.setItem("activeTab", "1");
+  }, []);
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
@@ -106,7 +113,7 @@ export default function Tabs() {
 
   return (
     <>
-      <Card style={{ border: "none", marginTop: "10px" }}>
+      {/* <Card style={{ border: "none", marginTop: "10px" }}>
         {" "}
         <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
           {quoteDetail?.quoteNumber || "Loading..."}
@@ -133,14 +140,76 @@ export default function Tabs() {
           >
             Back
           </Button>
+          <Button
+               color="primary"
+               onClick={() => window.location.reload()}
+               style={{
+                 fontSize: "16px",
+               }}
+             >
+               <FontAwesomeIcon icon={faRefresh} />
+             </Button>
         </CardBody>
+      </Card> */}
+
+      <Card style={{ border: "none", marginTop: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 20px",
+          }}
+        >
+          {/* Quote Number Section */}
+          <CardTitle style={{ margin: 0, textAlign: "center", flex: 1 }}>
+            {quoteDetail?.quoteNumber || "Loading..."}
+            {quoteDetail?.status && (
+              <Badge color="primary" style={{ marginLeft: "15px" }}>
+                {quoteDetail?.status}
+              </Badge>
+            )}
+          </CardTitle>
+
+          {/* Button Section */}
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+            }}
+          >
+            <Button
+              color="primary"
+              onClick={() => {
+                navigate(-1);
+              }}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => window.location.reload()}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              <FontAwesomeIcon icon={faRefresh} />
+            </Button>
+          </div>
+        </div>
       </Card>
 
       <Nav tabs style={{ marginTop: "30px" }}>
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "1" })}
-            onClick={() => toggle("1")}
+            onClick={() => {
+              sessionStorage.setItem("activeTab", "1");
+              toggle("1");
+            }}
           >
             Request
           </NavLink>
@@ -148,7 +217,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "2" })}
-            onClick={() => toggle("2")}
+            onClick={() => {
+              toggle("2");
+              sessionStorage.setItem("activeTab", "2");
+            }}
           >
             Quote Submit
           </NavLink>
@@ -156,7 +228,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "3" })}
-            onClick={() => toggle("3")}
+            onClick={() => {
+              toggle("3");
+              sessionStorage.setItem("activeTab", "3");
+            }}
           >
             Overall Costing
           </NavLink>
@@ -164,7 +239,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "4" })}
-            onClick={() => toggle("4")}
+            onClick={() => {
+              toggle("4");
+              sessionStorage.setItem("activeTab", "4");
+            }}
           >
             Workflow
           </NavLink>
@@ -172,7 +250,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "5" })}
-            onClick={() => toggle("5")}
+            onClick={() => {
+              toggle("5");
+              sessionStorage.setItem("activeTab", "5");
+            }}
           >
             Email Logs
           </NavLink>

@@ -26,10 +26,10 @@ const OverallCostingPage = () => {
   const [userIdentification, setUserIdentification] = useState(null);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value

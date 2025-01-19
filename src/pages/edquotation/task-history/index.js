@@ -18,10 +18,10 @@ export default function EdTaskHistory() {
   const [remarks, setRemarks] = useState(null);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     try {
       const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
       setEnableDropButtonFlag(

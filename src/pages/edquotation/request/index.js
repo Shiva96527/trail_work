@@ -39,10 +39,10 @@ const Request = () => {
   }, []);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId);
+    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
   }, [digitalizeQuoteId]);
 
-  const getQuoteDetail = async () => {
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     try {
       const data = await getDigitalQuoteDetail(digitalizeQuoteId);
       setEdData(data?.quoteCreationResponse);

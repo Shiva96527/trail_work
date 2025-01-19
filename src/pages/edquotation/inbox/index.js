@@ -78,6 +78,9 @@ const TableComponent = () => {
       setDigitalizeQuoteId({ digitalizeQuoteId: row.digitalizeQuoteId })
     );
 
+    sessionStorage.setItem("digitalizeQuoteId", row.digitalizeQuoteId);
+    sessionStorage.setItem("activeTab", "1");
+
     // Navigate to the update page when clicking on action icons
     navigate("/neptune/edquotation/detail", {
       state: {
