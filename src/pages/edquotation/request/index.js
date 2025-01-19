@@ -17,59 +17,42 @@ import {
 } from "reactstrap";
 import { toast } from "react-toastify";
 import columns from "./config/columns";
-import { updateDigitalEDQuote } from "../../../services/ed-service";
+import { updateDigitalEDQuote } from "../../../services/ed-service"; // Import the update function
 import { getDigitalQuoteDetail } from "../helper";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { getDropdownByTypeHTTP } from "../../../services/global-service";
-import { setGlobalEdData } from "../../../redux/slices/globalSlice.js";
 
 var userInfo = null;
 
 const Request = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [edData, setEdData] = useState();
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [vendorDropDownList, setVendorDropDownList] = useState([]);
   const [disable, setDisable] = useState(false);
   const [userIdentification, setUserIdentification] = useState(null);
-  const [digitalizeQuoteID, setDigitalizeQuoteID] = useState(null);
 
   useEffect(() => {
     getDropdownValues();
-    const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID");
-    if (!digitalizeQuoteId && storedQuoteId) {
-      setDigitalizeQuoteID(storedQuoteId);
-    } else if (digitalizeQuoteId) {
-      sessionStorage.setItem("digitalizeQuoteID", digitalizeQuoteId);
-    }
-  }, [digitalizeQuoteId]);
-
-  useEffect(() => {
-    if (digitalizeQuoteID) {
-      getQuoteDetail(digitalizeQuoteID);
-    }
-  }, [digitalizeQuoteID]);
-
-  // Set digitalizeQuoteId to sessionStorage when component initializes
-  useEffect(() => {
-    const storedQuoteId = sessionStorage.getItem("digitalizeQuoteID");
-    if (storedQuoteId) {
-      setDigitalizeQuoteID(storedQuoteId);
-    }
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    setUserIdentification(userInfo?.UserIdentification); // Get the UserIdentification value
   }, []);
 
-  const getQuoteDetail = async (quoteId) => {
+  useEffect(() => {
+    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     try {
-      const data = await getDigitalQuoteDetail(quoteId);
-      dispatch(setGlobalEdData(data));
+      const data = await getDigitalQuoteDetail(digitalizeQuoteId);
+      setEdData(data?.quoteCreationResponse);
       if (data?.statusCode !== 200) {
         toast.info(data?.statusMessage);
-        setEdData(data?.quoteCreationResponse);
         setDisableStatus(data?.quoteCreationResponse);
       }
     } catch (e) {
       toast.error("Something went wrong");
+      navigate("/neptune/edquotation/inbox");
     }
   };
 
@@ -132,7 +115,7 @@ const Request = () => {
         : "vendorsubmit";
     // Prepare payload
     const payload = {
-      loginUIID: sessionStorage.getItem("uiid"),
+      loginUIID: sessionStorage.getItem("uiid"), // or dynamic value
       quoteNumber: edData.quoteNumber,
       assignee: edData.assignee,
       department: edData.department,

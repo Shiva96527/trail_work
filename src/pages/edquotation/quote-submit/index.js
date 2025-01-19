@@ -37,7 +37,7 @@ const QuoteSubmitPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
   const [loading, setLoading] = useState(false);
   const [excelModal, setExcelModal] = useState(false);
@@ -62,59 +62,18 @@ const QuoteSubmitPage = () => {
   ] = useState(false);
   const [edData, setEdData] = useState();
   const [uploadType, setUploadType] = useState(null);
-  const globalEdData = useSelector((state) => state.globalSlice.globalEdData);
 
-  // Retrieve all data from sessionStorage when the component mounts
   useEffect(() => {
-    const savedData = sessionStorage.getItem("quoteData");
-
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-
-      setEdData(parsedData?.edData);
-      setSurveyResponse(parsedData?.surveyResponse);
-      setImplementationResponse(parsedData?.implementationResponse);
-      setNonStandardResponse(parsedData?.nonStandardResponse);
-
-      // Set the toggle for non-standard response if data is available
-      if (parsedData?.nonStandardResponse?.length > 0) {
-        dispatch(setToggleNonStandard(true));
-      } else {
-        dispatch(setToggleNonStandard(false));
-      }
-    }
+    dispatch(setToggleNonStandard(false)); // Use the action to toggle the state
   }, []);
 
-  // Store all data to sessionStorage whenever any part of the data changes
   useEffect(() => {
-    const dataToStore = {
-      edData,
-      surveyResponse,
-      implementationResponse,
-      nonStandardResponse,
-    };
+    getQuoteDetail(
+      digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId"))
+    );
+  }, [digitalizeQuoteId]);
 
-    // Save the full data object to sessionStorage
-    sessionStorage.setItem("quoteData", JSON.stringify(dataToStore));
-  }, [edData, surveyResponse, implementationResponse, nonStandardResponse]); // Runs whenever any of the states change
-
-  useEffect(() => {
-    if (globalEdData) {
-      setEdData(globalEdData?.quoteCreationResponse);
-      setSurveyResponse(globalEdData?.surveyResponse);
-      setImplementationResponse(globalEdData?.implementationResponse);
-      setNonStandardResponse(globalEdData?.nonStandardResponse);
-
-      // Toggle the non-standard response based on the data
-      if (globalEdData?.nonStandardResponse?.length > 0) {
-        dispatch(setToggleNonStandard(true));
-      } else {
-        dispatch(setToggleNonStandard(false));
-      }
-    }
-  }, [globalEdData]);
-
-  const getQuoteDetail = async () => {
+  const getQuoteDetail = async (digitalizeQuoteId) => {
     const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
     setEdData(quoteDetail?.quoteCreationResponse);
     setSurveyResponse(quoteDetail?.surveyResponse);
@@ -126,17 +85,17 @@ const QuoteSubmitPage = () => {
   };
 
   // Open the confirmation modal
-  const handleToggleConfirmation = () => setModalOpen(true);
+  // const handleToggleConfirmation = () => setModalOpen(true);
 
-  // Handle modal cancel
-  const handleModalCancel = () => setModalOpen(false);
+  // // Handle modal cancel
+  // const handleModalCancel = () => setModalOpen(false);
 
-  // Handle modal confirm
-  const handleModalConfirm = () => {
-    // Dispatch the toggle action to Redux store
-    dispatch(toggleNonStandardAction()); // Use the action to toggle the state
-    setModalOpen(false);
-  };
+  // // Handle modal confirm
+  // const handleModalConfirm = () => {
+  //   // Dispatch the toggle action to Redux store
+  //   dispatch(toggleNonStandardAction()); // Use the action to toggle the state
+  //   setModalOpen(false); // Close the modal
+  // };
 
   const downloadTemplate = () => {
     window.location.href = "/mm_template.xlsx";
@@ -175,7 +134,7 @@ const QuoteSubmitPage = () => {
     } finally {
       setLoading(false);
       toggleExcelModal();
-      getQuoteDetail();
+      getQuoteDetail(Number(sessionStorage.getItem("digitalizeQuoteId")));
     }
   };
 
@@ -512,7 +471,7 @@ const QuoteSubmitPage = () => {
               </Input>
             ) : null}
 
-            {(edData?.statusCode === 6 || edData?.statusCode === 7) &&
+            {(edData?.statusCode === 6 || edData?.statusCode === 4) &&
             !isActionApplicable(location?.pathname)
               ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
                   <Button

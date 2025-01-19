@@ -6,8 +6,6 @@ const initialState = {
   menuItems: [],
   toggleNonStandard: false,
   digitalizeQuoteId: null,
-  globalEdData: null,
-  activeTab: "1",
 };
 
 const { reducer, actions } = createSlice({
@@ -63,13 +61,6 @@ const { reducer, actions } = createSlice({
     setToggleNonStandard: (state, action) => {
       state.toggleNonStandard = action?.payload; // Toggle the state
     },
-    setGlobalEdData: (state, action) => {
-      state.globalEdData = action.payload;
-    },
-
-    setActiveTab: (state, action) => {
-      state.activeTab = action.payload;
-    },
   },
 });
 
@@ -80,8 +71,6 @@ export const {
   toggleNonStandard,
   setDigitalizeQuoteId,
   setToggleNonStandard,
-  setGlobalEdData,
-  setActiveTab,
 } = actions;
 
 export default reducer;

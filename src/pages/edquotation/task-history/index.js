@@ -16,31 +16,25 @@ export default function EdTaskHistory() {
   const [enableDropButtonFlag, setEnableDropButtonFlag] = useState([]);
   const { digitalizeQuoteId } = useSelector((state) => state?.globalSlice);
   const [remarks, setRemarks] = useState(null);
-  const globalEdData = useSelector((state) => state.globalSlice.globalEdData);
 
   useEffect(() => {
-    // Check if workflow list is already in sessionStorage
-    const storedWorkflowList = JSON.parse(
-      sessionStorage.getItem("workflowList")
+    getQuoteDetail(
+      digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId"))
     );
-    if (storedWorkflowList) {
-      // If data exists in sessionStorage, load it
-      setWorkflowList(storedWorkflowList);
-    } else if (globalEdData?.workFlowResponse) {
-      // Otherwise, load it from globalEdData and save it to sessionStorage
-      const workFlowResponse = globalEdData?.workFlowResponse;
-      setWorkflowList(workFlowResponse);
-      sessionStorage.setItem("workflowList", JSON.stringify(workFlowResponse)); // Save data to sessionStorage
+  }, [digitalizeQuoteId]);
+
+  const getQuoteDetail = async (digitalizeQuoteId) => {
+    try {
+      const quoteDetail = await getDigitalQuoteDetail(digitalizeQuoteId);
+      setEnableDropButtonFlag(
+        quoteDetail?.quoteCreationResponse?.enableDropButtonFlag
+      );
+      setWorkflowList(quoteDetail?.workFlowResponse);
+    } catch (e) {
+      toast.error("Something went wrong");
+      navigate("/neptune/edquotation/inbox");
     }
-    // Setting enableDropButtonFlag value and saving it to sessionStorage for persistence
-    const dropButtonFlag =
-      globalEdData?.quoteCreationResponse?.enableDropButtonFlag;
-    setEnableDropButtonFlag(dropButtonFlag);
-    sessionStorage.setItem(
-      "enableDropButtonFlag",
-      JSON.stringify(dropButtonFlag)
-    ); // Persist it
-  }, [globalEdData]);
+  };
 
   const handleDrop = () => {
     Swal.fire({

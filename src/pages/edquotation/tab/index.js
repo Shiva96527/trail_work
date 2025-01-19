@@ -8,20 +8,13 @@ import {
   Card,
   CardTitle,
   Button,
-  CardBody,
   Badge,
 } from "reactstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook
 import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleDoubleDown,
-  faAngleDoubleUp,
-  faRefresh,
-} from "@fortawesome/free-solid-svg-icons";
-import { setActiveTab } from "../../../redux/slices/globalSlice.js";
-import { useSelector, useDispatch } from "react-redux";
-//console.log(setActiveTab);
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+
 const Request = lazy(() => import("../request"));
 const QuoteSubmit = lazy(() => import("../quote-submit"));
 const OverallCosting = lazy(() => import("../overall-costing"));
@@ -68,35 +61,21 @@ const tabConfig = {
 
 export default function Tabs() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize navigate
+  const [activeTab, setActiveTab] = useState(
+    sessionStorage.getItem("activeTab") || "1"
+  );
   const { quoteDetail } = location.state || {};
   const [navItems, setNavItems] = useState();
   const [tabPane, setTabPane] = useState();
-  const [statusCode, setStatusCode] = useState();
-  const activeTab = useSelector((state) => state.globalSlice.activeTab);
-
-  useEffect(() => {
-    // Retrieve the saved tab ID from localStorage or default to "1"
-    const savedTab = localStorage.getItem("activeTab") || "1";
-    dispatch(setActiveTab(savedTab));
-  }, [dispatch]);
 
   useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
-  }, [quoteDetail, activeTab]);
-
-  useEffect(() => {
-    // Save the current activeTab to localStorage
-    if (activeTab) {
-      localStorage.setItem("activeTab", activeTab);
-    }
-  }, [activeTab]);
+    // setStatusCode(quoteDetail?.quoteCreationResponse?.statusCode);
+  }, [quoteDetail]);
 
   const toggle = (tab) => {
-    if (activeTab !== tab) {
-      dispatch(setActiveTab(tab)); // Update Redux state
-    }
+    if (activeTab !== tab) setActiveTab(tab);
   };
 
   const constructTabs = (statusCode) => {
@@ -158,8 +137,6 @@ export default function Tabs() {
             <Button
               color="primary"
               onClick={() => {
-                dispatch(setActiveTab("1")); // Reset to default tab
-                localStorage.setItem("activeTab", "1");
                 navigate(-1);
               }}
               style={{
@@ -185,7 +162,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "1" })}
-            onClick={() => toggle("1")}
+            onClick={() => {
+              sessionStorage.setItem("activeTab", "1");
+              toggle("1");
+            }}
           >
             Request
           </NavLink>
@@ -193,7 +173,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "2" })}
-            onClick={() => toggle("2")}
+            onClick={() => {
+              toggle("2");
+              sessionStorage.setItem("activeTab", "2");
+            }}
           >
             Quote Submit
           </NavLink>
@@ -201,7 +184,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "3" })}
-            onClick={() => toggle("3")}
+            onClick={() => {
+              toggle("3");
+              sessionStorage.setItem("activeTab", "3");
+            }}
           >
             Overall Costing
           </NavLink>
@@ -209,7 +195,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "4" })}
-            onClick={() => toggle("4")}
+            onClick={() => {
+              toggle("4");
+              sessionStorage.setItem("activeTab", "4");
+            }}
           >
             Workflow
           </NavLink>
@@ -217,7 +206,10 @@ export default function Tabs() {
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === "5" })}
-            onClick={() => toggle("5")}
+            onClick={() => {
+              toggle("5");
+              sessionStorage.setItem("activeTab", "5");
+            }}
           >
             Email Logs
           </NavLink>
