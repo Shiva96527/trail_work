@@ -114,7 +114,7 @@ const QuoteSubmitPage = () => {
       LoginUIID: sessionStorage.getItem("uiid"),
       digitalizeRequestWireframeUploadRequest: rowData,
       type: uploadType,
-      digitalizeQuoteId,
+      digitalizeQuoteId: Number(sessionStorage.getItem("digitalizeQuoteId")),
     };
     try {
       const {
@@ -177,7 +177,7 @@ const QuoteSubmitPage = () => {
     let payload = {
       LoginUIID: sessionStorage.getItem("uiid"),
       type,
-      digitalizeQuoteId,
+      digitalizeQuoteId: Number(sessionStorage.getItem("digitalizeQuoteId")),
     };
     if (type === "survey") {
       digitalizeRequestWireframeUploadRequest =
@@ -471,7 +471,7 @@ const QuoteSubmitPage = () => {
               </Input>
             ) : null}
 
-            {(edData?.statusCode === 6 || edData?.statusCode === 4) &&
+            {(edData?.statusCode === 6 || edData?.statusCode === 7) &&
             !isActionApplicable(location?.pathname)
               ? toggleNonStandard && ( // Only show button if toggleNonStandard is true
                   <Button
