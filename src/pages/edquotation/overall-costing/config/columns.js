@@ -59,24 +59,21 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      return isActionApplicable ? (
-        params?.data?.showApproveRejectButton === "Yes" &&
-        userIdentification !== "vendor" ? (
-          <input
-            type="text"
-            onChange={(e) => handleRemarksChange(e, params)}
-            placeholder="Approval/Rejection Remarks"
-            style={{
-              padding: "5px",
-              border: "1px solid #ddd",
-              borderRadius: "5px",
-              width: "100%",
-            }}
-          />
-        ) : (
-          <span>{params?.data?.remarks}</span>
-        )
-      ) : null;
+      return params?.data?.showApproveRejectButton === "Yes" ? (
+        <input
+          type="text"
+          onChange={(e) => handleRemarksChange(e, params)}
+          placeholder="Approval/Rejection Remarks"
+          style={{
+            padding: "5px",
+            border: "1px solid #ddd",
+            borderRadius: "5px",
+            width: "100%",
+          }}
+        />
+      ) : (
+        <span>{params?.data?.remarks}</span>
+      );
     },
     width: 250,
   },
