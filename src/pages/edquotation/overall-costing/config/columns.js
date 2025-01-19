@@ -59,7 +59,6 @@ export const overallCostingGridColumn = (
     headerName: "Remarks",
     field: "remarks",
     cellRenderer: (params) => {
-      console.log("first", params?.data?.showApproveRejectButton);
       return isActionApplicable ? (
         params?.data?.showApproveRejectButton === "Yes" &&
         userIdentification !== "vendor" ? (

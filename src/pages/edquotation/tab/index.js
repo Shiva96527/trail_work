@@ -71,10 +71,6 @@ export default function Tabs() {
   const [tabPane, setTabPane] = useState();
 
   useEffect(() => {
-    // sessionStorage.setItem("activeTab", "1");
-  }, []);
-
-  useEffect(() => {
     constructTabs(quoteDetail?.quoteCreationResponse?.statusCode);
     // setStatusCode(quoteDetail?.quoteCreationResponse?.statusCode);
   }, [quoteDetail]);
@@ -113,45 +109,6 @@ export default function Tabs() {
 
   return (
     <>
-      {/* <Card style={{ border: "none", marginTop: "10px" }}>
-        {" "}
-        <CardTitle style={{ textAlign: "center", marginTop: "20px" }}>
-          {quoteDetail?.quoteNumber || "Loading..."}
-          {quoteDetail?.status && (
-            <Badge color="primary" style={{ marginLeft: "15px" }}>
-              {quoteDetail?.status}
-            </Badge>
-          )}
-        </CardTitle>
-        <CardBody style={{ padding: "0" }}>
-          <Button
-            color="primary"
-            onClick={() => navigate(-1)} // Go back to the previous page
-            style={{
-              position: "absolute", // Positioning the button
-              top: "20px",
-              right: "20px",
-              padding: "10px 20px",
-              fontSize: "16px",
-              border: "none", // Removed border
-              outline: "none",
-              boxShadow: "none", // Removed box-shadow
-            }}
-          >
-            Back
-          </Button>
-          <Button
-               color="primary"
-               onClick={() => window.location.reload()}
-               style={{
-                 fontSize: "16px",
-               }}
-             >
-               <FontAwesomeIcon icon={faRefresh} />
-             </Button>
-        </CardBody>
-      </Card> */}
-
       <Card style={{ border: "none", marginTop: "10px" }}>
         <div
           style={{
