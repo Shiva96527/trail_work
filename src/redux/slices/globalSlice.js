@@ -70,7 +70,7 @@ export const {
   setMenuItems,
   toggleNonStandard,
   setDigitalizeQuoteId,
-  setToggleNonStandard
+  setToggleNonStandard,
 } = actions;
 
 export default reducer;

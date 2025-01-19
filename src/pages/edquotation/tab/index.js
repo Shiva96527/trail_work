@@ -8,7 +8,6 @@ import {
   Card,
   CardTitle,
   Button,
-  CardBody,
   Badge,
 } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate hook

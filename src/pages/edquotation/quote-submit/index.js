@@ -68,7 +68,9 @@ const QuoteSubmitPage = () => {
   }, []);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
+    getQuoteDetail(
+      digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId"))
+    );
   }, [digitalizeQuoteId]);
 
   const getQuoteDetail = async (digitalizeQuoteId) => {
