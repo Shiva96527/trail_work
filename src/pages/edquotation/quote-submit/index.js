@@ -132,7 +132,7 @@ const QuoteSubmitPage = () => {
     } finally {
       setLoading(false);
       toggleExcelModal();
-      getQuoteDetail();
+      getQuoteDetail(Number(sessionStorage.getItem("digitalizeQuoteId")));
     }
   };
 
