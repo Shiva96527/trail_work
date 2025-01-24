@@ -316,7 +316,7 @@ const QuoteSubmitPage = () => {
                   ) : null}
                 </div>
               }
-              exportable={false}
+              exportable={surveyResponse?.length > 0 ? true : false}
               gridOptions={{
                 domLayout: "autoHeight",
                 paginationPageSize: 10,
@@ -409,7 +409,7 @@ const QuoteSubmitPage = () => {
                     </div>
                   </>
                 }
-                exportable={false}
+                exportable={implementationResponse?.length > 0 ? true : false}
                 gridOptions={{
                   domLayout: "autoHeight",
                   paginationPageSize: 10,
@@ -520,7 +520,7 @@ const QuoteSubmitPage = () => {
                 )} // Pass column definitions for Quotation Details
                 // dataprops={columns} // Pass column definitions for Non-Standard Quotation
 
-                exportable={false}
+                exportable={nonStandardResponse?.length > 0 ? true : false}
                 gridOptions={{
                   domLayout: "autoHeight",
                   paginationPageSize: 10,
