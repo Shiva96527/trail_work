@@ -47,6 +47,7 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
+    type: "rightAligned",
     cellRenderer: (v) =>
       userIdentification !== "vendor" ? (
         <span>
@@ -66,6 +67,7 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
+    type: "rightAligned",
     cellRenderer: (v) => (
       <span>
         {new Intl.NumberFormat("en-us", {
@@ -82,6 +84,7 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
+    type: "rightAligned",
     cellRenderer: (v) =>
       userIdentification !== "vendor" ? (
         <span>

@@ -39,7 +39,9 @@ const Request = () => {
   }, []);
 
   useEffect(() => {
-    getQuoteDetail(digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId")));
+    getQuoteDetail(
+      digitalizeQuoteId || Number(sessionStorage.getItem("digitalizeQuoteId"))
+    );
   }, [digitalizeQuoteId]);
 
   const getQuoteDetail = async (digitalizeQuoteId) => {
@@ -120,13 +122,15 @@ const Request = () => {
       assignee: edData.assignee,
       department: edData.department,
       opportunityID: edData.opportunityID,
-      fixCDS: edData.fixCDS,
+      fixCdsNumber: edData.fixCdsNumber,
+      fixCasNumber: edData.fixCasNumber,
       businessCaseNumber: edData.businessCaseNumber,
       srfNumber: edData.srfNumber,
       status: edData.status,
       createdDate: edData.createdDate,
       vendor: edData.vendor,
       digitalizeQuoteId: edData.digitalizeQuoteId,
+      ensPIC: edData.ensPIC,
       type,
     };
     try {
@@ -258,7 +262,18 @@ const Request = () => {
                               onChange={(e) =>
                                 handleInputChange(column.key, e.target.value)
                               }
-                              disabled={true}
+                              disabled={
+                                (edData?.statusCode === 1 &&
+                                  ["fixCdsNumber", "fixCasNumber"].includes(
+                                    column?.key
+                                  ) &&
+                                  edData &&
+                                  edData[column?.quoteType] !== "Manual") ||
+                                (edData?.statusCode === 1 &&
+                                  ["ensPIC"].includes(column?.key))
+                                  ? false
+                                  : true
+                              }
                               style={{
                                 fontSize: "13px", // Ensures font size is aligned with other inputs
                                 padding: "8px", // Ensures padding is consistent
