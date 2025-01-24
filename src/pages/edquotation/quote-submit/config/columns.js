@@ -59,6 +59,7 @@ export const columns = (handleAssignment, type, statusCode) => [
     headerName: "Unit Price",
     field: "unitPrice",
     minWidth: 180,
+    type: 'rightAligned',
     cellRenderer: (v) => (
       <span>
         {new Intl.NumberFormat("en-us", {
@@ -72,6 +73,7 @@ export const columns = (handleAssignment, type, statusCode) => [
   {
     headerName: "Total Price",
     field: "totalPrice",
+    type: 'rightAligned',
     minWidth: 180,
     cellRenderer: (v) => (
       <span>
