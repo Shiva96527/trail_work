@@ -12,6 +12,17 @@ export const totalInfoColumns = [
     sortable: true,
     filter: true,
     width: 1100,
+    cellRenderer: (v) => (
+      <span>
+        {v?.value === "--"
+          ? "--"
+          : new Intl.NumberFormat("en-us", {
+              currency: "MYR",
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(v?.value)}
+      </span>
+    ),
   },
 ];
 
@@ -36,8 +47,18 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    cellRenderer: (params) =>
-      userIdentification !== "vendor" ? <span>{params.value}</span> : "--",
+    cellRenderer: (v) =>
+      userIdentification !== "vendor" ? (
+        <span>
+          {new Intl.NumberFormat("en-us", {
+            currency: "MYR",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(v?.value)}
+        </span>
+      ) : (
+        "--"
+      ),
   },
   {
     headerName: "Quotation (RM)",
@@ -45,6 +66,15 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
+    cellRenderer: (v) => (
+      <span>
+        {new Intl.NumberFormat("en-us", {
+          currency: "MYR",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(v?.value)}
+      </span>
+    ),
   },
   {
     headerName: "Variance (RM)",
@@ -52,8 +82,18 @@ export const overallCostingGridColumn = (
     sortable: true,
     filter: true,
     width: 250,
-    cellRenderer: (params) =>
-      userIdentification !== "vendor" ? <span>{params.value}</span> : "--",
+    cellRenderer: (v) =>
+      userIdentification !== "vendor" ? (
+        <span>
+          {new Intl.NumberFormat("en-us", {
+            currency: "MYR",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(v?.value)}
+        </span>
+      ) : (
+        "--"
+      ),
   },
   {
     headerName: "Remarks",

@@ -59,11 +59,29 @@ export const columns = (handleAssignment, type, statusCode) => [
     headerName: "Unit Price",
     field: "unitPrice",
     minWidth: 180,
+    cellRenderer: (v) => (
+      <span>
+        {new Intl.NumberFormat("en-us", {
+          currency: "MYR",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(v?.data?.unitPrice)}
+      </span>
+    ),
   },
   {
     headerName: "Total Price",
     field: "totalPrice",
     minWidth: 180,
+    cellRenderer: (v) => (
+      <span>
+        {new Intl.NumberFormat("en-us", {
+          currency: "MYR",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(v?.data?.totalPrice)}
+      </span>
+    ),
   },
   {
     headerName: "Plant Code",

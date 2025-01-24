@@ -23,6 +23,10 @@ const columns = [
       label: "Vendor Assignment",
       key: "vendor",
     },
+    {
+      label: "ENS PIC",
+      key: "ensPIC",
+    },
   ],
 ];
 
