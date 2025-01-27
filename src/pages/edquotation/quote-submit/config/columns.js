@@ -28,7 +28,7 @@ export const columns = (handleAssignment, type, statusCode) => [
   },
   {
     headerName: "Description",
-    field: "description",
+    field: "mmDescription",
     minWidth: 250,
   },
   {
